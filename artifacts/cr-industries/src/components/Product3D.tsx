@@ -37,22 +37,30 @@ class WebGLErrorBoundary extends Component<
 /* ── Polished Caulk Cartridge ─────────────────────────────────────── */
 /* Local-space bounds: bottom ≈ -1.65, nozzle tip ≈ 3.66, center ≈ 1.0
    scale=0.9, position=[0,-0.9,0] → world top≈2.39, bottom≈-2.39        */
-function CaulkCartridge({ scrollProgress }: { scrollProgress: number }) {
-  const rootRef = useRef<THREE.Group>(null);
-  const spinRef = useRef<THREE.Group>(null);
+function CaulkCartridge({ scrollProgressRef }: { scrollProgressRef: { current: number } }) {
+  const rootRef  = useRef<THREE.Group>(null);
+  const prevRef  = useRef(0);
+  const tiltRef  = useRef(0);
 
-  useFrame((_, dt) => {
-    if (!rootRef.current) return;
-    if (spinRef.current) spinRef.current.rotation.y += dt * 0.4;
-    const tx = scrollProgress * Math.PI * 0.13;
-    const tz = Math.sin(scrollProgress * Math.PI * 2) * 0.07;
-    rootRef.current.rotation.x += (tx - rootRef.current.rotation.x) * 0.07;
-    rootRef.current.rotation.z += (tz - rootRef.current.rotation.z) * 0.07;
+  useFrame(() => {
+    if (!rootRef.current || !scrollProgressRef) return;
+    const p = scrollProgressRef.current ?? 0;
+
+    /* scroll velocity → gentle left/right tilt */
+    const delta = p - prevRef.current;
+    prevRef.current = p;
+    tiltRef.current = tiltRef.current * 0.86 + delta * 10;
+    tiltRef.current = Math.max(-0.18, Math.min(0.18, tiltRef.current));
+
+    /* smooth x pitch from overall progress; z tilt from scroll velocity */
+    const targetX = p * Math.PI * 0.08;
+    rootRef.current.rotation.x += (targetX - rootRef.current.rotation.x) * 0.06;
+    rootRef.current.rotation.z += (tiltRef.current - rootRef.current.rotation.z) * 0.09;
   });
 
   return (
     <group ref={rootRef} scale={0.9} position={[0, -0.9, 0]}>
-      <group ref={spinRef}>
+      <group>
 
         {/* ── Main body — clearcoat gloss plastic ── */}
         <mesh castShadow receiveShadow>
@@ -322,34 +330,33 @@ function StackCard({ step, isNewest, fromSide }: {
   const Icon = step.icon;
   return (
     <motion.div
-      initial={{ opacity: 0, x: fromSide === "right" ? 32 : -32, y: 8 }}
-      animate={{ opacity: 1, x: 0, y: 0 }}
-      transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-      className={`flex gap-0 rounded-xl overflow-hidden shadow-lg border transition-all duration-300 ${
+      initial={{ opacity: 0, x: fromSide === "right" ? 48 : -48 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+      className={`flex gap-0 rounded-xl overflow-hidden shadow-lg border transition-all duration-500 ${
         isNewest
-          ? "border-primary/60 shadow-primary/15 bg-card"
-          : "border-border/40 bg-card/80 opacity-80"
+          ? "border-primary/60 shadow-primary/20 bg-card"
+          : "border-border/40 bg-card/75 opacity-70"
       }`}
     >
-      {/* Thumbnail */}
-      <div className="w-[78px] shrink-0 self-stretch">
+      {/* Thumbnail — slightly larger */}
+      <div className="w-[92px] shrink-0 self-stretch">
         <img
           src={step.img}
           alt={step.imgAlt}
           className="w-full h-full object-cover"
-          style={{ minHeight: "70px", maxHeight: "90px" }}
+          style={{ minHeight: "82px", maxHeight: "110px" }}
         />
       </div>
-      {/* Content */}
-      <div className={`flex-1 py-2 px-2.5 min-w-0 border-l-2 ${isNewest ? "border-primary" : "border-border/30"}`}>
-        <div className="flex items-center gap-1 mb-0.5">
-          <div className={`w-3.5 h-3.5 rounded flex items-center justify-center shrink-0 ${isNewest ? "brand-gradient" : "bg-muted"}`}>
-            <Icon className={`w-2 h-2 ${isNewest ? "text-white" : "text-muted-foreground"}`} />
+      {/* Content — no step label */}
+      <div className={`flex-1 py-2.5 px-3 min-w-0 border-l-2 ${isNewest ? "border-primary" : "border-border/25"}`}>
+        <div className="flex items-center gap-1.5 mb-1">
+          <div className={`w-4 h-4 rounded flex items-center justify-center shrink-0 ${isNewest ? "brand-gradient" : "bg-muted"}`}>
+            <Icon className={`w-2.5 h-2.5 ${isNewest ? "text-white" : "text-muted-foreground"}`} />
           </div>
-          <span className="text-[8.5px] font-black tracking-widest text-primary uppercase">Step {step.tag}</span>
         </div>
-        <p className="text-[10.5px] font-bold text-foreground leading-tight line-clamp-1">{step.title}</p>
-        <p className={`text-[9px] leading-tight mt-0.5 line-clamp-2 ${isNewest ? "text-muted-foreground" : "text-muted-foreground/60"}`}>
+        <p className="text-[11.5px] font-bold text-foreground leading-tight line-clamp-1">{step.title}</p>
+        <p className={`text-[9.5px] leading-snug mt-1 line-clamp-2 ${isNewest ? "text-muted-foreground" : "text-muted-foreground/50"}`}>
           {step.desc}
         </p>
       </div>
@@ -462,8 +469,8 @@ function ProductPlaque() {
 
 /* ── 3D inner section ─────────────────────────────────────────────── */
 function Product3DInner() {
-  const wrapRef = useRef<HTMLDivElement>(null);
-  const [progress, setProgress] = useState(0);
+  const wrapRef       = useRef<HTMLDivElement>(null);
+  const progressRef   = useRef(0);              // always-fresh ref for useFrame
   const [step, setStep] = useState(-1);
 
   useEffect(() => {
@@ -472,7 +479,7 @@ function Product3DInner() {
       const rect  = wrapRef.current.getBoundingClientRect();
       const total = wrapRef.current.offsetHeight - window.innerHeight;
       const p     = Math.min(1, Math.max(0, -rect.top) / total);
-      setProgress(p);
+      progressRef.current = p;
       setStep(
         p < 0.02 ? -1 : p < 0.18 ? 0 : p < 0.34 ? 1 :
         p < 0.50 ? 2  : p < 0.66 ? 3 : p < 0.82 ? 4 : 5
@@ -525,8 +532,8 @@ function Product3DInner() {
               ↓ scroll to explore
             </motion.p>
 
-            {/* 3D canvas — fills remaining space */}
-            <div className="flex-1 w-full min-h-0 max-w-[420px]">
+            {/* 3D canvas — fills remaining space, clipped to container */}
+            <div className="flex-1 w-full min-h-0 max-w-[420px] overflow-hidden" style={{ minHeight: "300px" }}>
               <Canvas
                 camera={{ position: [0, 0, 5.5], fov: 50 }}
                 shadows={{ type: THREE.PCFShadowMap }}
@@ -539,7 +546,7 @@ function Product3DInner() {
                 <directionalLight position={[0, -4, 2]} intensity={0.25} color="#ffffff" />
                 <pointLight position={[2, 3, 2]} intensity={0.6} color="#ffffff" />
                 <pointLight position={[-2, -1, 3]} intensity={0.35} color="#0096C7" />
-                <CaulkCartridge scrollProgress={progress} />
+                <CaulkCartridge scrollProgressRef={progressRef} />
                 <Environment preset="studio" />
               </Canvas>
             </div>
