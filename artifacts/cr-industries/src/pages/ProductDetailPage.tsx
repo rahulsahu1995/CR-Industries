@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import { useRoute, useLocation, Link } from "wouter";
-import { ArrowLeft, ArrowRight, CheckCircle2, Download, Mail } from "lucide-react";
+import { ArrowLeft, ArrowRight, CheckCircle2, Mail } from "lucide-react";
 import { getCategoryBySlug, PRODUCT_CATEGORIES } from "@/data/productCategories";
 
 export default function ProductDetailPage() {
@@ -120,13 +120,6 @@ export default function ProductDetailPage() {
                   className="inline-flex items-center gap-2 px-7 py-3.5 bg-primary hover:bg-[#00B4D8] text-white font-bold rounded-xl shadow-lg shadow-primary/30 transition-colors duration-200"
                 >
                   <Mail className="w-4 h-4" /> Request a Quote
-                </motion.button>
-                <motion.button
-                  whileHover={{ scale: 1.04, y: -2 }}
-                  whileTap={{ scale: 0.97 }}
-                  className="inline-flex items-center gap-2 px-7 py-3.5 text-foreground border-2 border-border hover:border-primary hover:text-primary font-bold rounded-xl transition-colors duration-200"
-                >
-                  <Download className="w-4 h-4" /> Download Datasheet
                 </motion.button>
               </div>
             </motion.div>
