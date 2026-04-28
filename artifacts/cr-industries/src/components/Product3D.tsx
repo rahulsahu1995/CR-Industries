@@ -303,47 +303,94 @@ function StepCard({ step }: { step: typeof STEPS[0] }) {
   );
 }
 
-/* ── Compact stacking card ────────────────────────────────────────── */
+/* ── Premium stacking card — multi-layer cinematic reveal ─────────── */
 const cardVariants = {
   hidden: (fromSide: "left" | "right") => ({
     opacity: 0,
-    x: fromSide === "right" ? 64 : -64,
-    y: 18,
-    scale: 0.94,
-    filter: "blur(12px)",
+    x: fromSide === "right" ? 90 : -90,
+    y: 40,
+    rotateY: fromSide === "right" ? -22 : 22,
+    rotateX: 6,
+    scale: 0.84,
+    filter: "blur(16px)",
   }),
   show: {
     opacity: 1,
     x: 0,
     y: 0,
+    rotateY: 0,
+    rotateX: 0,
     scale: 1,
     filter: "blur(0px)",
     transition: {
-      duration: 0.95,
-      ease: [0.22, 1, 0.36, 1],
+      duration: 1.15,
+      ease: [0.16, 1, 0.3, 1],
       when: "beforeChildren",
-      staggerChildren: 0.09,
-      delayChildren: 0.18,
+      staggerChildren: 0.11,
+      delayChildren: 0.22,
     },
   },
 };
 
-const childVariants = {
-  hidden: { opacity: 0, y: 14 },
+const imageWipeVariants = {
+  hidden: (fromSide: "left" | "right") => ({
+    clipPath: fromSide === "right"
+      ? "inset(0 100% 0 0)"
+      : "inset(0 0 0 100%)",
+    scale: 1.22,
+    filter: "blur(8px) saturate(0.7)",
+  }),
   show: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] },
+    clipPath: "inset(0 0% 0 0%)",
+    scale: 1.04,
+    filter: "blur(0px) saturate(1)",
+    transition: {
+      clipPath:  { duration: 1.05, ease: [0.65, 0, 0.25, 1] },
+      scale:     { duration: 1.4,  ease: [0.22, 1, 0.36, 1] },
+      filter:    { duration: 0.95, ease: [0.22, 1, 0.36, 1] },
+    },
   },
 };
 
-const imageVariants = {
-  hidden: { opacity: 0, scale: 1.18, filter: "blur(8px)" },
+const titleVariants = {
+  hidden: { clipPath: "inset(0 0 100% 0)", y: 8 },
   show: {
-    opacity: 1,
-    scale: 1.04,
-    filter: "blur(0px)",
-    transition: { duration: 0.95, ease: [0.22, 1, 0.36, 1] },
+    clipPath: "inset(0 0 0% 0)",
+    y: 0,
+    transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] },
+  },
+};
+
+const descVariants = {
+  hidden: { opacity: 0, y: 18 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.75, ease: [0.22, 1, 0.36, 1] } },
+};
+
+const iconVariants = {
+  hidden: { opacity: 0, scale: 0.4, rotate: -25 },
+  show: {
+    opacity: 1, scale: 1, rotate: 0,
+    transition: { type: "spring" as const, stiffness: 320, damping: 18, mass: 0.7 },
+  },
+};
+
+const accentVariants = {
+  hidden: { scaleX: 0 },
+  show: {
+    scaleX: 1,
+    transition: { duration: 0.85, delay: 0.05, ease: [0.22, 1, 0.36, 1] },
+  },
+};
+
+const sheenVariants = {
+  hidden: { x: "-160%", opacity: 0 },
+  show: {
+    x: "180%",
+    opacity: [0, 0.55, 0.55, 0],
+    transition: {
+      x:       { duration: 1.3, delay: 0.55, ease: [0.45, 0, 0.2, 1] },
+      opacity: { duration: 1.3, delay: 0.55, ease: "easeOut", times: [0, 0.15, 0.85, 1] },
+    },
   },
 };
 
@@ -359,50 +406,98 @@ function StackCard({ step, isNewest, fromSide }: {
       custom={fromSide}
       initial="hidden"
       animate="show"
-      style={{ willChange: "transform, opacity, filter" }}
-      className={`relative rounded-2xl overflow-hidden shadow-xl border transition-[opacity,box-shadow,border-color] duration-500 ${
+      style={{
+        transformPerspective: 1400,
+        transformStyle: "preserve-3d",
+        willChange: "transform, opacity, filter",
+      }}
+      className={`relative rounded-2xl overflow-hidden border transition-[opacity,box-shadow,border-color,transform] duration-500 ${
         isNewest
-          ? "border-primary/60 shadow-primary/25 bg-card"
-          : "border-border/35 bg-card/70 opacity-65"
+          ? "border-primary/60 shadow-2xl shadow-primary/25 bg-card"
+          : "border-border/35 shadow-md bg-card/70 opacity-60 scale-[0.97]"
       }`}
     >
-      {/* Subtle highlight sheen for newest card */}
+      {/* Brand-tinted radial sheen — only on the newest card */}
       {isNewest && (
         <span
           aria-hidden
-          className="pointer-events-none absolute inset-0 rounded-2xl"
+          className="pointer-events-none absolute inset-0 rounded-2xl z-[1]"
           style={{
             background:
-              "radial-gradient(120% 80% at 0% 0%, rgba(0,150,199,0.10), transparent 60%)",
+              "radial-gradient(130% 90% at 0% 0%, rgba(0,150,199,0.14), transparent 55%), radial-gradient(120% 80% at 100% 100%, rgba(3,4,94,0.10), transparent 60%)",
           }}
         />
       )}
 
-      {/* Image — fixed height so cards don't exceed column bounds */}
-      <div className="relative w-full h-32 overflow-hidden">
+      {/* Image — larger via aspect ratio, with wipe + zoom + saturate ramp */}
+      <div className="relative w-full aspect-[5/3] overflow-hidden">
         <motion.img
           src={step.img}
           alt={step.imgAlt}
-          variants={imageVariants}
-          className="w-full h-full object-cover"
-          style={{ transformOrigin: "center" }}
+          variants={imageWipeVariants}
+          custom={fromSide}
+          className="absolute inset-0 w-full h-full object-cover"
+          style={{ transformOrigin: "center", willChange: "transform, filter, clip-path" }}
         />
-        {!isNewest && <div className="absolute inset-0 bg-background/25" />}
+        {!isNewest && <div className="absolute inset-0 bg-background/30" />}
         {isNewest && (
-          <div className="absolute inset-0 bg-gradient-to-t from-card/50 via-transparent to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-card/60 via-card/5 to-transparent" />
+        )}
+
+        {/* Diagonal glint sheen sweeps once after the image lands */}
+        {isNewest && (
+          <motion.span
+            aria-hidden
+            variants={sheenVariants}
+            className="pointer-events-none absolute top-0 -left-[40%] h-full w-[55%] z-[2]"
+            style={{
+              background:
+                "linear-gradient(105deg, transparent 0%, rgba(255,255,255,0.0) 35%, rgba(255,255,255,0.55) 50%, rgba(255,255,255,0.0) 65%, transparent 100%)",
+              filter: "blur(2px)",
+              mixBlendMode: "screen",
+            }}
+          />
         )}
       </div>
-      {/* Content */}
-      <div className={`px-2.5 py-2 md:px-3.5 md:py-2.5 border-t-2 ${isNewest ? "border-primary" : "border-border/20"}`}>
-        <motion.div variants={childVariants} className="flex items-center gap-1.5 mb-1 md:mb-1.5">
-          <div className={`w-5 h-5 rounded-md flex items-center justify-center shrink-0 ${isNewest ? "brand-gradient" : "bg-muted"}`}>
-            <Icon className={`w-3 h-3 ${isNewest ? "text-white" : "text-muted-foreground"}`} />
+
+      {/* Content — larger fonts, more padding, more breathing room */}
+      <div className={`relative px-3.5 pt-2.5 pb-3 md:px-4 md:pt-3 md:pb-3.5 lg:px-5 lg:pt-3.5 lg:pb-4 ${isNewest ? "" : ""}`}>
+        {/* Top accent line — grows from left */}
+        <motion.span
+          aria-hidden
+          variants={accentVariants}
+          className={`absolute top-0 left-0 right-0 h-[2px] origin-left ${
+            isNewest ? "bg-gradient-to-r from-primary via-primary/80 to-transparent" : "bg-border/40"
+          }`}
+        />
+
+        <div className="flex items-center gap-2 md:gap-2.5 mb-1.5 md:mb-2">
+          <motion.div
+            variants={iconVariants}
+            className={`w-7 h-7 md:w-8 md:h-8 rounded-lg flex items-center justify-center shrink-0 ${
+              isNewest ? "brand-gradient shadow-md shadow-primary/30" : "bg-muted"
+            }`}
+          >
+            <Icon className={`w-3.5 h-3.5 md:w-4 md:h-4 ${isNewest ? "text-white" : "text-muted-foreground"}`} />
+          </motion.div>
+          <div className="overflow-hidden">
+            <span className={`block text-[8.5px] md:text-[9.5px] font-black tracking-[0.2em] uppercase leading-none mb-0.5 ${isNewest ? "text-primary" : "text-muted-foreground/60"}`}>
+              Step {step.tag}
+            </span>
+            <motion.p
+              variants={titleVariants}
+              className="text-[12.5px] md:text-sm lg:text-[15px] font-bold text-foreground leading-snug line-clamp-1"
+            >
+              {step.title}
+            </motion.p>
           </div>
-          <p className="text-[11px] md:text-[12.5px] font-bold text-foreground leading-snug line-clamp-1">{step.title}</p>
-        </motion.div>
+        </div>
+
         <motion.p
-          variants={childVariants}
-          className={`text-[9px] md:text-[10px] leading-snug line-clamp-2 ${isNewest ? "text-muted-foreground" : "text-muted-foreground/45"}`}
+          variants={descVariants}
+          className={`text-[11px] md:text-[12px] lg:text-[13px] leading-relaxed line-clamp-3 ${
+            isNewest ? "text-muted-foreground" : "text-muted-foreground/45"
+          }`}
         >
           {step.desc}
         </motion.p>
@@ -577,11 +672,12 @@ function Product3DInner() {
             - desktop → flex-row (side columns flank the canvas)
             Narrower columns (160–190px) pull panels visually closer to center.
           */}
-          <div className="flex-1 min-h-0 flex flex-col md:flex-row gap-2 md:gap-2 lg:gap-3 overflow-hidden md:max-w-5xl md:mx-auto md:w-full">
+          <div className="flex-1 min-h-0 flex flex-col md:flex-row gap-2 md:gap-3 lg:gap-4 overflow-hidden md:max-w-7xl md:mx-auto md:w-full">
 
             {/* ── Left column — desktop only ── */}
-            <div className="hidden md:flex w-[190px] lg:w-[210px] xl:w-[230px] shrink-0
-                            flex-col gap-3 overflow-hidden pt-2">
+            <div className="hidden md:flex w-[230px] lg:w-[270px] xl:w-[300px] shrink-0
+                            flex-col gap-3 lg:gap-4 overflow-hidden pt-2"
+                 style={{ perspective: "1400px" }}>
               {revealedLeft.map((s, i) => (
                 <StackCard
                   key={s.tag}
@@ -625,7 +721,8 @@ function Product3DInner() {
 
               {/* Mobile card grid — 2 columns, scrollable, only visible < md */}
               <div className="md:hidden flex-1 min-h-0 overflow-y-auto
-                              grid grid-cols-2 gap-2 pb-2 content-start">
+                              grid grid-cols-2 gap-3 pb-2 content-start"
+                   style={{ perspective: "1400px" }}>
                 {revealedAll.map((s, i) => (
                   <StackCard
                     key={s.tag}
@@ -639,8 +736,9 @@ function Product3DInner() {
             </div>
 
             {/* ── Right column — desktop only ── */}
-            <div className="hidden md:flex w-[190px] lg:w-[210px] xl:w-[230px] shrink-0
-                            flex-col gap-3 overflow-hidden pt-2">
+            <div className="hidden md:flex w-[230px] lg:w-[270px] xl:w-[300px] shrink-0
+                            flex-col gap-3 lg:gap-4 overflow-hidden pt-2"
+                 style={{ perspective: "1400px" }}>
               {revealedRight.map((s, i) => (
                 <StackCard
                   key={s.tag}
