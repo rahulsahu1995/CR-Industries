@@ -304,6 +304,49 @@ function StepCard({ step }: { step: typeof STEPS[0] }) {
 }
 
 /* ── Compact stacking card ────────────────────────────────────────── */
+const cardVariants = {
+  hidden: (fromSide: "left" | "right") => ({
+    opacity: 0,
+    x: fromSide === "right" ? 64 : -64,
+    y: 18,
+    scale: 0.94,
+    filter: "blur(12px)",
+  }),
+  show: {
+    opacity: 1,
+    x: 0,
+    y: 0,
+    scale: 1,
+    filter: "blur(0px)",
+    transition: {
+      duration: 0.95,
+      ease: [0.22, 1, 0.36, 1],
+      when: "beforeChildren",
+      staggerChildren: 0.09,
+      delayChildren: 0.18,
+    },
+  },
+};
+
+const childVariants = {
+  hidden: { opacity: 0, y: 14 },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] },
+  },
+};
+
+const imageVariants = {
+  hidden: { opacity: 0, scale: 1.18, filter: "blur(8px)" },
+  show: {
+    opacity: 1,
+    scale: 1.04,
+    filter: "blur(0px)",
+    transition: { duration: 0.95, ease: [0.22, 1, 0.36, 1] },
+  },
+};
+
 function StackCard({ step, isNewest, fromSide }: {
   step: typeof STEPS[0];
   isNewest: boolean;
@@ -312,22 +355,37 @@ function StackCard({ step, isNewest, fromSide }: {
   const Icon = step.icon;
   return (
     <motion.div
-      initial={{ opacity: 0, x: fromSide === "right" ? 56 : -56 }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
-      className={`rounded-2xl overflow-hidden shadow-xl border transition-all duration-500 ${
+      variants={cardVariants}
+      custom={fromSide}
+      initial="hidden"
+      animate="show"
+      style={{ willChange: "transform, opacity, filter" }}
+      className={`relative rounded-2xl overflow-hidden shadow-xl border transition-[opacity,box-shadow,border-color] duration-500 ${
         isNewest
           ? "border-primary/60 shadow-primary/25 bg-card"
           : "border-border/35 bg-card/70 opacity-65"
       }`}
     >
+      {/* Subtle highlight sheen for newest card */}
+      {isNewest && (
+        <span
+          aria-hidden
+          className="pointer-events-none absolute inset-0 rounded-2xl"
+          style={{
+            background:
+              "radial-gradient(120% 80% at 0% 0%, rgba(0,150,199,0.10), transparent 60%)",
+          }}
+        />
+      )}
+
       {/* Image — fixed height so cards don't exceed column bounds */}
       <div className="relative w-full h-32 overflow-hidden">
-        <img
+        <motion.img
           src={step.img}
           alt={step.imgAlt}
-          className="w-full h-full object-cover transition-transform duration-700"
-          style={{ transform: isNewest ? "scale(1.04)" : "scale(1)" }}
+          variants={imageVariants}
+          className="w-full h-full object-cover"
+          style={{ transformOrigin: "center" }}
         />
         {!isNewest && <div className="absolute inset-0 bg-background/25" />}
         {isNewest && (
@@ -336,15 +394,18 @@ function StackCard({ step, isNewest, fromSide }: {
       </div>
       {/* Content */}
       <div className={`px-2.5 py-2 md:px-3.5 md:py-2.5 border-t-2 ${isNewest ? "border-primary" : "border-border/20"}`}>
-        <div className="flex items-center gap-1.5 mb-1 md:mb-1.5">
+        <motion.div variants={childVariants} className="flex items-center gap-1.5 mb-1 md:mb-1.5">
           <div className={`w-5 h-5 rounded-md flex items-center justify-center shrink-0 ${isNewest ? "brand-gradient" : "bg-muted"}`}>
             <Icon className={`w-3 h-3 ${isNewest ? "text-white" : "text-muted-foreground"}`} />
           </div>
           <p className="text-[11px] md:text-[12.5px] font-bold text-foreground leading-snug line-clamp-1">{step.title}</p>
-        </div>
-        <p className={`text-[9px] md:text-[10px] leading-snug line-clamp-2 ${isNewest ? "text-muted-foreground" : "text-muted-foreground/45"}`}>
+        </motion.div>
+        <motion.p
+          variants={childVariants}
+          className={`text-[9px] md:text-[10px] leading-snug line-clamp-2 ${isNewest ? "text-muted-foreground" : "text-muted-foreground/45"}`}
+        >
           {step.desc}
-        </p>
+        </motion.p>
       </div>
     </motion.div>
   );
@@ -467,7 +528,7 @@ function Product3DInner() {
       const p     = Math.min(1, Math.max(0, -rect.top) / total);
       progressRef.current = p;
       setStep(
-        p < 0.03 ? -1 : p < 0.27 ? 0 : p < 0.52 ? 1 :
+        p < 0.04 ? -1 : p < 0.28 ? 0 : p < 0.52 ? 1 :
         p < 0.76 ? 2  : 3
       );
     };
@@ -484,7 +545,7 @@ function Product3DInner() {
   const revealedAll = STEPS.filter((_, i) => step >= i);
 
   return (
-    <section id="product" ref={wrapRef} className="relative h-[900vh]">
+    <section id="product" ref={wrapRef} className="relative h-[420vh]">
       {/* sticky panel — strictly h-screen, nothing escapes */}
       <div className="sticky top-0 h-screen overflow-hidden">
 
