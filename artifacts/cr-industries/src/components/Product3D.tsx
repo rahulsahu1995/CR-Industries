@@ -409,47 +409,53 @@ function FallbackSection() {
   );
 }
 
-/* ── Product label / tag header ──────────────────────────────────── */
-function ProductTag() {
+/* ── Product plaque — horizontal label affixed below the 3D model ── */
+function ProductPlaque() {
   return (
-    <div className="flex flex-col items-center">
-      {/* Hanging string */}
-      <div className="w-px h-6 bg-border/60" />
-      {/* Punch hole */}
-      <div className="w-3.5 h-3.5 rounded-full border-2 border-border/70 bg-background z-10 -mb-[7px]" />
-      {/* Tag body */}
+    <div
+      className="relative flex items-center gap-4 bg-card border border-border/60 rounded-lg px-5 py-2.5 overflow-hidden"
+      style={{
+        boxShadow:
+          "0 -3px 10px rgba(0,0,0,0.12), 0 4px 14px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.06)",
+      }}
+    >
+      {/* Horizontal rule paper texture */}
       <div
-        className="relative bg-card border-2 border-border/70 rounded-xl px-7 py-3.5 text-center overflow-hidden"
-        style={{ boxShadow: "0 6px 24px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.07)" }}
-      >
-        {/* Subtle horizontal rule texture */}
-        <div className="absolute inset-0 opacity-[0.025]"
-          style={{ backgroundImage: "repeating-linear-gradient(0deg,#000 0,transparent 1px,transparent 5px)" }} />
-        {/* Brand line */}
-        <p className="relative text-[9px] font-black tracking-[0.35em] uppercase text-primary mb-0.5">
-          C·R Industries
+        className="absolute inset-0 opacity-[0.022]"
+        style={{ backgroundImage: "repeating-linear-gradient(0deg,#000 0,transparent 1px,transparent 4px)" }}
+      />
+      {/* Left barcode */}
+      <div className="relative flex items-end gap-px shrink-0">
+        {[2, 1, 3, 1, 2, 1, 1, 3, 2, 1].map((w, i) => (
+          <div
+            key={i}
+            className="bg-foreground/45 rounded-[1px]"
+            style={{ width: `${w}px`, height: i % 3 === 0 ? "11px" : "7px" }}
+          />
+        ))}
+      </div>
+      {/* Centre text */}
+      <div className="relative text-center flex-1">
+        <p className="text-[8px] font-black tracking-[0.32em] uppercase text-primary leading-none">
+          C · R  Industries
         </p>
-        {/* Title */}
-        <h2 className="relative text-[18px] font-black text-foreground tracking-[0.15em] uppercase leading-tight">
+        <h2 className="text-[15px] font-black text-foreground tracking-[0.13em] uppercase leading-snug mt-0.5">
           3D Showcase
         </h2>
-        {/* Mini barcode */}
-        <div className="relative flex justify-center items-end gap-px mt-2">
-          {[2,1,3,1,2,1,1,3,2,1,2,1,3,1,1,2,3,1].map((w, i) => (
-            <div key={i} className="bg-foreground/55 rounded-[1px]"
-              style={{ width: `${w}px`, height: i % 4 === 0 ? "9px" : "6px" }} />
-          ))}
-        </div>
-        <p className="relative text-[7px] text-muted-foreground tracking-[0.3em] mt-0.5">CR-3D · 2026</p>
+        <p className="text-[6.5px] text-muted-foreground tracking-[0.28em] mt-0.5">
+          CR-PROD · 2026
+        </p>
       </div>
-      {/* Scroll hint */}
-      <motion.p
-        animate={{ opacity: [0.35, 1, 0.35] }}
-        transition={{ duration: 2.5, repeat: Infinity }}
-        className="text-muted-foreground text-[10px] mt-2 tracking-wide"
-      >
-        ↓ scroll to explore
-      </motion.p>
+      {/* Right barcode */}
+      <div className="relative flex items-end gap-px shrink-0">
+        {[1, 3, 1, 2, 1, 3, 1, 2, 1, 3].map((w, i) => (
+          <div
+            key={i}
+            className="bg-foreground/45 rounded-[1px]"
+            style={{ width: `${w}px`, height: i % 3 === 0 ? "11px" : "7px" }}
+          />
+        ))}
+      </div>
     </div>
   );
 }
@@ -493,71 +499,77 @@ function Product3DInner() {
         <div className="absolute inset-0 opacity-[0.03]"
           style={{ backgroundImage: "repeating-linear-gradient(0deg,#0096C7 0,transparent 1px,transparent 56px),repeating-linear-gradient(90deg,#0096C7 0,transparent 1px,transparent 56px)" }} />
 
-        {/* ── Three-column layout ── */}
-        <div className="relative h-full flex flex-col">
+        {/* ── Three-column layout (full height) ── */}
+        <div className="relative h-full flex items-stretch gap-3 px-3 md:px-6 lg:px-10 py-4">
 
-          {/* ── Tag header ── */}
-          <div className="flex-none pt-4 pb-1 flex justify-center z-10">
-            <ProductTag />
-          </div>
-
-          {/* ── Columns ── */}
-          <div className="flex-1 flex items-stretch gap-3 px-3 md:px-6 lg:px-10 min-h-0 pb-4">
-
-            {/* Left stacking column */}
-            <div className="hidden md:flex w-[200px] lg:w-[220px] xl:w-[240px] shrink-0 flex-col justify-end gap-2 pb-2">
-              {revealedLeft.map((s, i) => (
-                <StackCard
-                  key={s.tag}
-                  step={s}
-                  isNewest={i === revealedLeft.length - 1}
-                  fromSide="left"
-                />
-              ))}
-            </div>
-
-            {/* Center: 3D canvas */}
-            <div className="flex-1 min-w-0 h-full flex items-center justify-center">
-              <div className="w-full h-full max-w-[400px] max-h-[560px]">
-                <Canvas
-                  camera={{ position: [0, 0, 5.5], fov: 50 }}
-                  shadows={{ type: THREE.PCFShadowMap }}
-                  gl={{ antialias: true, powerPreference: "high-performance" }}
-                >
-                  <ambientLight intensity={0.5} />
-                  <directionalLight position={[4, 6, 5]} intensity={2.2} castShadow shadow-mapSize={[2048, 2048]} />
-                  <directionalLight position={[-4, 2, -3]} intensity={0.55} color="#48CAE4" />
-                  <directionalLight position={[0, -4, 2]} intensity={0.25} color="#ffffff" />
-                  <pointLight position={[2, 3, 2]} intensity={0.6} color="#ffffff" />
-                  <pointLight position={[-2, -1, 3]} intensity={0.35} color="#0096C7" />
-                  <CaulkCartridge scrollProgress={progress} />
-                  <Environment preset="studio" />
-                </Canvas>
-              </div>
-            </div>
-
-            {/* Right stacking column */}
-            <div className="hidden md:flex w-[200px] lg:w-[220px] xl:w-[240px] shrink-0 flex-col justify-end gap-2 pb-2">
-              {revealedRight.map((s, i) => (
-                <StackCard
-                  key={s.tag}
-                  step={s}
-                  isNewest={i === revealedRight.length - 1}
-                  fromSide="right"
-                />
-              ))}
-            </div>
-
-          </div>
-
-          {/* Mobile stacking column */}
-          <div className="md:hidden flex flex-col gap-2 px-3 pb-3 max-h-[30vh] overflow-y-auto">
-            {revealedAll.map((s, i) => (
+          {/* ── Left stacking column — cards grow top-down ── */}
+          <div className="hidden md:flex w-[200px] lg:w-[220px] xl:w-[240px] shrink-0 flex-col justify-start gap-2 pt-10">
+            {revealedLeft.map((s, i) => (
               <StackCard
                 key={s.tag}
                 step={s}
-                isNewest={i === revealedAll.length - 1}
-                fromSide={s.side}
+                isNewest={i === revealedLeft.length - 1}
+                fromSide="left"
+              />
+            ))}
+          </div>
+
+          {/* ── Centre: scroll hint → canvas → plaque ── */}
+          <div className="flex-1 min-w-0 h-full flex flex-col items-center">
+            {/* Scroll hint — top */}
+            <motion.p
+              animate={{ opacity: [0.3, 0.85, 0.3] }}
+              transition={{ duration: 2.6, repeat: Infinity }}
+              className="flex-none text-[9.5px] text-muted-foreground tracking-widest pt-1 pb-0.5"
+            >
+              ↓ scroll to explore
+            </motion.p>
+
+            {/* 3D canvas — fills remaining space */}
+            <div className="flex-1 w-full min-h-0 max-w-[420px]">
+              <Canvas
+                camera={{ position: [0, 0, 5.5], fov: 50 }}
+                shadows={{ type: THREE.PCFShadowMap }}
+                gl={{ antialias: true, powerPreference: "high-performance" }}
+                style={{ width: "100%", height: "100%" }}
+              >
+                <ambientLight intensity={0.5} />
+                <directionalLight position={[4, 6, 5]} intensity={2.2} castShadow shadow-mapSize={[2048, 2048]} />
+                <directionalLight position={[-4, 2, -3]} intensity={0.55} color="#48CAE4" />
+                <directionalLight position={[0, -4, 2]} intensity={0.25} color="#ffffff" />
+                <pointLight position={[2, 3, 2]} intensity={0.6} color="#ffffff" />
+                <pointLight position={[-2, -1, 3]} intensity={0.35} color="#0096C7" />
+                <CaulkCartridge scrollProgress={progress} />
+                <Environment preset="studio" />
+              </Canvas>
+            </div>
+
+            {/* Plaque — affixed below the 3D model */}
+            <div className="flex-none py-3 w-full max-w-[320px]">
+              <ProductPlaque />
+            </div>
+
+            {/* Mobile stacking cards — below plaque */}
+            <div className="md:hidden w-full flex flex-col gap-2 pb-2 max-h-[28vh] overflow-y-auto">
+              {revealedAll.map((s, i) => (
+                <StackCard
+                  key={s.tag}
+                  step={s}
+                  isNewest={i === revealedAll.length - 1}
+                  fromSide={s.side}
+                />
+              ))}
+            </div>
+          </div>
+
+          {/* ── Right stacking column — cards grow top-down ── */}
+          <div className="hidden md:flex w-[200px] lg:w-[220px] xl:w-[240px] shrink-0 flex-col justify-start gap-2 pt-10">
+            {revealedRight.map((s, i) => (
+              <StackCard
+                key={s.tag}
+                step={s}
+                isNewest={i === revealedRight.length - 1}
+                fromSide="right"
               />
             ))}
           </div>
