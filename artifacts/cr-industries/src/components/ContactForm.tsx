@@ -84,20 +84,58 @@ export default function ContactForm() {
               {
                 icon: MapPin,
                 label: "Address",
-                value: "Plot 45, Industrial Area Phase 2, Mumbai, Maharashtra 400001, India",
+                lines: ["102, Badi Bhamori, Indore,", "Madhya Pradesh, India"],
+                href: "https://maps.google.com/?q=102+Badi+Bhamori+Indore+Madhya+Pradesh",
+                external: true,
               },
-              { icon: Phone, label: "Phone", value: "+91 98765 43210" },
-              { icon: Mail, label: "Email", value: "info@crindustries.com" },
-            ].map(({ icon: Icon, label, value }) => (
+              {
+                icon: Phone,
+                label: "Phone",
+                lines: [
+                  { text: "+91 95222 22196", href: "tel:+919522222196" },
+                  { text: "+91 91652 12323", href: "tel:+919165212323" },
+                ],
+              },
+              {
+                icon: Mail,
+                label: "Email",
+                lines: [
+                  { text: "crindustries21@gmail.com", href: "mailto:crindustries21@gmail.com" },
+                ],
+              },
+            ].map(({ icon: Icon, label, lines, href, external }) => (
               <div key={label} className="flex items-start gap-4">
                 <div className="w-11 h-11 rounded-xl brand-gradient flex items-center justify-center shrink-0">
                   <Icon className="w-5 h-5 text-white" />
                 </div>
-                <div>
+                <div className="min-w-0">
                   <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-0.5">
                     {label}
                   </p>
-                  <p className="text-foreground text-sm font-medium">{value}</p>
+                  <div className="text-foreground text-sm font-medium space-y-0.5">
+                    {href ? (
+                      <a
+                        href={href}
+                        target={external ? "_blank" : undefined}
+                        rel={external ? "noopener noreferrer" : undefined}
+                        className="hover:text-primary transition-colors break-words"
+                      >
+                        {(lines as string[]).map((line, i) => (
+                          <span key={i} className="block">{line}</span>
+                        ))}
+                      </a>
+                    ) : (
+                      (lines as { text: string; href: string }[]).map((l, i) => (
+                        <a
+                          key={i}
+                          href={l.href}
+                          className="block hover:text-primary transition-colors break-all"
+                        >
+                          {l.text}
+                        </a>
+                      ))
+                    )}
+                  </div>
                 </div>
               </div>
             ))}

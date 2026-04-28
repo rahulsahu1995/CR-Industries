@@ -226,7 +226,7 @@ export default function Footer() {
               {/* Address */}
               <li>
                 <a
-                  href="https://maps.google.com/?q=Plot+45+Industrial+Area+Phase+2+Mumbai"
+                  href="https://maps.google.com/?q=102+Badi+Bhamori+Indore+Madhya+Pradesh"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="group flex items-start gap-3 text-muted-foreground hover:text-foreground transition-colors duration-300"
@@ -235,37 +235,45 @@ export default function Footer() {
                     <MapPin className="w-4 h-4 text-primary group-hover:text-white transition-colors duration-300" />
                   </span>
                   <span className="text-sm leading-relaxed pt-1.5 group-hover:translate-x-1 transition-transform duration-300">
-                    Plot 45, Industrial Area Phase 2,<br />Mumbai, MH 400001
+                    102, Badi Bhamori,<br />Indore, Madhya Pradesh
                   </span>
                 </a>
               </li>
 
               {/* Phone */}
               <li>
-                <a
-                  href="tel:+919876543210"
-                  className="group flex items-center gap-3 text-muted-foreground hover:text-foreground transition-colors duration-300"
-                >
-                  <span className="shrink-0 w-9 h-9 rounded-xl bg-primary/10 group-hover:bg-primary flex items-center justify-center transition-colors duration-300">
+                <div className="group flex items-start gap-3 text-muted-foreground transition-colors duration-300">
+                  <span className="shrink-0 w-9 h-9 rounded-xl bg-primary/10 group-hover:bg-primary flex items-center justify-center transition-colors duration-300 mt-0.5">
                     <Phone className="w-4 h-4 text-primary group-hover:text-white transition-colors duration-300" />
                   </span>
-                  <span className="text-sm font-medium group-hover:translate-x-1 transition-transform duration-300">
-                    +91 98765 43210
-                  </span>
-                </a>
+                  <div className="flex flex-col gap-0.5">
+                    <a
+                      href="tel:+919522222196"
+                      className="text-sm font-medium hover:text-foreground transition-colors duration-300"
+                    >
+                      +91 95222 22196
+                    </a>
+                    <a
+                      href="tel:+919165212323"
+                      className="text-sm font-medium hover:text-foreground transition-colors duration-300"
+                    >
+                      +91 91652 12323
+                    </a>
+                  </div>
+                </div>
               </li>
 
               {/* Email */}
               <li>
                 <a
-                  href="mailto:info@crindustries.com"
+                  href="mailto:crindustries21@gmail.com"
                   className="group flex items-center gap-3 text-muted-foreground hover:text-foreground transition-colors duration-300"
                 >
                   <span className="shrink-0 w-9 h-9 rounded-xl bg-primary/10 group-hover:bg-primary flex items-center justify-center transition-colors duration-300">
                     <Mail className="w-4 h-4 text-primary group-hover:text-white transition-colors duration-300" />
                   </span>
-                  <span className="text-sm font-medium group-hover:translate-x-1 transition-transform duration-300">
-                    info@crindustries.com
+                  <span className="text-sm font-medium group-hover:translate-x-1 transition-transform duration-300 break-all">
+                    crindustries21@gmail.com
                   </span>
                 </a>
               </li>
