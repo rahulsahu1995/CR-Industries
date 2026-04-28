@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import { motion, useInView } from "framer-motion";
+import { ShieldCheck, FlaskConical, Wrench, Globe2 } from "lucide-react";
 import { PRODUCT_CATEGORIES } from "@/data/productCategories";
 import ProductCategoryCard from "@/components/ProductCategoryCard";
 import ConsultationBanner from "@/components/ConsultationBanner";
@@ -85,25 +86,27 @@ export default function ProductPage() {
               demands of modern industry.
             </motion.p>
 
-            {/* Mini stats row */}
-            <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              animate={headingInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.5, delay: 0.55 }}
-              className="mt-8 flex flex-wrap items-center justify-center gap-x-8 gap-y-2 text-xs font-semibold tracking-wider uppercase"
-            >
-              <span className="flex items-center gap-2 text-muted-foreground">
-                <span className="text-primary text-base font-black">7</span> Categories
-              </span>
-              <span className="hidden sm:inline-block w-px h-3 bg-border" />
-              <span className="flex items-center gap-2 text-muted-foreground">
-                <span className="text-primary text-base font-black">125+</span> Products
-              </span>
-              <span className="hidden sm:inline-block w-px h-3 bg-border" />
-              <span className="flex items-center gap-2 text-muted-foreground">
-                <span className="text-primary text-base font-black">ISO</span> Certified
-              </span>
-            </motion.div>
+            {/* Brand value pills */}
+            <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
+              {[
+                { Icon: ShieldCheck, label: "Industrial-Grade Quality" },
+                { Icon: FlaskConical, label: "R&D Backed Formulations" },
+                { Icon: Wrench, label: "Built for Tough Jobs" },
+                { Icon: Globe2, label: "Trusted Across Industries" },
+              ].map(({ Icon, label }, i) => (
+                <motion.span
+                  key={label}
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={headingInView ? { opacity: 1, y: 0 } : {}}
+                  transition={{ duration: 0.4, delay: 0.4 + i * 0.07, ease: "easeOut" }}
+                  whileHover={{ y: -3, scale: 1.04 }}
+                  className="group inline-flex items-center gap-2 px-4 py-2 rounded-full bg-card border border-border text-foreground text-xs font-semibold tracking-wide hover:border-primary/50 hover:shadow-lg hover:shadow-primary/15 transition-all duration-300 cursor-default"
+                >
+                  <Icon className="w-3.5 h-3.5 text-primary group-hover:scale-110 transition-transform duration-300" />
+                  {label}
+                </motion.span>
+              ))}
+            </div>
           </motion.div>
         </div>
       </section>
