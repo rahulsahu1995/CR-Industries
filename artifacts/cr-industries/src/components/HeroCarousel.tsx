@@ -190,26 +190,6 @@ export default function HeroCarousel() {
                 Contact Us
               </motion.button>
             </motion.div>
-
-            {/* Dots */}
-            <div className="mt-10 flex items-center gap-2">
-              {PRODUCTS.map((_, i) => (
-                <button
-                  key={i}
-                  onClick={() => setCurrent(i)}
-                  aria-label={`View product ${i + 1}`}
-                  className={`transition-all duration-300 rounded-full ${
-                    i === current
-                      ? "w-8 h-1.5 bg-primary"
-                      : "w-1.5 h-1.5 bg-foreground/20 hover:bg-foreground/40"
-                  }`}
-                />
-              ))}
-              <span className="ml-3 text-muted-foreground text-xs font-mono tracking-widest">
-                {String(current + 1).padStart(2, "0")} /{" "}
-                {String(PRODUCTS.length).padStart(2, "0")}
-              </span>
-            </div>
           </div>
 
           {/* ── RIGHT: FLOATING IMAGE ── */}
