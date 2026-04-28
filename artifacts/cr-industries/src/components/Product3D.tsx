@@ -335,14 +335,14 @@ function StackCard({ step, isNewest, fromSide }: {
         )}
       </div>
       {/* Content */}
-      <div className={`px-4 py-3 border-t-2 ${isNewest ? "border-primary" : "border-border/20"}`}>
-        <div className="flex items-center gap-2 mb-2">
-          <div className={`w-6 h-6 rounded-lg flex items-center justify-center shrink-0 ${isNewest ? "brand-gradient" : "bg-muted"}`}>
-            <Icon className={`w-3.5 h-3.5 ${isNewest ? "text-white" : "text-muted-foreground"}`} />
+      <div className={`px-2.5 py-2 md:px-3.5 md:py-2.5 border-t-2 ${isNewest ? "border-primary" : "border-border/20"}`}>
+        <div className="flex items-center gap-1.5 mb-1 md:mb-1.5">
+          <div className={`w-5 h-5 rounded-md flex items-center justify-center shrink-0 ${isNewest ? "brand-gradient" : "bg-muted"}`}>
+            <Icon className={`w-3 h-3 ${isNewest ? "text-white" : "text-muted-foreground"}`} />
           </div>
-          <p className="text-[12.5px] font-bold text-foreground leading-snug line-clamp-1">{step.title}</p>
+          <p className="text-[11px] md:text-[12.5px] font-bold text-foreground leading-snug line-clamp-1">{step.title}</p>
         </div>
-        <p className={`text-[10.5px] leading-relaxed line-clamp-2 ${isNewest ? "text-muted-foreground" : "text-muted-foreground/45"}`}>
+        <p className={`text-[9px] md:text-[10px] leading-snug line-clamp-2 ${isNewest ? "text-muted-foreground" : "text-muted-foreground/45"}`}>
           {step.desc}
         </p>
       </div>
@@ -510,11 +510,16 @@ function Product3DInner() {
             ↓ scroll to explore
           </motion.p>
 
-          {/* Three columns ── fills all remaining space */}
-          <div className="flex-1 min-h-0 flex gap-3">
+          {/*
+            Unified column container:
+            - mobile  → flex-col (canvas stacks above cards)
+            - desktop → flex-row (side columns flank the canvas)
+            Narrower columns (160–190px) pull panels visually closer to center.
+          */}
+          <div className="flex-1 min-h-0 flex flex-col md:flex-row gap-2 md:gap-3 overflow-hidden">
 
-            {/* ── Left column ── clips overflow, no pt bleed */}
-            <div className="hidden md:flex w-[220px] lg:w-[245px] xl:w-[265px] shrink-0
+            {/* ── Left column — desktop only ── */}
+            <div className="hidden md:flex w-[160px] lg:w-[180px] xl:w-[200px] shrink-0
                             flex-col gap-3 overflow-hidden pt-2">
               {revealedLeft.map((s, i) => (
                 <StackCard
@@ -526,11 +531,15 @@ function Product3DInner() {
               ))}
             </div>
 
-            {/* ── Centre: canvas + plaque ── */}
+            {/* ── Centre: canvas + plaque + mobile cards ── */}
             <div className="flex-1 min-w-0 min-h-0 flex flex-col overflow-hidden">
 
-              {/* Canvas: flex-1 + min-h-0 lets the flex parent control height exactly */}
-              <div className="flex-1 min-h-0 overflow-hidden">
+              {/*
+                Canvas height:
+                  mobile  → h-[44vh]  (explicit, leaves room for cards below)
+                  desktop → flex-1 min-h-0  (fills remaining column height)
+              */}
+              <div className="shrink-0 h-[44vh] md:h-auto md:flex-1 md:min-h-0 overflow-hidden">
                 <Canvas
                   camera={{ position: [0, 0, 7], fov: 42 }}
                   shadows={{ type: THREE.PCFShadowMap }}
@@ -548,15 +557,28 @@ function Product3DInner() {
                 </Canvas>
               </div>
 
-              {/* Plaque ── fixed height, always at bottom of canvas area */}
-              <div className="flex-none py-2 flex justify-center">
+              {/* Plaque — always below the canvas */}
+              <div className="shrink-0 py-1.5 md:py-2 flex justify-center">
                 <ProductPlaque />
+              </div>
+
+              {/* Mobile card grid — 2 columns, scrollable, only visible < md */}
+              <div className="md:hidden flex-1 min-h-0 overflow-y-auto
+                              grid grid-cols-2 gap-2 pb-2 content-start">
+                {revealedAll.map((s, i) => (
+                  <StackCard
+                    key={s.tag}
+                    step={s}
+                    isNewest={i === revealedAll.length - 1}
+                    fromSide={s.side}
+                  />
+                ))}
               </div>
 
             </div>
 
-            {/* ── Right column ── same constraints as left */}
-            <div className="hidden md:flex w-[220px] lg:w-[245px] xl:w-[265px] shrink-0
+            {/* ── Right column — desktop only ── */}
+            <div className="hidden md:flex w-[160px] lg:w-[180px] xl:w-[200px] shrink-0
                             flex-col gap-3 overflow-hidden pt-2">
               {revealedRight.map((s, i) => (
                 <StackCard
@@ -568,19 +590,6 @@ function Product3DInner() {
               ))}
             </div>
 
-          </div>
-
-          {/* Mobile: cards beneath canvas, strictly clipped */}
-          <div className="md:hidden flex-none mt-2 flex flex-col gap-2 overflow-hidden"
-               style={{ maxHeight: "26vh" }}>
-            {revealedAll.map((s, i) => (
-              <StackCard
-                key={s.tag}
-                step={s}
-                isNewest={i === revealedAll.length - 1}
-                fromSide={s.side}
-              />
-            ))}
           </div>
 
         </div>
