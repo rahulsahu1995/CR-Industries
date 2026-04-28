@@ -1,4 +1,5 @@
 import { useRef } from "react";
+import { useLocation } from "wouter";
 import { motion, useInView } from "framer-motion";
 import { ArrowUpRight, MapPin, Phone, Mail, Send } from "lucide-react";
 import { FaInstagram, FaFacebook, FaLinkedin, FaWhatsapp } from "react-icons/fa";
@@ -13,11 +14,10 @@ const COL_EXPLORE: LinkItem[] = [
 ];
 
 const COL_NEWS: LinkItem[] = [
-  { label: "Blogs", href: "#blogs" },
-  { label: "Media Coverage", href: "#media" },
-  { label: "Events & Expos", href: "#events" },
-  { label: "Customer Reviews", href: "#reviews" },
-  { label: "Press Releases", href: "#press" },
+  { label: "Blogs", href: "/blogs" },
+  { label: "Media Coverage", href: "/media" },
+  { label: "Events & Expos", href: "/events" },
+  { label: "Customer Reviews", href: "/reviews" },
 ];
 
 const COL_COMPANY: LinkItem[] = [
@@ -42,10 +42,19 @@ function smoothScrollTo(hash: string) {
 }
 
 function FooterLink({ link }: { link: LinkItem }) {
+  const [, navigate] = useLocation();
+  const handleClick = () => {
+    if (link.href.startsWith("/")) {
+      navigate(link.href);
+      window.scrollTo({ top: 0, behavior: "auto" });
+    } else {
+      smoothScrollTo(link.href);
+    }
+  };
   return (
     <li>
       <button
-        onClick={() => smoothScrollTo(link.href)}
+        onClick={handleClick}
         className="group relative inline-flex items-center gap-1.5 py-1.5 text-muted-foreground hover:text-primary text-sm font-medium transition-all duration-300"
       >
         {/* Sliding accent dot */}

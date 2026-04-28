@@ -11,12 +11,12 @@ const NAV_LINKS = [
   { label: "About", href: "/about" },
   {
     label: "News",
-    href: "#news",
+    href: "/blogs",
     children: [
-      { label: "Blogs", href: "#blogs" },
-      { label: "Media", href: "#media" },
-      { label: "Events", href: "#events" },
-      { label: "Customer Reviews", href: "#reviews" },
+      { label: "Blogs", href: "/blogs" },
+      { label: "Media", href: "/media" },
+      { label: "Events", href: "/events" },
+      { label: "Customer Reviews", href: "/reviews" },
     ],
   },
   { label: "Contact Us", href: "/contact" },
@@ -103,6 +103,11 @@ export default function Navbar() {
                     <button
                       className="flex items-center gap-1 text-sm font-semibold tracking-wide text-foreground hover:text-primary transition-colors"
                       onClick={() => setDesktopNewsOpen((v) => !v)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Escape") setDesktopNewsOpen(false);
+                      }}
+                      aria-haspopup="menu"
+                      aria-expanded={desktopNewsOpen}
                     >
                       {link.label}
                       <ChevronDown
