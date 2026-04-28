@@ -304,15 +304,16 @@ function StepCard({ step }: { step: typeof STEPS[0] }) {
 }
 
 /* ── Premium stacking card — multi-layer cinematic reveal ─────────── */
+/* Tuned for snappy scroll trigger while preserving fluid premium feel. */
 const cardVariants = {
   hidden: (fromSide: "left" | "right") => ({
     opacity: 0,
-    x: fromSide === "right" ? 90 : -90,
-    y: 40,
-    rotateY: fromSide === "right" ? -22 : 22,
-    rotateX: 6,
-    scale: 0.84,
-    filter: "blur(16px)",
+    x: fromSide === "right" ? 72 : -72,
+    y: 32,
+    rotateY: fromSide === "right" ? -18 : 18,
+    rotateX: 5,
+    scale: 0.88,
+    filter: "blur(12px)",
   }),
   show: {
     opacity: 1,
@@ -323,11 +324,11 @@ const cardVariants = {
     scale: 1,
     filter: "blur(0px)",
     transition: {
-      duration: 1.15,
+      duration: 0.85,
       ease: [0.16, 1, 0.3, 1],
       when: "beforeChildren",
-      staggerChildren: 0.11,
-      delayChildren: 0.22,
+      staggerChildren: 0.07,
+      delayChildren: 0.12,
     },
   },
 };
@@ -337,40 +338,40 @@ const imageWipeVariants = {
     clipPath: fromSide === "right"
       ? "inset(0 100% 0 0)"
       : "inset(0 0 0 100%)",
-    scale: 1.22,
-    filter: "blur(8px) saturate(0.7)",
+    scale: 1.18,
+    filter: "blur(6px) saturate(0.78)",
   }),
   show: {
     clipPath: "inset(0 0% 0 0%)",
     scale: 1.04,
     filter: "blur(0px) saturate(1)",
     transition: {
-      clipPath:  { duration: 1.05, ease: [0.65, 0, 0.25, 1] },
-      scale:     { duration: 1.4,  ease: [0.22, 1, 0.36, 1] },
-      filter:    { duration: 0.95, ease: [0.22, 1, 0.36, 1] },
+      clipPath:  { duration: 0.8,  ease: [0.65, 0, 0.25, 1] },
+      scale:     { duration: 1.0,  ease: [0.22, 1, 0.36, 1] },
+      filter:    { duration: 0.7,  ease: [0.22, 1, 0.36, 1] },
     },
   },
 };
 
 const titleVariants = {
-  hidden: { clipPath: "inset(0 0 100% 0)", y: 8 },
+  hidden: { clipPath: "inset(0 0 100% 0)", y: 6 },
   show: {
     clipPath: "inset(0 0 0% 0)",
     y: 0,
-    transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] },
+    transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] },
   },
 };
 
 const descVariants = {
-  hidden: { opacity: 0, y: 18 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.75, ease: [0.22, 1, 0.36, 1] } },
+  hidden: { opacity: 0, y: 14 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1] } },
 };
 
 const iconVariants = {
-  hidden: { opacity: 0, scale: 0.4, rotate: -25 },
+  hidden: { opacity: 0, scale: 0.5, rotate: -20 },
   show: {
     opacity: 1, scale: 1, rotate: 0,
-    transition: { type: "spring" as const, stiffness: 320, damping: 18, mass: 0.7 },
+    transition: { type: "spring" as const, stiffness: 380, damping: 20, mass: 0.6 },
   },
 };
 
@@ -378,7 +379,7 @@ const accentVariants = {
   hidden: { scaleX: 0 },
   show: {
     scaleX: 1,
-    transition: { duration: 0.85, delay: 0.05, ease: [0.22, 1, 0.36, 1] },
+    transition: { duration: 0.6, delay: 0.05, ease: [0.22, 1, 0.36, 1] },
   },
 };
 
@@ -388,8 +389,8 @@ const sheenVariants = {
     x: "180%",
     opacity: [0, 0.55, 0.55, 0],
     transition: {
-      x:       { duration: 1.3, delay: 0.55, ease: [0.45, 0, 0.2, 1] },
-      opacity: { duration: 1.3, delay: 0.55, ease: "easeOut", times: [0, 0.15, 0.85, 1] },
+      x:       { duration: 0.95, delay: 0.35, ease: [0.45, 0, 0.2, 1] },
+      opacity: { duration: 0.95, delay: 0.35, ease: "easeOut", times: [0, 0.15, 0.85, 1] },
     },
   },
 };
@@ -623,8 +624,8 @@ function Product3DInner() {
       const p     = Math.min(1, Math.max(0, -rect.top) / total);
       progressRef.current = p;
       setStep(
-        p < 0.04 ? -1 : p < 0.28 ? 0 : p < 0.52 ? 1 :
-        p < 0.76 ? 2  : 3
+        p < 0.03 ? -1 : p < 0.26 ? 0 : p < 0.50 ? 1 :
+        p < 0.74 ? 2  : 3
       );
     };
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -640,7 +641,7 @@ function Product3DInner() {
   const revealedAll = STEPS.filter((_, i) => step >= i);
 
   return (
-    <section id="product" ref={wrapRef} className="relative h-[420vh]">
+    <section id="product" ref={wrapRef} className="relative h-[290vh]">
       {/* sticky panel — strictly h-screen, nothing escapes */}
       <div className="sticky top-0 h-screen overflow-hidden">
 
