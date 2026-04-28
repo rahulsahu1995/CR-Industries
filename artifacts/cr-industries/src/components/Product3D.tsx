@@ -294,71 +294,62 @@ function StepCard({ step }: { step: typeof STEPS[0] }) {
           <div className="w-6 h-6 rounded-lg brand-gradient flex items-center justify-center shrink-0">
             <Icon className="w-3 h-3 text-white" />
           </div>
-          <span className="text-[10px] font-black tracking-widest text-primary uppercase">Step {step.tag}</span>
+          <h3 className="text-sm font-bold text-foreground leading-snug">{step.title}</h3>
         </div>
-        <h3 className="text-sm font-bold text-foreground mb-1 leading-snug">{step.title}</h3>
         <p className="text-muted-foreground text-[11px] leading-relaxed">{step.desc}</p>
       </div>
     </div>
   );
 }
 
-/* ── Premium stacking card — multi-layer cinematic reveal ─────────── */
-/* Tuned for snappy scroll trigger while preserving fluid premium feel. */
+/* ── Stacking card — "dimensional emergence" reveal ──────────────── */
+/* Sophisticated entrance: horizontal slit opens from centre while card
+   pushes forward on the Z axis, cyan border-light pulses around the
+   perimeter, image emerges from a soft-focus desaturated state, content
+   rises with a subtle letter-spacing settle. */
+
 const cardVariants = {
-  hidden: (fromSide: "left" | "right") => ({
+  hidden: {
     opacity: 0,
-    x: fromSide === "right" ? 72 : -72,
-    y: 32,
-    rotateY: fromSide === "right" ? -18 : 18,
-    rotateX: 5,
-    scale: 0.88,
-    filter: "blur(12px)",
-  }),
+    z: -120,
+    scale: 0.92,
+    clipPath: "inset(48% 0% 48% 0% round 16px)",
+    filter: "brightness(1.35) blur(2px)",
+  },
   show: {
     opacity: 1,
-    x: 0,
-    y: 0,
-    rotateY: 0,
-    rotateX: 0,
+    z: 0,
     scale: 1,
-    filter: "blur(0px)",
+    clipPath: "inset(0% 0% 0% 0% round 16px)",
+    filter: "brightness(1) blur(0px)",
     transition: {
-      duration: 0.85,
-      ease: [0.16, 1, 0.3, 1],
+      duration: 0.78,
+      ease: [0.22, 1, 0.36, 1],
       when: "beforeChildren",
-      staggerChildren: 0.07,
-      delayChildren: 0.12,
+      staggerChildren: 0.06,
+      delayChildren: 0.18,
+      clipPath: { duration: 0.78, ease: [0.65, 0, 0.25, 1] },
     },
   },
 };
 
-const imageWipeVariants = {
-  hidden: (fromSide: "left" | "right") => ({
-    clipPath: fromSide === "right"
-      ? "inset(0 100% 0 0)"
-      : "inset(0 0 0 100%)",
-    scale: 1.18,
-    filter: "blur(6px) saturate(0.78)",
-  }),
+const imageVariants = {
+  hidden: { opacity: 0, scale: 1.10, filter: "blur(10px) saturate(0.45) brightness(0.85)" },
   show: {
-    clipPath: "inset(0 0% 0 0%)",
+    opacity: 1,
     scale: 1.04,
-    filter: "blur(0px) saturate(1)",
-    transition: {
-      clipPath:  { duration: 0.8,  ease: [0.65, 0, 0.25, 1] },
-      scale:     { duration: 1.0,  ease: [0.22, 1, 0.36, 1] },
-      filter:    { duration: 0.7,  ease: [0.22, 1, 0.36, 1] },
-    },
+    filter: "blur(0px) saturate(1) brightness(1)",
+    transition: { duration: 0.85, ease: [0.22, 1, 0.36, 1] },
   },
 };
 
 const titleVariants = {
-  hidden: { clipPath: "inset(0 0 100% 0)", y: 6 },
+  hidden: { opacity: 0, y: 10, letterSpacing: "0.06em" },
   show: {
-    clipPath: "inset(0 0 0% 0)",
+    opacity: 1,
     y: 0,
-    transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] },
+    letterSpacing: "0em",
+    transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1] },
   },
 };
 
@@ -375,27 +366,32 @@ const iconVariants = {
   },
 };
 
-const accentVariants = {
-  hidden: { scaleX: 0 },
+/* Border light — a horizontal beam that flashes across the centre,
+   then fades — represents the slit "closing" into a fully formed card. */
+const beamVariants = {
+  hidden: { opacity: 0, scaleX: 0.2 },
   show: {
-    scaleX: 1,
-    transition: { duration: 0.6, delay: 0.05, ease: [0.22, 1, 0.36, 1] },
-  },
-};
-
-const sheenVariants = {
-  hidden: { x: "-160%", opacity: 0 },
-  show: {
-    x: "180%",
-    opacity: [0, 0.55, 0.55, 0],
+    opacity: [0, 0.9, 0.9, 0],
+    scaleX: [0.2, 1.05, 1.05, 1.05],
     transition: {
-      x:       { duration: 0.95, delay: 0.35, ease: [0.45, 0, 0.2, 1] },
-      opacity: { duration: 0.95, delay: 0.35, ease: "easeOut", times: [0, 0.15, 0.85, 1] },
+      duration: 0.78,
+      ease: [0.22, 1, 0.36, 1],
+      times: [0, 0.4, 0.7, 1],
     },
   },
 };
 
-function StackCard({ step, isNewest, fromSide }: {
+/* Cyan corner-light flash — pulses from top-left corner once after card lands. */
+const cornerVariants = {
+  hidden: { opacity: 0, scale: 0.6 },
+  show: {
+    opacity: [0, 0.55, 0],
+    scale: [0.6, 1.4, 1.6],
+    transition: { duration: 0.95, delay: 0.45, ease: "easeOut", times: [0, 0.35, 1] },
+  },
+};
+
+function StackCard({ step, isNewest, fromSide: _fromSide }: {
   step: typeof STEPS[0];
   isNewest: boolean;
   fromSide: "left" | "right";
@@ -404,13 +400,12 @@ function StackCard({ step, isNewest, fromSide }: {
   return (
     <motion.div
       variants={cardVariants}
-      custom={fromSide}
       initial="hidden"
       animate="show"
       style={{
         transformPerspective: 1400,
         transformStyle: "preserve-3d",
-        willChange: "transform, opacity, filter",
+        willChange: "transform, opacity, filter, clip-path",
       }}
       className={`relative rounded-2xl overflow-hidden border transition-[opacity,box-shadow,border-color,transform] duration-500 ${
         isNewest
@@ -418,7 +413,7 @@ function StackCard({ step, isNewest, fromSide }: {
           : "border-border/35 shadow-md bg-card/70 opacity-60 scale-[0.97]"
       }`}
     >
-      {/* Brand-tinted radial sheen — only on the newest card */}
+      {/* Brand-tinted radial sheen — newest card only */}
       {isNewest && (
         <span
           aria-hidden
@@ -430,48 +425,54 @@ function StackCard({ step, isNewest, fromSide }: {
         />
       )}
 
-      {/* Image — larger via aspect ratio, with wipe + zoom + saturate ramp */}
+      {/* Centre-line beam — the moment the slit closes */}
+      {isNewest && (
+        <motion.span
+          aria-hidden
+          variants={beamVariants}
+          className="pointer-events-none absolute top-1/2 left-0 right-0 h-[2px] -translate-y-1/2 origin-center z-[3]"
+          style={{
+            background:
+              "linear-gradient(90deg, transparent 0%, rgba(72,202,228,0.0) 8%, rgba(72,202,228,0.95) 50%, rgba(72,202,228,0.0) 92%, transparent 100%)",
+            filter: "blur(0.5px)",
+            boxShadow:
+              "0 0 14px rgba(0,180,216,0.55), 0 0 28px rgba(0,150,199,0.35)",
+          }}
+        />
+      )}
+
+      {/* Corner-light flash — top-left */}
+      {isNewest && (
+        <motion.span
+          aria-hidden
+          variants={cornerVariants}
+          className="pointer-events-none absolute -top-3 -left-3 w-20 h-20 rounded-full z-[2]"
+          style={{
+            background:
+              "radial-gradient(circle, rgba(72,202,228,0.55) 0%, rgba(72,202,228,0.18) 35%, transparent 70%)",
+            filter: "blur(8px)",
+            mixBlendMode: "screen",
+          }}
+        />
+      )}
+
+      {/* Image */}
       <div className="relative w-full aspect-[5/3] overflow-hidden">
         <motion.img
           src={step.img}
           alt={step.imgAlt}
-          variants={imageWipeVariants}
-          custom={fromSide}
+          variants={imageVariants}
           className="absolute inset-0 w-full h-full object-cover"
-          style={{ transformOrigin: "center", willChange: "transform, filter, clip-path" }}
+          style={{ transformOrigin: "center", willChange: "transform, filter, opacity" }}
         />
         {!isNewest && <div className="absolute inset-0 bg-background/30" />}
         {isNewest && (
           <div className="absolute inset-0 bg-gradient-to-t from-card/60 via-card/5 to-transparent" />
         )}
-
-        {/* Diagonal glint sheen sweeps once after the image lands */}
-        {isNewest && (
-          <motion.span
-            aria-hidden
-            variants={sheenVariants}
-            className="pointer-events-none absolute top-0 -left-[40%] h-full w-[55%] z-[2]"
-            style={{
-              background:
-                "linear-gradient(105deg, transparent 0%, rgba(255,255,255,0.0) 35%, rgba(255,255,255,0.55) 50%, rgba(255,255,255,0.0) 65%, transparent 100%)",
-              filter: "blur(2px)",
-              mixBlendMode: "screen",
-            }}
-          />
-        )}
       </div>
 
-      {/* Content — larger fonts, more padding, more breathing room */}
-      <div className={`relative px-3.5 pt-2.5 pb-3 md:px-4 md:pt-3 md:pb-3.5 lg:px-5 lg:pt-3.5 lg:pb-4 ${isNewest ? "" : ""}`}>
-        {/* Top accent line — grows from left */}
-        <motion.span
-          aria-hidden
-          variants={accentVariants}
-          className={`absolute top-0 left-0 right-0 h-[2px] origin-left ${
-            isNewest ? "bg-gradient-to-r from-primary via-primary/80 to-transparent" : "bg-border/40"
-          }`}
-        />
-
+      {/* Content */}
+      <div className="relative px-3.5 pt-3 pb-3.5 md:px-4 md:pt-3.5 md:pb-4 lg:px-5 lg:pt-4 lg:pb-5">
         <div className="flex items-center gap-2 md:gap-2.5 mb-1.5 md:mb-2">
           <motion.div
             variants={iconVariants}
@@ -481,17 +482,12 @@ function StackCard({ step, isNewest, fromSide }: {
           >
             <Icon className={`w-3.5 h-3.5 md:w-4 md:h-4 ${isNewest ? "text-white" : "text-muted-foreground"}`} />
           </motion.div>
-          <div className="overflow-hidden">
-            <span className={`block text-[8.5px] md:text-[9.5px] font-black tracking-[0.2em] uppercase leading-none mb-0.5 ${isNewest ? "text-primary" : "text-muted-foreground/60"}`}>
-              Step {step.tag}
-            </span>
-            <motion.p
-              variants={titleVariants}
-              className="text-[12.5px] md:text-sm lg:text-[15px] font-bold text-foreground leading-snug line-clamp-1"
-            >
-              {step.title}
-            </motion.p>
-          </div>
+          <motion.p
+            variants={titleVariants}
+            className="text-[12.5px] md:text-sm lg:text-[15px] font-bold text-foreground leading-snug line-clamp-2 min-w-0"
+          >
+            {step.title}
+          </motion.p>
         </div>
 
         <motion.p
@@ -526,8 +522,7 @@ function FallbackCard({ step, index }: { step: typeof STEPS[0]; index: number })
           <Icon className="w-5 h-5 text-white" />
         </div>
         <div>
-          <span className="text-xs font-black tracking-widest text-primary uppercase">Step {step.tag}</span>
-          <h3 className="text-base font-bold text-foreground mt-0.5 mb-1">{step.title}</h3>
+          <h3 className="text-base font-bold text-foreground mb-1">{step.title}</h3>
           <p className="text-muted-foreground text-sm leading-relaxed">{step.desc}</p>
         </div>
       </div>
@@ -624,7 +619,7 @@ function Product3DInner() {
       const p     = Math.min(1, Math.max(0, -rect.top) / total);
       progressRef.current = p;
       setStep(
-        p < 0.03 ? -1 : p < 0.26 ? 0 : p < 0.50 ? 1 :
+        p < 0.02 ? -1 : p < 0.26 ? 0 : p < 0.50 ? 1 :
         p < 0.74 ? 2  : 3
       );
     };
@@ -641,7 +636,7 @@ function Product3DInner() {
   const revealedAll = STEPS.filter((_, i) => step >= i);
 
   return (
-    <section id="product" ref={wrapRef} className="relative h-[290vh]">
+    <section id="product" ref={wrapRef} className="relative h-[200vh]">
       {/* sticky panel — strictly h-screen, nothing escapes */}
       <div className="sticky top-0 h-screen overflow-hidden">
 
