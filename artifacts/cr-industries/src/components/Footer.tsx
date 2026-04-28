@@ -9,7 +9,6 @@ const COL_EXPLORE: LinkItem[] = [
   { label: "Home", href: "#home" },
   { label: "Product", href: "#product" },
   { label: "About Us", href: "#about" },
-  { label: "E-Brochures", href: "#ebrochures" },
   { label: "Contact Us", href: "#contact" },
 ];
 
