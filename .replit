@@ -28,5 +28,15 @@ localPort = 8081
 externalPort = 80
 
 [[ports]]
+localPort = 8082
+externalPort = 3001
+
+[[ports]]
 localPort = 24417
 externalPort = 3000
+
+[userenv]
+
+[userenv.shared]
+CONTACT_EMAIL = "rahul.sahu1995@gmail.com"
+SENDGRID_FROM_EMAIL = "crindustries21@gmail.com"
