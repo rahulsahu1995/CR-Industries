@@ -1,5 +1,4 @@
-import { motion } from "framer-motion";
-import { useInView } from "framer-motion";
+import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 import {
   Award,
@@ -56,7 +55,7 @@ function FeatureCard({
   feature: (typeof FEATURES)[0];
   index: number;
 }) {
-  const ref = useRef(null);
+  const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, margin: "-50px" });
   const Icon = feature.icon;
 
@@ -65,18 +64,28 @@ function FeatureCard({
       ref={ref}
       initial={{ opacity: 0, y: 40 }}
       animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.5, delay: index * 0.1, ease: "easeOut" }}
-      className="group relative bg-card border border-border rounded-2xl p-6 hover:border-primary/50 hover:shadow-lg transition-all duration-300 overflow-hidden"
+      transition={{ duration: 0.5, delay: index * 0.09, ease: "easeOut" }}
+      whileHover={{ y: -5, transition: { duration: 0.2, ease: "easeOut" } }}
+      className="group relative bg-card border border-border hover:border-primary/50 rounded-2xl p-6 overflow-hidden cursor-default transition-colors duration-300"
+      style={{ boxShadow: "var(--shadow-sm)" }}
     >
       {/* Background glow on hover */}
-      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-primary/[0.02] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-400 rounded-2xl" />
+
+      {/* Outer glow ring */}
+      <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-400"
+           style={{ boxShadow: "0 0 0 1px rgba(0,150,199,0.3), 0 10px 30px rgba(0,150,199,0.08)" }} />
 
       <div className="relative z-10">
-        <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4 group-hover:bg-primary group-hover:scale-110 transition-all duration-300">
+        {/* Icon */}
+        <div className="w-12 h-12 rounded-xl bg-primary/10 group-hover:bg-primary flex items-center justify-center mb-4 group-hover:scale-110 group-hover:rotate-[-4deg] transition-all duration-300 shadow-sm">
           <Icon className="w-6 h-6 text-primary group-hover:text-white transition-colors duration-300" />
         </div>
+
         <h3 className="text-lg font-bold text-foreground mb-2">{feature.title}</h3>
         <p className="text-muted-foreground text-sm leading-relaxed">{feature.description}</p>
+
+        {/* Expanding bottom accent */}
         <div className="mt-4 h-0.5 w-8 bg-primary/30 group-hover:w-full group-hover:bg-primary transition-all duration-500 rounded-full" />
       </div>
     </motion.div>
@@ -88,7 +97,7 @@ export default function WhyChooseUs() {
   const headingInView = useInView(headingRef, { once: true });
 
   return (
-    <section id="about" className="py-24 bg-background">
+    <section id="about" className="py-24 bg-background overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           ref={headingRef}
@@ -103,8 +112,13 @@ export default function WhyChooseUs() {
           <h2 className="text-4xl md:text-5xl font-black text-foreground mb-4">
             Why Choose Us
           </h2>
-          <div className="w-16 h-1 bg-primary mx-auto rounded-full" />
-          <p className="mt-6 text-muted-foreground text-lg max-w-2xl mx-auto">
+          <motion.div
+            initial={{ width: 0 }}
+            animate={headingInView ? { width: 64 } : {}}
+            transition={{ duration: 0.6, delay: 0.35 }}
+            className="h-1 bg-primary mx-auto rounded-full"
+          />
+          <p className="mt-6 text-muted-foreground text-lg max-w-2xl mx-auto leading-relaxed">
             Decades of industrial expertise combined with a relentless pursuit of quality — we deliver sealing solutions that never fail.
           </p>
         </motion.div>

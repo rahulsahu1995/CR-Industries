@@ -121,9 +121,10 @@ export default function Navbar() {
                   <button
                     key={link.label}
                     onClick={() => handleNavClick(link.href)}
-                    className="text-sm font-semibold tracking-wide text-foreground hover:text-primary transition-colors"
+                    className="group relative text-sm font-semibold tracking-wide text-foreground hover:text-primary transition-colors duration-200 pb-0.5"
                   >
                     {link.label}
+                    <span className="absolute bottom-0 left-0 h-0.5 w-0 bg-primary group-hover:w-full transition-all duration-300 rounded-full" />
                   </button>
                 )
               )}

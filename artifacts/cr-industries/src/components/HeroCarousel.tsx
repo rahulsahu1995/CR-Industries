@@ -2,200 +2,354 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronRight } from "lucide-react";
 
-const SLIDES = [
+const PRODUCTS = [
+  {
+    id: 0,
+    name: "Gum Hydra",
+    tag: "Hydrophobic Sealant",
+    desc: "Bonds instantly on damp surfaces where other sealants fail — watertight performance in the harshest conditions.",
+    img: "/steps/step1.png",
+  },
   {
     id: 1,
-    title: "Industrial Sealants",
-    subtitle: "Engineered for Performance",
-    description: "High-performance tap sealants and industrial adhesives built for the most demanding applications.",
-    gradient: "from-[#03045E] via-[#023E8A] to-[#0096C7]",
-    pattern: "sealant",
+    name: "Thread Sealants",
+    tag: "PTFE Thread Compound",
+    desc: "Multi-standard PTFE compounds for gas, water and oil systems. Zero shrinkage, zero creep, zero leaks.",
+    img: "/steps/step2.png",
   },
   {
     id: 2,
-    title: "Precision Adhesives",
-    subtitle: "Bond That Lasts",
-    description: "Professional-grade adhesive solutions trusted by engineers and contractors worldwide.",
-    gradient: "from-[#0096C7] via-[#0077B6] to-[#03045E]",
-    pattern: "adhesive",
+    name: "Tap Compounds",
+    tag: "Compression Fitting",
+    desc: "PTFE-reinforced tap compound delivers precision, leak-free joints across all pipe materials and pressures.",
+    img: "/steps/step3.png",
   },
   {
     id: 3,
-    title: "Industrial Excellence",
-    subtitle: "Quality You Can Trust",
-    description: "From thread sealants to industrial compounds — every product meets rigorous durability standards.",
-    gradient: "from-[#023E8A] via-[#0096C7] to-[#48CAE4]",
-    pattern: "industrial",
+    name: "Angle Grinders",
+    tag: "Surface Preparation",
+    desc: "Professional-grade power tools engineered for aggressive weld-finishing and surface preparation work.",
+    img: "/steps/step4.png",
   },
   {
     id: 4,
-    title: "Custom Solutions",
-    subtitle: "Tailored for Your Industry",
-    description: "Bespoke formulations and product specifications to meet your exact industrial requirements.",
-    gradient: "from-[#03045E] to-[#0096C7]",
-    pattern: "custom",
+    name: "Adhesive Range",
+    tag: "Industrial Bonding",
+    desc: "Structural adhesives formulated to withstand extreme loads, vibration cycles, and temperature extremes.",
+    img: "/steps/step5.png",
+  },
+  {
+    id: 5,
+    name: "Specialty Compounds",
+    tag: "Custom Formulation",
+    desc: "Bespoke industrial compounds tailored to your exact specification and compliance requirements.",
+    img: "/steps/step6.png",
   },
 ];
 
-function SlidePattern({ pattern }: { pattern: string }) {
-  return (
-    <div className="absolute inset-0 overflow-hidden">
-      {/* Abstract industrial pattern */}
-      <div className="absolute inset-0 opacity-10">
-        {[...Array(8)].map((_, i) => (
-          <div
-            key={i}
-            className="absolute rounded-full border border-white"
-            style={{
-              width: `${80 + i * 40}px`,
-              height: `${80 + i * 40}px`,
-              top: `${20 + i * 8}%`,
-              right: `${5 + i * 3}%`,
-              opacity: 0.3 - i * 0.03,
-            }}
-          />
-        ))}
-      </div>
-      <div className="absolute inset-0 opacity-5">
-        {[...Array(20)].map((_, i) => (
-          <div
-            key={i}
-            className="absolute bg-white"
-            style={{
-              width: "1px",
-              height: `${40 + Math.random() * 60}px`,
-              left: `${i * 5.3}%`,
-              top: `${Math.random() * 100}%`,
-              opacity: 0.3 + Math.random() * 0.5,
-            }}
-          />
-        ))}
-      </div>
-      {/* Hexagonal accent */}
-      <svg
-        className="absolute right-0 top-0 h-full w-1/2 opacity-10"
-        viewBox="0 0 400 600"
-        fill="none"
-      >
-        <polygon points="200,50 350,137.5 350,312.5 200,400 50,312.5 50,137.5" stroke="white" strokeWidth="2" fill="none" />
-        <polygon points="200,100 320,162.5 320,287.5 200,350 80,287.5 80,162.5" stroke="white" strokeWidth="1" fill="none" />
-        <polygon points="200,150 290,187.5 290,262.5 200,300 110,262.5 110,187.5" stroke="white" strokeWidth="1" fill="white" fillOpacity="0.03" />
-      </svg>
-    </div>
-  );
-}
+const THUMB_W = 160;
+const THUMB_GAP = 16;
+const THUMB_STRIDE = THUMB_W + THUMB_GAP;
+const ONE_SET = PRODUCTS.length * THUMB_STRIDE;
+const STRIP = [...PRODUCTS, ...PRODUCTS];
+
+const INTERVAL = 4500;
+
+const HERO_BG = "linear-gradient(135deg, #010212 0%, #03045E 45%, #012a72 100%)";
 
 export default function HeroCarousel() {
   const [current, setCurrent] = useState(0);
-  const [direction, setDirection] = useState(1);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setDirection(1);
-      setCurrent((c) => (c + 1) % SLIDES.length);
-    }, 5000);
-    return () => clearInterval(interval);
+    const t = setInterval(() => setCurrent((c) => (c + 1) % PRODUCTS.length), INTERVAL);
+    return () => clearInterval(t);
   }, []);
 
-  const goTo = (index: number) => {
-    setDirection(index > current ? 1 : -1);
-    setCurrent(index);
-  };
-
-  const slide = SLIDES[current];
+  const p = PRODUCTS[current];
 
   return (
-    <section id="home" className="relative h-screen overflow-hidden">
-      <AnimatePresence mode="wait" custom={direction}>
-        <motion.div
-          key={current}
-          custom={direction}
-          initial={{ opacity: 0, x: direction * 60 }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: direction * -60 }}
-          transition={{ duration: 0.7, ease: "easeInOut" }}
-          className={`absolute inset-0 bg-gradient-to-br ${slide.gradient}`}
-        >
-          <SlidePattern pattern={slide.pattern} />
+    <section
+      id="home"
+      className="relative h-screen overflow-hidden"
+      style={{ background: HERO_BG }}
+    >
+      {/* Subtle grid */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          backgroundImage:
+            "linear-gradient(rgba(0,150,199,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(0,150,199,0.5) 1px, transparent 1px)",
+          backgroundSize: "64px 64px",
+          opacity: 0.05,
+        }}
+      />
 
-          {/* Overlay gradient */}
-          <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-transparent to-transparent" />
+      {/* Radial glow */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background:
+            "radial-gradient(ellipse 80% 70% at 28% 50%, rgba(0,150,199,0.13) 0%, transparent 65%)",
+        }}
+      />
 
-          <div className="relative z-10 h-full flex items-center">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-              <motion.div
-                initial={{ opacity: 0, y: 40 }}
+      {/* Content layout */}
+      <div className="relative h-full flex flex-col">
+
+        {/* ── Main row: left text + right image ── */}
+        <div className="flex-1 min-h-0 flex overflow-hidden">
+
+          {/* LEFT panel */}
+          <div className="flex-1 flex flex-col justify-center px-8 sm:px-12 lg:px-14 xl:px-20 pb-24 z-10">
+
+            {/* Static brand pill */}
+            <motion.div
+              initial={{ opacity: 0, y: -12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              className="inline-flex items-center gap-2 self-start px-4 py-1.5 rounded-full border border-white/15 text-white/60 text-[10px] font-bold tracking-[0.2em] uppercase mb-5"
+              style={{ background: "rgba(255,255,255,0.06)" }}
+            >
+              <span className="w-1.5 h-1.5 rounded-full bg-[#0096C7] animate-pulse" />
+              C R Industries
+            </motion.div>
+
+            {/* Product tag — updates per slide */}
+            <AnimatePresence mode="wait">
+              <motion.span
+                key={`tag-${current}`}
+                initial={{ opacity: 0, y: -8 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2, duration: 0.7 }}
-                className="max-w-2xl"
+                exit={{ opacity: 0, y: 8 }}
+                transition={{ duration: 0.3 }}
+                className="inline-flex items-center self-start gap-1.5 px-3.5 py-1 rounded-full text-[#48CAE4] text-[11px] font-bold tracking-widest uppercase mb-4 border border-[#0096C7]/35"
+                style={{ background: "rgba(0,150,199,0.15)" }}
               >
-                <motion.span
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.3, duration: 0.5 }}
-                  className="inline-block px-4 py-1.5 rounded-full bg-white/20 text-white text-sm font-semibold tracking-widest uppercase mb-4"
-                >
-                  {slide.subtitle}
-                </motion.span>
+                {p.tag}
+              </motion.span>
+            </AnimatePresence>
+
+            {/* Product name — RTL slide */}
+            <div className="overflow-hidden mb-4">
+              <AnimatePresence mode="wait">
                 <motion.h1
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.4, duration: 0.6 }}
-                  className="text-5xl md:text-7xl font-black text-white leading-none tracking-tight mb-6"
+                  key={`name-${current}`}
+                  initial={{ x: 90, opacity: 0 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  exit={{ x: -90, opacity: 0 }}
+                  transition={{ duration: 0.48, ease: [0.32, 0, 0.67, 0] }}
+                  className="text-5xl md:text-6xl xl:text-7xl font-black text-white leading-none tracking-tight"
                 >
-                  {slide.title}
+                  {p.name}
                 </motion.h1>
-                <motion.p
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.5, duration: 0.6 }}
-                  className="text-white/80 text-lg md:text-xl leading-relaxed mb-8 max-w-lg"
-                >
-                  {slide.description}
-                </motion.p>
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.6, duration: 0.6 }}
-                  className="flex flex-wrap gap-4"
-                >
-                  <button
-                    onClick={() => document.getElementById("product")?.scrollIntoView({ behavior: "smooth" })}
-                    className="flex items-center gap-2 px-8 py-3.5 bg-[#0096C7] hover:bg-[#0077B6] text-white font-bold rounded-xl transition-all duration-200 hover:shadow-lg hover:shadow-[#0096C7]/30 hover:scale-105"
-                  >
-                    Explore Products <ChevronRight className="w-5 h-5" />
-                  </button>
-                  <button
-                    onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })}
-                    className="flex items-center gap-2 px-8 py-3.5 bg-white/20 hover:bg-white/30 text-white font-bold rounded-xl border border-white/30 transition-all duration-200 backdrop-blur-sm"
-                  >
-                    Contact Us
-                  </button>
-                </motion.div>
-              </motion.div>
+              </AnimatePresence>
             </div>
+
+            {/* Description — RTL slide, slight delay */}
+            <div className="overflow-hidden mb-8">
+              <AnimatePresence mode="wait">
+                <motion.p
+                  key={`desc-${current}`}
+                  initial={{ x: 60, opacity: 0 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  exit={{ x: -60, opacity: 0 }}
+                  transition={{ duration: 0.48, delay: 0.06, ease: [0.32, 0, 0.67, 0] }}
+                  className="text-white/60 text-base md:text-lg leading-relaxed max-w-md"
+                >
+                  {p.desc}
+                </motion.p>
+              </AnimatePresence>
+            </div>
+
+            {/* CTAs */}
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.25 }}
+              className="flex flex-wrap gap-3"
+            >
+              <button
+                onClick={() =>
+                  document.getElementById("product")?.scrollIntoView({ behavior: "smooth" })
+                }
+                className="group flex items-center gap-2 px-7 py-3.5 bg-[#0096C7] hover:bg-[#00B4D8] text-white font-bold rounded-xl transition-all duration-200 hover:shadow-xl hover:shadow-[#0096C7]/40 hover:scale-[1.04] active:scale-[0.97]"
+              >
+                Explore Products
+                <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-200" />
+              </button>
+              <button
+                onClick={() =>
+                  document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })
+                }
+                className="flex items-center gap-2 px-7 py-3.5 text-white font-bold rounded-xl border border-white/20 hover:border-white/40 hover:bg-white/10 transition-all duration-200 backdrop-blur-sm"
+              >
+                Contact Us
+              </button>
+            </motion.div>
+
+            {/* Stats */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.6, delay: 0.45 }}
+              className="mt-10 flex gap-8 border-t border-white/10 pt-6"
+            >
+              {[
+                { value: "15+", label: "Years Experience" },
+                { value: "500+", label: "Products" },
+                { value: "50+", label: "Countries Served" },
+              ].map((stat) => (
+                <div key={stat.label}>
+                  <p className="text-2xl md:text-3xl font-black text-white leading-none mb-1">
+                    {stat.value}
+                  </p>
+                  <p className="text-white/40 text-[10px] tracking-[0.15em] uppercase">
+                    {stat.label}
+                  </p>
+                </div>
+              ))}
+            </motion.div>
           </div>
-        </motion.div>
-      </AnimatePresence>
 
-      {/* Slide indicators */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-3 z-20">
-        {SLIDES.map((_, i) => (
-          <button
-            key={i}
-            onClick={() => goTo(i)}
-            className={`transition-all duration-300 rounded-full ${
-              i === current
-                ? "w-8 h-2.5 bg-white"
-                : "w-2.5 h-2.5 bg-white/40 hover:bg-white/70"
-            }`}
+          {/* RIGHT panel — desktop only */}
+          <div className="hidden lg:block relative w-[42%] xl:w-[46%] overflow-hidden">
+            {/* Edge fades */}
+            <div
+              className="absolute top-0 left-0 bottom-0 w-28 z-10 pointer-events-none"
+              style={{ background: "linear-gradient(to right, #03045E, transparent)" }}
+            />
+            <div
+              className="absolute top-0 left-0 right-0 h-24 z-10 pointer-events-none"
+              style={{ background: "linear-gradient(to bottom, #03045E, transparent)" }}
+            />
+            <div
+              className="absolute bottom-0 left-0 right-0 h-32 z-10 pointer-events-none"
+              style={{ background: "linear-gradient(to top, #03045E, transparent)" }}
+            />
+
+            {/* Sliding image */}
+            <AnimatePresence initial={false}>
+              <motion.div
+                key={current}
+                initial={{ x: "100%", opacity: 0.8 }}
+                animate={{ x: 0, opacity: 1 }}
+                exit={{ x: "-100%", opacity: 0.8 }}
+                transition={{ duration: 0.6, ease: [0.32, 0, 0.67, 0] }}
+                className="absolute inset-0"
+              >
+                <img
+                  src={p.img}
+                  alt={p.name}
+                  className="w-full h-full object-cover"
+                />
+                <div
+                  className="absolute inset-0"
+                  style={{
+                    background:
+                      "linear-gradient(to top, rgba(3,4,94,0.85) 0%, rgba(3,4,94,0.15) 35%, transparent 65%)",
+                  }}
+                />
+                {/* Image label */}
+                <div className="absolute bottom-8 left-8 z-20">
+                  <AnimatePresence mode="wait">
+                    <motion.div
+                      key={`img-label-${current}`}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.35 }}
+                    >
+                      <p className="text-[#48CAE4] text-[10px] font-bold tracking-widest uppercase mb-1.5">
+                        {p.tag}
+                      </p>
+                      <p className="text-white text-2xl font-black">{p.name}</p>
+                    </motion.div>
+                  </AnimatePresence>
+                </div>
+              </motion.div>
+            </AnimatePresence>
+          </div>
+        </div>
+
+        {/* ── Thumbnail strip ── */}
+        <div
+          className="flex-none h-[76px] overflow-hidden relative"
+          style={{
+            WebkitMaskImage:
+              "linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%)",
+            maskImage:
+              "linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%)",
+          }}
+        >
+          <motion.div
+            className="flex items-center h-full will-change-transform"
+            style={{
+              gap: THUMB_GAP + "px",
+              width: STRIP.length * THUMB_STRIDE + "px",
+              paddingLeft: "8px",
+            }}
+            animate={{ x: [0, -ONE_SET] }}
+            transition={{ duration: 18, ease: "linear", repeat: Infinity }}
+          >
+            {STRIP.map((prod, i) => {
+              const active = prod.id === current;
+              return (
+                <div
+                  key={`${prod.id}-${i}`}
+                  className="relative shrink-0 rounded-xl overflow-hidden transition-all duration-500"
+                  style={{
+                    width: THUMB_W + "px",
+                    height: "64px",
+                    opacity: active ? 1 : 0.45,
+                    border: active
+                      ? "1.5px solid rgba(0,150,199,0.8)"
+                      : "1.5px solid rgba(255,255,255,0.1)",
+                    boxShadow: active ? "0 0 14px rgba(0,150,199,0.35)" : "none",
+                  }}
+                >
+                  <img
+                    src={prod.img}
+                    alt={prod.name}
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-transparent to-transparent" />
+                  <p className="absolute bottom-1.5 left-2.5 text-white text-[9px] font-bold leading-none">
+                    {prod.name}
+                  </p>
+                </div>
+              );
+            })}
+          </motion.div>
+        </div>
+
+        {/* ── Controls row ── */}
+        <div className="flex-none h-8 flex items-center justify-center gap-2 relative">
+          {PRODUCTS.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setCurrent(i)}
+              className={`transition-all duration-300 rounded-full ${
+                i === current
+                  ? "w-6 h-2 bg-[#0096C7]"
+                  : "w-2 h-2 bg-white/25 hover:bg-white/55"
+              }`}
+            />
+          ))}
+          <span className="absolute right-6 text-white/30 text-[10px] font-mono tracking-widest">
+            {String(current + 1).padStart(2, "0")} / {String(PRODUCTS.length).padStart(2, "0")}
+          </span>
+        </div>
+
+        {/* ── Progress bar ── */}
+        <div className="flex-none h-0.5 bg-white/10">
+          <motion.div
+            key={current}
+            initial={{ width: "0%" }}
+            animate={{ width: "100%" }}
+            transition={{ duration: INTERVAL / 1000, ease: "linear" }}
+            className="h-full bg-[#0096C7]"
           />
-        ))}
-      </div>
-
-      {/* Slide counter */}
-      <div className="absolute bottom-8 right-8 text-white/60 text-sm font-mono z-20">
-        {String(current + 1).padStart(2, "0")} / {String(SLIDES.length).padStart(2, "0")}
+        </div>
       </div>
     </section>
   );

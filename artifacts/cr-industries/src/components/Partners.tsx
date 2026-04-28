@@ -18,15 +18,22 @@ const PARTNERS = [
 
 function PartnerCard({ partner }: { partner: (typeof PARTNERS)[0] }) {
   return (
-    <div className="flex-none w-64 mx-4 bg-card border border-border rounded-2xl p-5 shadow-sm hover:shadow-md hover:border-primary/40 transition-all duration-300 group">
-      <div className="w-12 h-12 rounded-xl brand-gradient flex items-center justify-center mb-3">
+    <motion.div
+      whileHover={{ y: -3, transition: { duration: 0.2 } }}
+      className="flex-none w-60 mx-3 bg-card border border-border rounded-2xl p-5 shadow-sm hover:shadow-lg hover:border-primary/40 hover:shadow-primary/5 transition-all duration-300 group cursor-default"
+    >
+      <div className="w-11 h-11 rounded-xl brand-gradient flex items-center justify-center mb-3 group-hover:scale-105 transition-transform duration-300 shadow-md">
         <span className="text-white font-black text-sm">
-          {partner.name.split(" ").map((w) => w[0]).slice(0, 2).join("")}
+          {partner.name
+            .split(" ")
+            .map((w) => w[0])
+            .slice(0, 2)
+            .join("")}
         </span>
       </div>
       <h4 className="font-bold text-foreground text-sm mb-1">{partner.name}</h4>
       <p className="text-muted-foreground text-xs leading-relaxed">{partner.tagline}</p>
-    </div>
+    </motion.div>
   );
 }
 
@@ -34,11 +41,13 @@ export default function Partners() {
   const headingRef = useRef(null);
   const inView = useInView(headingRef, { once: true });
 
-  const doubled = [...PARTNERS, ...PARTNERS];
+  const row1 = [...PARTNERS, ...PARTNERS];
+  const row2 = [...PARTNERS].reverse();
+  const row2doubled = [...row2, ...row2];
 
   return (
     <section className="py-24 bg-background overflow-hidden">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-14">
         <motion.div
           ref={headingRef}
           initial={{ opacity: 0, y: 30 }}
@@ -52,7 +61,12 @@ export default function Partners() {
           <h2 className="text-4xl md:text-5xl font-black text-foreground mb-2">
             Our Partners
           </h2>
-          <div className="w-16 h-1 bg-primary mx-auto rounded-full mb-4" />
+          <motion.div
+            initial={{ width: 0 }}
+            animate={inView ? { width: 64 } : {}}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            className="h-1 bg-primary mx-auto rounded-full mb-4"
+          />
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto leading-relaxed">
             Empowering Businesses That Shape the Future of Industry
           </p>
@@ -60,16 +74,24 @@ export default function Partners() {
         </motion.div>
       </div>
 
-      {/* Infinite ticker */}
-      <div className="relative w-full overflow-hidden">
-        {/* Left fade */}
+      {/* Row 1 — right to left */}
+      <div className="relative w-full overflow-hidden mb-4">
         <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none" />
-        {/* Right fade */}
         <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none" />
+        <div className="flex animate-ticker hover:[animation-play-state:paused]">
+          {row1.map((partner, i) => (
+            <PartnerCard key={`r1-${partner.name}-${i}`} partner={partner} />
+          ))}
+        </div>
+      </div>
 
-        <div className="flex animate-ticker">
-          {doubled.map((partner, i) => (
-            <PartnerCard key={`${partner.name}-${i}`} partner={partner} />
+      {/* Row 2 — left to right (reversed) */}
+      <div className="relative w-full overflow-hidden">
+        <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none" />
+        <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none" />
+        <div className="flex animate-ticker-reverse hover:[animation-play-state:paused]">
+          {row2doubled.map((partner, i) => (
+            <PartnerCard key={`r2-${partner.name}-${i}`} partner={partner} />
           ))}
         </div>
       </div>
