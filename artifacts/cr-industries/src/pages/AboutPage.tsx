@@ -117,10 +117,11 @@ export default function AboutPage() {
     <MotionConfig reducedMotion="user">
     <main className="relative bg-background overflow-hidden">
       {/* ════════════════════════ SECTION 1 — THE CORE OF INNOVATION ════════════════════════ */}
+      {/* Starts directly beneath the fixed Header (h-16 mobile / h-20 desktop) */}
       <section
         ref={heroRef}
         aria-labelledby="about-hero-title"
-        className="relative h-[100vh] min-h-[680px] flex items-center justify-center overflow-hidden pt-24 lg:pt-28"
+        className="relative mt-16 lg:mt-20 h-[calc(100vh-4rem)] lg:h-[calc(100vh-5rem)] min-h-[600px] flex items-center justify-center overflow-hidden"
       >
         {/* Background with parallax + continuous Ken Burns scale */}
         <motion.div
