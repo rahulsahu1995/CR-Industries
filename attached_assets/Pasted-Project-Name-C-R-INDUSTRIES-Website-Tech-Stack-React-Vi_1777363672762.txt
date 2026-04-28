@@ -1,0 +1,171 @@
+Project Name: C R INDUSTRIES Website
+
+Tech Stack: React (Vite), Tailwind CSS, Framer Motion (for animations), Lucide React (for icons), and SendGrid API.
+
+Instruction: Please build a modern, responsive, and high-performance website for "C R INDUSTRIES" based on the following technical requirements:
+
+
+Design & Color Palette:
+Primary Colors: Gray, #0096C7, and #03045E.
+Theme Logic: Use #03045E sparingly in Light Mode.
+Dark Mode: Implement a fully functional Light/Dark mode toggle.
+
+
+Functionality & Email Integration:
+No Database: Do not use any database (MongoDB, Firebase, etc.).
+Email System: Use SendGrid API to handle form submissions. Create a Contact Form that sends user details directly to a specified email via SendGrid.
+
+
+Navigation & Scroll Behavior:
+Auto-Scroll to Top: Implement a global "Scroll to Top" behavior on all routes. Whenever a route changes (or the same link is clicked again), the page must smoothly scroll to the top automatically.
+Custom Scrollbars: Hide all scrollbars globally across the entire website for a clean, app-like feel.
+
+
+Responsive Design & Animations:
+The website must be fully responsive across all devices (Mobile, Tablet, Desktop).
+Mobile Experience: On mobile devices, prioritize auto-animations (entrance animations) using Framer Motion. Hover effects can be disabled or minimized for mobile touch targets.
+
+
+Security & Environment Variables:
+All sensitive keys, including SendGrid API keys and Template IDs, must be stored in a .env file.
+Ensure the code references these variables using the correct environment naming convention (e.g., VITE_SENDGRID_API_KEY).
+
+
+UI Components:
+Include a Navbar with the company name "C R INDUSTRIES", a Hero section, Services, About Us, and a functional Contact Form.
+Ensure smooth transitions and a premium "industrial-modern" aesthetic.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Header :-
+
+Ensure the Navigation Header is Fixed (Sticky) at the top of the viewport
+
+Task: Build a highly customized, responsive Navigation Header for "C R INDUSTRIES" with the following specifications:
+
+1. Desktop Layout:
+Alignment: * Left Side: Company Logo (Placeholder for image).
+Right Side: Menu options: Home, Product, About, E-BROCHURES, News, and Contact Us.
+News Dropdown: The "News" item should be a clickable dropdown containing: Blogs, Media, Events, and Customer Reviews.
+Theme Toggle: The Dark Mode button must be placed at the very end on the far right.
+
+
+2. Mobile/Tablet/iPhone Layout:
+Sidebar Navigation: The entire menu should transform into a Right-Side Sidebar (Drawer) accessible via a hamburger icon.
+Dropdown Logic: Inside the sidebar, clicking "News" should toggle (show/hide) its sub-menu items smoothly.
+Social Integration: At the bottom of the sidebar, include icons for Instagram, Facebook, LinkedIn, and WhatsApp. These social icons must only appear in the mobile sidebar and should be hidden on the desktop.
+Theme Toggle Position: On mobile/tablet, the Dark Mode toggle must stay outside the sidebar, positioned on the right side of the main header for quick access.
+
+
+3. Animation & Styling:
+Use Framer Motion for the sidebar slide-in effect and the News dropdown transition.
+Ensure the layout is pixel-perfect for iPhone and various mobile screen sizes.
+The sidebar should have a clean, high-contrast look matching the primary color scheme (#0096C7, #03045E, and Gray).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Footer:-
+Task: Create a professional, 3-column footer for "C R INDUSTRIES" with a centered layout and interactive navigation.
+
+1. Column 1: Brand & Trust
+Icon: Placeholder for company icon.
+Company Name: "C R INDUSTRIES" in a prominent, bold font.
+Description: "C R INDUSTRIES is committed to excellence, delivering high-performance products that our customers trust. Built on a foundation of quality and innovation, we ensure reliability in every solution we provide."
+
+2. Column 2: Interactive Quick Links
+Menu Items: Home, Product, About, E-BROCHURES, News, and Contact Us.
+Dropdown Logic for "News": When a user clicks on "News" within the footer, it should expand to show sub-routes (Blogs, Media, Events, Customer Reviews) directly below it. Clicking again should hide them.
+Styling: Ensure the text is clean and matches the primary color theme (#0096C7).
+
+
+3. Column 3: Contact & Social Media
+Contact Details: Display demo Address, Contact Number, and Email ID.
+Social Icons: Below the contact info, include clickable icons for Instagram, Facebook, LinkedIn, and WhatsApp.
+Behavior: Icons should have a subtle hover effect and be properly linked.
+
+4. Design Specifications:
+Alignment: All content in all 3 columns must be horizontally centered.
+Responsiveness: On mobile, stack the 3 columns vertically.
+Themes: Ensure full compatibility with the Light/Dark mode toggle (Background and text colors should shift accordingly).

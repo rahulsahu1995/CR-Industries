@@ -1,0 +1,71 @@
+
+Home :-
+
+Section 1: Hero Carousel
+Background: An infinite auto-playing slider/carousel featuring high-quality imagery of tap sealants, industrial adhesives, and application shots.
+Visual Goal: Create an immersive first impression of the product environment.
+
+
+
+
+Section 2: Interactive 3D Product Experience
+Feature: A 3D model of a generic sealant product (unbranded) centered on the screen using Three.js.
+Animation: As the user scrolls, the product rotates and shifts its axes (X, Y, and Z) to create a dynamic motion effect.
+
+Scroll Step 1: 3D Model rotates → Image & Description appear on the Top Right.
+
+Scroll Step 2: 3D Model rotates further → Image & Description appear on the Middle Left.
+
+Scroll Step 3: 3D Model continues motion → Image & Description appear on the Lower Right.
+
+Scroll Step 4: Final rotation → Image & Description appear on the Bottom Left.
+
+
+
+
+
+
+Section 3: Why Choose Us
+Headline: "Why Choose Us"
+
+Feature,Description
+Experienced,"With years of industry expertise, we bring deep technical knowledge to every project, ensuring reliable and high-performance sealing solutions."
+Solutions,We don't just provide products; we solve problems. Our range is designed to tackle the most demanding industrial leakage and bonding challenges.
+Customized,Every business is unique. We offer tailored services and product specifications to meet your exact industrial requirements.
+Professional,"From initial consultation to final delivery, our team maintains the highest standards of professional integrity and technical support."
+Original,"Innovation is at our core. We provide genuine, high-grade formulations that set the benchmark for quality in the sealant market."
+Fast,We value your time. Our streamlined processes ensure quick turnaround times without ever compromising on the quality of the output.
+
+
+
+
+
+Section 4: What Makes Us Different?
+Headline: "What Makes Us Different?"
+(This section features relevant icons above each heading)
+
+Consistent Quality: [Icon]
+High-grade manufacturing ensures that every batch meets rigorous safety and durability standards.
+
+Customer Satisfaction: [Icon]
+Our commitment to our clients goes beyond the sale; we provide continuous support and value.
+
+Unbeatable Prices: [Icon]
+Premium quality doesn't have to be overpriced. We offer the most competitive rates in the industry.
+
+On-Time Delivery: [Icon]
+With a robust logistics network, we guarantee that your orders reach you exactly when you need them.
+
+
+
+
+
+Section 5: Our Partners
+Headline: "Empowering Businesses That Shape the Future of Industry"
+Sub-headline: "Our Clients"
+
+Content: An auto-scrolling (infinite loop) logo ticker featuring 10–15 company logos.
+
+Details: Each logo will be accompanied by a brief one-line testimonial or a description of the partnership.
+
+Animation: Smooth horizontal scroll to showcase the breadth of your professional network.

@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/"
+title = "C R INDUSTRIES"
+version = "1.0.0"
+id = "artifacts/cr-industries"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 24417
+
+[services.development]
+run = "pnpm --filter @workspace/cr-industries run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/cr-industries", "run", "build" ]
+publicDir = "artifacts/cr-industries/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "24417"
+BASE_PATH = "/"

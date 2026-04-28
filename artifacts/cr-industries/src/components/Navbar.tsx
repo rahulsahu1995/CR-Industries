@@ -1,0 +1,259 @@
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Sun, Moon, Menu, X, ChevronDown } from "lucide-react";
+import { FaInstagram, FaFacebook, FaLinkedin, FaWhatsapp } from "react-icons/fa";
+import { useTheme } from "@/context/ThemeContext";
+import { Link, useLocation } from "wouter";
+
+const NAV_LINKS = [
+  { label: "Home", href: "#home" },
+  { label: "Product", href: "#product" },
+  { label: "About", href: "#about" },
+  { label: "E-BROCHURES", href: "#ebrochures" },
+  {
+    label: "News",
+    href: "#news",
+    children: [
+      { label: "Blogs", href: "#blogs" },
+      { label: "Media", href: "#media" },
+      { label: "Events", href: "#events" },
+      { label: "Customer Reviews", href: "#reviews" },
+    ],
+  },
+  { label: "Contact Us", href: "#contact" },
+];
+
+function smoothScrollTo(hash: string) {
+  const id = hash.replace("#", "");
+  const el = document.getElementById(id);
+  if (el) {
+    el.scrollIntoView({ behavior: "smooth" });
+  }
+}
+
+export default function Navbar() {
+  const { theme, toggleTheme } = useTheme();
+  const [scrolled, setScrolled] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [newsOpen, setNewsOpen] = useState(false);
+  const [mobileNewsOpen, setMobileNewsOpen] = useState(false);
+  const [desktopNewsOpen, setDesktopNewsOpen] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const handleNavClick = (href: string) => {
+    setSidebarOpen(false);
+    setTimeout(() => smoothScrollTo(href), 100);
+  };
+
+  return (
+    <>
+      <header
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+          scrolled
+            ? "bg-background/95 backdrop-blur-md shadow-md border-b border-border"
+            : "bg-transparent"
+        }`}
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16 lg:h-20">
+            {/* Logo */}
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-lg brand-gradient flex items-center justify-center">
+                <span className="text-white font-black text-sm">CR</span>
+              </div>
+              <span
+                className="font-black text-xl tracking-widest"
+                style={{ color: theme === "dark" ? "#e2e8f0" : "#03045E" }}
+              >
+                C R INDUSTRIES
+              </span>
+            </div>
+
+            {/* Desktop Nav */}
+            <nav className="hidden lg:flex items-center gap-6">
+              {NAV_LINKS.map((link) =>
+                link.children ? (
+                  <div
+                    key={link.label}
+                    className="relative"
+                    onMouseEnter={() => setDesktopNewsOpen(true)}
+                    onMouseLeave={() => setDesktopNewsOpen(false)}
+                  >
+                    <button
+                      className="flex items-center gap-1 text-sm font-semibold tracking-wide text-foreground hover:text-primary transition-colors"
+                      onClick={() => setDesktopNewsOpen((v) => !v)}
+                    >
+                      {link.label}
+                      <ChevronDown
+                        className={`w-4 h-4 transition-transform ${desktopNewsOpen ? "rotate-180" : ""}`}
+                      />
+                    </button>
+                    <AnimatePresence>
+                      {desktopNewsOpen && (
+                        <motion.div
+                          initial={{ opacity: 0, y: -8 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -8 }}
+                          transition={{ duration: 0.2 }}
+                          className="absolute top-full left-0 mt-2 w-48 bg-card border border-border rounded-xl shadow-lg overflow-hidden"
+                        >
+                          {link.children.map((child) => (
+                            <button
+                              key={child.label}
+                              onClick={() => handleNavClick(child.href)}
+                              className="block w-full text-left px-4 py-2.5 text-sm text-foreground hover:bg-primary hover:text-white transition-colors"
+                            >
+                              {child.label}
+                            </button>
+                          ))}
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                ) : (
+                  <button
+                    key={link.label}
+                    onClick={() => handleNavClick(link.href)}
+                    className="text-sm font-semibold tracking-wide text-foreground hover:text-primary transition-colors"
+                  >
+                    {link.label}
+                  </button>
+                )
+              )}
+            </nav>
+
+            {/* Theme toggle + hamburger */}
+            <div className="flex items-center gap-3">
+              <button
+                onClick={toggleTheme}
+                className="w-9 h-9 rounded-full flex items-center justify-center bg-secondary hover:bg-primary hover:text-white transition-all duration-200"
+                aria-label="Toggle theme"
+              >
+                {theme === "dark" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+              </button>
+              <button
+                onClick={() => setSidebarOpen(true)}
+                className="lg:hidden w-9 h-9 rounded-full flex items-center justify-center bg-secondary hover:bg-primary hover:text-white transition-all duration-200"
+                aria-label="Open menu"
+              >
+                <Menu className="w-5 h-5" />
+              </button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* Mobile Sidebar Overlay */}
+      <AnimatePresence>
+        {sidebarOpen && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black/60 z-[60] lg:hidden"
+              onClick={() => setSidebarOpen(false)}
+            />
+            <motion.aside
+              initial={{ x: "100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "100%" }}
+              transition={{ type: "spring", damping: 25, stiffness: 200 }}
+              className="fixed top-0 right-0 h-full w-80 z-[70] flex flex-col lg:hidden"
+              style={{
+                background: theme === "dark"
+                  ? "linear-gradient(180deg, #03045E 0%, #0096C7 100%)"
+                  : "linear-gradient(180deg, #03045E 0%, #0096C7 100%)",
+              }}
+            >
+              <div className="flex items-center justify-between p-5 border-b border-white/20">
+                <span className="text-white font-black text-lg tracking-widest">C R INDUSTRIES</span>
+                <button
+                  onClick={() => setSidebarOpen(false)}
+                  className="w-9 h-9 rounded-full bg-white/20 flex items-center justify-center text-white"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              <nav className="flex-1 overflow-y-auto py-4 px-5">
+                {NAV_LINKS.map((link) =>
+                  link.children ? (
+                    <div key={link.label}>
+                      <button
+                        onClick={() => setMobileNewsOpen((v) => !v)}
+                        className="flex items-center justify-between w-full py-3.5 text-white/90 hover:text-white font-semibold text-base tracking-wide border-b border-white/10"
+                      >
+                        {link.label}
+                        <ChevronDown
+                          className={`w-4 h-4 transition-transform ${mobileNewsOpen ? "rotate-180" : ""}`}
+                        />
+                      </button>
+                      <AnimatePresence>
+                        {mobileNewsOpen && (
+                          <motion.div
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: "auto", opacity: 1 }}
+                            exit={{ height: 0, opacity: 0 }}
+                            transition={{ duration: 0.25 }}
+                            className="overflow-hidden"
+                          >
+                            {link.children.map((child) => (
+                              <button
+                                key={child.label}
+                                onClick={() => handleNavClick(child.href)}
+                                className="block w-full text-left py-2.5 pl-6 text-white/75 hover:text-white text-sm font-medium border-b border-white/10"
+                              >
+                                {child.label}
+                              </button>
+                            ))}
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+                  ) : (
+                    <button
+                      key={link.label}
+                      onClick={() => handleNavClick(link.href)}
+                      className="block w-full text-left py-3.5 text-white/90 hover:text-white font-semibold text-base tracking-wide border-b border-white/10"
+                    >
+                      {link.label}
+                    </button>
+                  )
+                )}
+              </nav>
+
+              {/* Social Icons */}
+              <div className="p-5 border-t border-white/20">
+                <p className="text-white/60 text-xs uppercase tracking-widest mb-3">Follow Us</p>
+                <div className="flex items-center gap-4">
+                  {[
+                    { Icon: FaInstagram, href: "https://instagram.com" },
+                    { Icon: FaFacebook, href: "https://facebook.com" },
+                    { Icon: FaLinkedin, href: "https://linkedin.com" },
+                    { Icon: FaWhatsapp, href: "https://wa.me/" },
+                  ].map(({ Icon, href }) => (
+                    <a
+                      key={href}
+                      href={href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center text-white hover:bg-white/30 transition-colors"
+                    >
+                      <Icon className="w-5 h-5" />
+                    </a>
+                  ))}
+                </div>
+              </div>
+            </motion.aside>
+          </>
+        )}
+      </AnimatePresence>
+    </>
+  );
+}
