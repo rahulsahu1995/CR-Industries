@@ -516,10 +516,10 @@ function Product3DInner() {
             - desktop → flex-row (side columns flank the canvas)
             Narrower columns (160–190px) pull panels visually closer to center.
           */}
-          <div className="flex-1 min-h-0 flex flex-col md:flex-row gap-2 md:gap-3 overflow-hidden">
+          <div className="flex-1 min-h-0 flex flex-col md:flex-row gap-2 md:gap-2 lg:gap-3 overflow-hidden md:max-w-5xl md:mx-auto md:w-full">
 
             {/* ── Left column — desktop only ── */}
-            <div className="hidden md:flex w-[160px] lg:w-[180px] xl:w-[200px] shrink-0
+            <div className="hidden md:flex w-[190px] lg:w-[210px] xl:w-[230px] shrink-0
                             flex-col gap-3 overflow-hidden pt-2">
               {revealedLeft.map((s, i) => (
                 <StackCard
@@ -578,7 +578,7 @@ function Product3DInner() {
             </div>
 
             {/* ── Right column — desktop only ── */}
-            <div className="hidden md:flex w-[160px] lg:w-[180px] xl:w-[200px] shrink-0
+            <div className="hidden md:flex w-[190px] lg:w-[210px] xl:w-[230px] shrink-0
                             flex-col gap-3 overflow-hidden pt-2">
               {revealedRight.map((s, i) => (
                 <StackCard
