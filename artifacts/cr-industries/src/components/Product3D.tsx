@@ -1,11 +1,24 @@
 import { useRef, useEffect, useState, Component, ErrorInfo, ReactNode } from "react";
-import { motion, useInView } from "framer-motion";
+import { motion, useInView, AnimatePresence } from "framer-motion";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Environment } from "@react-three/drei";
 import * as THREE from "three";
-import { Box, Layers, Zap, ShieldCheck } from "lucide-react";
+import { ShieldCheck, Zap, Layers, Rocket } from "lucide-react";
 
-/* ── WebGL Error Boundary ─────────────────────────────────────────── */
+/* ── WebGL detection (before any Three.js code runs) ─────────────── */
+function isWebGLAvailable(): boolean {
+  try {
+    const c = document.createElement("canvas");
+    return !!(
+      window.WebGLRenderingContext &&
+      (c.getContext("webgl") || c.getContext("experimental-webgl"))
+    );
+  } catch {
+    return false;
+  }
+}
+
+/* ── Error Boundary ───────────────────────────────────────────────── */
 class WebGLErrorBoundary extends Component<
   { children: ReactNode; fallback: ReactNode },
   { hasError: boolean }
@@ -14,191 +27,164 @@ class WebGLErrorBoundary extends Component<
     super(props);
     this.state = { hasError: false };
   }
-  static getDerivedStateFromError() {
-    return { hasError: true };
-  }
-  componentDidCatch(error: Error, _info: ErrorInfo) {
-    console.warn("3D WebGL not available:", error.message);
-  }
+  static getDerivedStateFromError() { return { hasError: true }; }
+  componentDidCatch(e: Error) { console.warn("WebGL fallback:", e.message); }
   render() {
-    if (this.state.hasError) return this.props.fallback;
-    return this.props.children;
+    return this.state.hasError ? this.props.fallback : this.props.children;
   }
 }
 
-/* ── Caulk Cartridge 3D Model ────────────────────────────────────── */
+/* ── Caulk cartridge model ────────────────────────────────────────── */
+/* Model local-space bounds:
+   bottom cap: y ≈ -1.65   nozzle tip: y ≈ 3.66
+   center: y ≈ 1.0
+   wrapped in <group scale={0.6} position={[0,-0.6,0]}> → world center ≈ 0 */
 function CaulkCartridge({ scrollProgress }: { scrollProgress: number }) {
-  const groupRef = useRef<THREE.Group>(null);
-  const bodyRef = useRef<THREE.Mesh>(null);
+  const rootRef = useRef<THREE.Group>(null);
+  const spinRef = useRef<THREE.Group>(null);
 
-  useFrame((_, delta) => {
-    if (!groupRef.current) return;
-    // Slow continuous Y rotation
-    if (bodyRef.current) bodyRef.current.rotation.y += delta * 0.5;
-    // Scroll-driven tilt
-    const targetX = scrollProgress * Math.PI * 0.18;
-    groupRef.current.rotation.x += (targetX - groupRef.current.rotation.x) * 0.06;
-    // Subtle scroll-driven Z sway
-    const targetZ = Math.sin(scrollProgress * Math.PI * 2) * 0.12;
-    groupRef.current.rotation.z += (targetZ - groupRef.current.rotation.z) * 0.06;
+  useFrame((_, dt) => {
+    if (!rootRef.current) return;
+    if (spinRef.current) spinRef.current.rotation.y += dt * 0.45;
+    // Subtle tilt on scroll
+    const tx = scrollProgress * Math.PI * 0.14;
+    const tz = Math.sin(scrollProgress * Math.PI * 2) * 0.08;
+    rootRef.current.rotation.x += (tx - rootRef.current.rotation.x) * 0.07;
+    rootRef.current.rotation.z += (tz - rootRef.current.rotation.z) * 0.07;
   });
 
-  const bodyMat = (
-    <meshPhysicalMaterial
-      color="#f0f0ee"
-      metalness={0.05}
-      roughness={0.35}
-      transmission={0.15}
-      thickness={0.3}
-    />
-  );
-
-  const accentMat = (
-    <meshStandardMaterial color="#0096C7" metalness={0.7} roughness={0.2} />
-  );
-
-  const darkMat = (
-    <meshStandardMaterial color="#03045E" metalness={0.6} roughness={0.25} />
-  );
+  const white = <meshPhysicalMaterial color="#efefed" metalness={0.04} roughness={0.3} transmission={0.12} thickness={0.3} />;
+  const blue  = <meshStandardMaterial color="#0096C7" metalness={0.75} roughness={0.18} />;
+  const dark  = <meshStandardMaterial color="#03045E" metalness={0.6}  roughness={0.25} />;
 
   return (
-    <group ref={groupRef} position={[0, 0, 0]}>
-      <group ref={bodyRef as React.RefObject<THREE.Group>}>
-        {/* ── Main cylindrical body ── */}
-        <mesh castShadow position={[0, 0, 0]}>
-          <cylinderGeometry args={[0.42, 0.42, 3.2, 48]} />
-          {bodyMat}
+    /* scale 0.6 shrinks total model; position offsets center to y≈0 */
+    <group ref={rootRef} scale={0.6} position={[0, -0.6, 0]}>
+      <group ref={spinRef}>
+        {/* body */}
+        <mesh castShadow>
+          <cylinderGeometry args={[0.42, 0.42, 3.2, 52]} />
+          {white}
         </mesh>
-
-        {/* ── Bottom cap (flat disc) ── */}
+        {/* bottom cap */}
         <mesh castShadow position={[0, -1.62, 0]}>
-          <cylinderGeometry args={[0.42, 0.42, 0.06, 48]} />
-          {darkMat}
+          <cylinderGeometry args={[0.42, 0.42, 0.07, 52]} />
+          {dark}
         </mesh>
-
-        {/* ── Bottom piston ring ── */}
-        <mesh position={[0, -1.52, 0]}>
-          <torusGeometry args={[0.42, 0.025, 16, 64]} />
-          {accentMat}
+        {/* bottom ring */}
+        <mesh position={[0, -1.51, 0]}>
+          <torusGeometry args={[0.42, 0.026, 16, 64]} />
+          {blue}
         </mesh>
-
-        {/* ── Shoulder reducer (frustum transitioning to nozzle base) ── */}
-        <mesh castShadow position={[0, 1.75, 0]}>
-          <cylinderGeometry args={[0.18, 0.42, 0.6, 48]} />
-          {bodyMat}
+        {/* shoulder reducer */}
+        <mesh castShadow position={[0, 1.74, 0]}>
+          <cylinderGeometry args={[0.18, 0.42, 0.62, 52]} />
+          {white}
         </mesh>
-
-        {/* ── Nozzle collar ── */}
+        {/* nozzle collar */}
         <mesh castShadow position={[0, 2.14, 0]}>
-          <cylinderGeometry args={[0.14, 0.18, 0.15, 32]} />
-          {accentMat}
+          <cylinderGeometry args={[0.14, 0.18, 0.16, 32]} />
+          {blue}
         </mesh>
-
-        {/* ── Long tapered nozzle ── */}
-        <mesh castShadow position={[0, 2.9, 0]}>
-          <cylinderGeometry args={[0.02, 0.12, 1.35, 24]} />
-          {bodyMat}
+        {/* tapered nozzle */}
+        <mesh castShadow position={[0, 2.89, 0]}>
+          <cylinderGeometry args={[0.022, 0.12, 1.34, 28]} />
+          {white}
         </mesh>
-
-        {/* ── Nozzle tip ── */}
-        <mesh castShadow position={[0, 3.61, 0]}>
-          <coneGeometry args={[0.02, 0.1, 16]} />
-          {bodyMat}
+        {/* tip */}
+        <mesh castShadow position={[0, 3.6, 0]}>
+          <coneGeometry args={[0.022, 0.11, 16]} />
+          {white}
         </mesh>
-
-        {/* ── Label band (center) ── */}
+        {/* label band */}
         <mesh position={[0, 0, 0]}>
-          <cylinderGeometry args={[0.425, 0.425, 1.6, 48]} />
-          <meshStandardMaterial color="#ffffff" roughness={0.8} metalness={0.0} transparent opacity={0.95} />
+          <cylinderGeometry args={[0.426, 0.426, 1.6, 52]} />
+          <meshStandardMaterial color="#ffffff" roughness={0.75} metalness={0} transparent opacity={0.96} />
         </mesh>
-
-        {/* ── Top label accent stripe ── */}
-        <mesh position={[0, 0.82, 0]}>
-          <torusGeometry args={[0.43, 0.018, 12, 64]} />
-          {accentMat}
-        </mesh>
-
-        {/* ── Bottom label accent stripe ── */}
-        <mesh position={[0, -0.82, 0]}>
-          <torusGeometry args={[0.43, 0.018, 12, 64]} />
-          {accentMat}
-        </mesh>
-
-        {/* ── Decorative mid ring ── */}
+        {/* label accent stripes */}
+        {[0.82, -0.82].map((y, i) => (
+          <mesh key={i} position={[0, y, 0]}>
+            <torusGeometry args={[0.43, 0.019, 12, 64]} />
+            {blue}
+          </mesh>
+        ))}
+        {/* center ring */}
         <mesh position={[0, 0, 0]}>
           <torusGeometry args={[0.43, 0.012, 12, 64]} />
-          <meshStandardMaterial color="#0096C7" metalness={0.5} roughness={0.3} transparent opacity={0.5} />
+          <meshStandardMaterial color="#0096C7" metalness={0.5} roughness={0.3} transparent opacity={0.45} />
         </mesh>
       </group>
     </group>
   );
 }
 
-/* ── Scroll step content ─────────────────────────────────────────── */
-const SCROLL_STEPS = [
+/* ── Step data ────────────────────────────────────────────────────── */
+const STEPS = [
   {
-    side: "right",
-    vertPos: "top-[14%]",
-    title: "Precision Thread Sealant",
-    desc: "Industrial-grade PTFE compound for threaded joints. Seals metal and plastic pipes under extreme pressure.",
+    side: "right" as const,
     tag: "01",
     icon: ShieldCheck,
+    title: "Precision Thread Sealant",
+    desc: "Industrial-grade PTFE compound locks into pipe threads for a permanent, leak-free seal. Rated to 200 bar and resistant to most chemicals.",
+    img: "/steps/step1.png",
+    imgAlt: "PTFE thread sealant on pipe threads",
   },
   {
-    side: "left",
-    vertPos: "top-[38%]",
-    title: "High-Temperature Adhesive",
-    desc: "Withstands up to 300°C. Perfect for exhaust systems, furnaces, and industrial machinery bonds.",
+    side: "left" as const,
     tag: "02",
     icon: Zap,
+    title: "High-Temperature Adhesive",
+    desc: "Specially formulated silicone compound withstands up to 300°C. Ideal for exhaust manifolds, furnaces, and thermal cycling environments.",
+    img: "/steps/step2.png",
+    imgAlt: "High-temperature sealant on exhaust joint",
   },
   {
-    side: "right",
-    vertPos: "top-[62%]",
-    title: "Flexible Pipe Jointing",
-    desc: "Anaerobic sealant — remains flexible after cure, ideal for vibration-prone pipeline connections.",
+    side: "right" as const,
     tag: "03",
     icon: Layers,
+    title: "Flexible Pipe Jointing",
+    desc: "Anaerobic sealant that remains permanently flexible after cure — engineered for vibration-prone pipeline connections and flanged joints.",
+    img: "/steps/step3.png",
+    imgAlt: "Flexible anaerobic sealant on pipe flange",
   },
   {
-    side: "left",
-    vertPos: "top-[82%]",
-    title: "Fast-Cure Compound",
-    desc: "Sets in 60 seconds for rapid maintenance. Full strength in 24 hours across most substrate types.",
+    side: "left" as const,
     tag: "04",
-    icon: Box,
+    icon: Rocket,
+    title: "Fast-Cure Compound",
+    desc: "Sets in 60 seconds with full mechanical strength in 24 hours. Designed for rapid maintenance and emergency pipeline repairs.",
+    img: "/steps/step4.png",
+    imgAlt: "Fast-cure sealant being dispensed from nozzle",
   },
 ];
 
-function InfoCard({
-  step,
-  visible,
-}: {
-  step: (typeof SCROLL_STEPS)[0];
-  visible: boolean;
-}) {
-  const isRight = step.side === "right";
+/* ── Side card ────────────────────────────────────────────────────── */
+function StepCard({ step, visible }: { step: typeof STEPS[0]; visible: boolean }) {
   const Icon = step.icon;
+  const fromX = step.side === "right" ? 24 : -24;
   return (
     <motion.div
       initial={false}
-      animate={{
-        opacity: visible ? 1 : 0,
-        x: visible ? 0 : isRight ? 30 : -30,
-      }}
-      transition={{ duration: 0.45, ease: "easeOut" }}
-      className={`absolute ${step.vertPos} ${
-        isRight ? "right-4 md:right-12 lg:right-16" : "left-4 md:left-12 lg:left-16"
-      } z-20 w-[200px] md:w-[220px]`}
+      animate={{ opacity: visible ? 1 : 0, x: visible ? 0 : fromX }}
+      transition={{ duration: 0.4, ease: "easeOut" }}
+      className="bg-card/90 backdrop-blur-md border border-border/70 rounded-2xl overflow-hidden shadow-xl w-full"
     >
-      <div className="bg-card/85 backdrop-blur-lg border border-border/80 rounded-2xl p-4 shadow-xl">
+      {/* Image */}
+      <div className="relative w-full aspect-[4/3] overflow-hidden bg-muted">
+        <img
+          src={step.img}
+          alt={step.imgAlt}
+          className="w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-card/60 to-transparent" />
+      </div>
+      {/* Text */}
+      <div className="p-4">
         <div className="flex items-center gap-2 mb-2">
-          <div className="w-7 h-7 rounded-lg brand-gradient flex items-center justify-center shrink-0">
-            <Icon className="w-3.5 h-3.5 text-white" />
+          <div className="w-6 h-6 rounded-lg brand-gradient flex items-center justify-center shrink-0">
+            <Icon className="w-3 h-3 text-white" />
           </div>
-          <span className="text-[10px] font-black tracking-widest text-primary uppercase">
-            Step {step.tag}
-          </span>
+          <span className="text-[10px] font-black tracking-widest text-primary uppercase">Step {step.tag}</span>
         </div>
         <h3 className="text-sm font-bold text-foreground mb-1 leading-snug">{step.title}</h3>
         <p className="text-muted-foreground text-[11px] leading-relaxed">{step.desc}</p>
@@ -207,178 +193,51 @@ function InfoCard({
   );
 }
 
-/* ── Fallback (no WebGL) ─────────────────────────────────────────── */
-function FallbackProductSection() {
-  const headingRef = useRef(null);
-  const inView = useInView(headingRef, { once: true });
+/* ── Fallback card (hooks at component level) ────────────────────── */
+function FallbackCard({ step, index }: { step: typeof STEPS[0]; index: number }) {
+  const Icon = step.icon;
+  const cardRef = useRef(null);
+  const cardInView = useInView(cardRef, { once: true, margin: "-50px" });
   return (
-    <section id="product" className="py-24 bg-gradient-to-b from-background to-muted">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <motion.div
-          ref={headingRef}
-          initial={{ opacity: 0, y: 30 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-16"
-        >
-          <span className="inline-block px-4 py-1.5 bg-primary/10 text-primary text-sm font-bold tracking-widest uppercase rounded-full mb-4">
-            Product Range
-          </span>
-          <h2 className="text-4xl md:text-5xl font-black text-foreground mb-4">
-            Industrial Sealant Solutions
-          </h2>
-          <div className="w-16 h-1 bg-primary mx-auto rounded-full" />
-        </motion.div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {SCROLL_STEPS.map((step, i) => {
-            const Icon = step.icon;
-            const ref = useRef(null);
-            const cardInView = useInView(ref, { once: true, margin: "-50px" });
-            return (
-              <motion.div
-                ref={ref}
-                key={step.tag}
-                initial={{ opacity: 0, y: 40 }}
-                animate={cardInView ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 0.5, delay: i * 0.1 }}
-                className="bg-card border border-border rounded-2xl p-6 hover:border-primary/50 hover:shadow-lg transition-all duration-300"
-              >
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 rounded-xl brand-gradient flex items-center justify-center shrink-0">
-                    <Icon className="w-6 h-6 text-white" />
-                  </div>
-                  <div>
-                    <span className="text-xs font-black tracking-widest text-primary uppercase">Step {step.tag}</span>
-                    <h3 className="text-lg font-bold text-foreground mt-0.5 mb-2">{step.title}</h3>
-                    <p className="text-muted-foreground text-sm leading-relaxed">{step.desc}</p>
-                  </div>
-                </div>
-              </motion.div>
-            );
-          })}
+    <motion.div ref={cardRef}
+      initial={{ opacity: 0, y: 40 }}
+      animate={cardInView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.5, delay: index * 0.1 }}
+      className="bg-card border border-border rounded-2xl overflow-hidden hover:shadow-lg transition-all duration-300">
+      <div className="aspect-[16/7] overflow-hidden">
+        <img src={step.img} alt={step.imgAlt} className="w-full h-full object-cover" />
+      </div>
+      <div className="p-5 flex items-start gap-4">
+        <div className="w-10 h-10 rounded-xl brand-gradient flex items-center justify-center shrink-0 mt-0.5">
+          <Icon className="w-5 h-5 text-white" />
+        </div>
+        <div>
+          <span className="text-xs font-black tracking-widest text-primary uppercase">Step {step.tag}</span>
+          <h3 className="text-base font-bold text-foreground mt-0.5 mb-1">{step.title}</h3>
+          <p className="text-muted-foreground text-sm leading-relaxed">{step.desc}</p>
         </div>
       </div>
-    </section>
+    </motion.div>
   );
 }
 
-/* ── WebGL feature detection ─────────────────────────────────────── */
-function isWebGLAvailable(): boolean {
-  try {
-    const canvas = document.createElement("canvas");
-    return !!(
-      window.WebGLRenderingContext &&
-      (canvas.getContext("webgl") || canvas.getContext("experimental-webgl"))
-    );
-  } catch {
-    return false;
-  }
-}
-
-/* ── Main 3D Section ─────────────────────────────────────────────── */
-function Product3DInner() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [scrollProgress, setScrollProgress] = useState(0);
-  const [visibleStep, setVisibleStep] = useState(-1);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      if (!containerRef.current) return;
-      const rect = containerRef.current.getBoundingClientRect();
-      const totalScrollable = containerRef.current.offsetHeight - window.innerHeight;
-      const scrolled = Math.max(0, -rect.top);
-      const progress = Math.min(1, scrolled / totalScrollable);
-      setScrollProgress(progress);
-      setVisibleStep(
-        progress < 0.02 ? -1
-        : progress < 0.28 ? 0
-        : progress < 0.52 ? 1
-        : progress < 0.76 ? 2
-        : 3
-      );
-    };
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    handleScroll();
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
+/* ── Fallback (no WebGL) ─────────────────────────────────────────── */
+function FallbackSection() {
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true });
   return (
-    <section id="product" ref={containerRef} className="relative h-[500vh]">
-      <div className="sticky top-0 h-screen overflow-hidden">
-        {/* Background */}
-        <div className="absolute inset-0 bg-gradient-to-b from-background via-muted/50 to-muted" />
-        <div
-          className="absolute inset-0 opacity-[0.04]"
-          style={{
-            backgroundImage:
-              "repeating-linear-gradient(0deg, #0096C7 0px, transparent 1px, transparent 60px), repeating-linear-gradient(90deg, #0096C7 0px, transparent 1px, transparent 60px)",
-          }}
-        />
-
-        {/* Section header — centered at top */}
-        <motion.div
-          initial={{ opacity: 0, y: -16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.1 }}
-          className="absolute top-6 inset-x-0 flex flex-col items-center z-10 pointer-events-none"
-        >
-          <span className="text-primary text-[11px] font-black tracking-[0.2em] uppercase">
-            Interactive Experience
-          </span>
-          <h2 className="text-2xl md:text-3xl lg:text-4xl font-black text-foreground mt-1 text-center">
-            3D Product Showcase
-          </h2>
-          <motion.p
-            animate={{ opacity: [0.4, 1, 0.4] }}
-            transition={{ duration: 2.5, repeat: Infinity }}
-            className="text-muted-foreground text-xs mt-1"
-          >
-            ↓ Scroll to explore
-          </motion.p>
+    <section id="product" className="py-24 bg-gradient-to-b from-background to-muted">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <motion.div ref={ref} initial={{ opacity: 0, y: 30 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.6 }}
+          className="text-center mb-16">
+          <span className="inline-block px-4 py-1.5 bg-primary/10 text-primary text-sm font-bold tracking-widest uppercase rounded-full mb-4">Product Range</span>
+          <h2 className="text-4xl md:text-5xl font-black text-foreground mb-4">Industrial Sealant Solutions</h2>
+          <div className="w-16 h-1 bg-primary mx-auto rounded-full" />
         </motion.div>
-
-        {/* 3D Canvas — perfectly centered */}
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="w-[320px] h-[520px] md:w-[380px] md:h-[600px] lg:w-[420px] lg:h-[640px]">
-            <Canvas
-              camera={{ position: [0, 0.4, 6], fov: 42 }}
-              shadows
-              gl={{ antialias: true }}
-              onCreated={({ gl }) => {
-                gl.shadowMap.enabled = true;
-              }}
-            >
-              <ambientLight intensity={0.7} />
-              <directionalLight
-                position={[4, 6, 4]}
-                intensity={1.8}
-                castShadow
-                shadow-mapSize={[1024, 1024]}
-              />
-              <directionalLight position={[-4, 2, -2]} intensity={0.4} color="#0096C7" />
-              <pointLight position={[0, -4, 3]} intensity={0.3} color="#48CAE4" />
-              <CaulkCartridge scrollProgress={scrollProgress} />
-              <Environment preset="studio" />
-            </Canvas>
-          </div>
-        </div>
-
-        {/* Info cards — left/right of center */}
-        {SCROLL_STEPS.map((step, i) => (
-          <InfoCard key={i} step={step} visible={visibleStep >= i} />
-        ))}
-
-        {/* Progress bar at bottom */}
-        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-3 z-20">
-          {SCROLL_STEPS.map((_, i) => (
-            <div
-              key={i}
-              className={`rounded-full transition-all duration-400 ${
-                visibleStep >= i
-                  ? "w-6 h-2 bg-primary"
-                  : "w-2 h-2 bg-border"
-              }`}
-            />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {STEPS.map((step, i) => (
+            <FallbackCard key={step.tag} step={step} index={i} />
           ))}
         </div>
       </div>
@@ -386,11 +245,127 @@ function Product3DInner() {
   );
 }
 
-export default function Product3D() {
-  const [webglOk] = useState(() => isWebGLAvailable());
-  if (!webglOk) return <FallbackProductSection />;
+/* ── 3D inner section ─────────────────────────────────────────────── */
+function Product3DInner() {
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const [progress, setProgress] = useState(0);
+  const [step, setStep] = useState(-1);
+
+  useEffect(() => {
+    const onScroll = () => {
+      if (!wrapRef.current) return;
+      const rect = wrapRef.current.getBoundingClientRect();
+      const total = wrapRef.current.offsetHeight - window.innerHeight;
+      const scrolled = Math.max(0, -rect.top);
+      const p = Math.min(1, scrolled / total);
+      setProgress(p);
+      setStep(p < 0.02 ? -1 : p < 0.28 ? 0 : p < 0.52 ? 1 : p < 0.76 ? 2 : 3);
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  /* split steps by side */
+  const leftSteps  = STEPS.filter(s => s.side === "left");
+  const rightSteps = STEPS.filter(s => s.side === "right");
+  /* index of currently active left/right card */
+  const activeLeft  = STEPS.filter((s, i) => s.side === "left"  && step >= i);
+  const activeRight = STEPS.filter((s, i) => s.side === "right" && step >= i);
+  const curLeft  = activeLeft[activeLeft.length - 1]   ?? null;
+  const curRight = activeRight[activeRight.length - 1] ?? null;
+
   return (
-    <WebGLErrorBoundary fallback={<FallbackProductSection />}>
+    <section id="product" ref={wrapRef} className="relative h-[450vh]">
+      <div className="sticky top-0 h-screen overflow-hidden">
+
+        {/* Background */}
+        <div className="absolute inset-0 bg-gradient-to-b from-background via-muted/40 to-muted" />
+        <div className="absolute inset-0 opacity-[0.035]"
+          style={{ backgroundImage: "repeating-linear-gradient(0deg,#0096C7 0,transparent 1px,transparent 56px),repeating-linear-gradient(90deg,#0096C7 0,transparent 1px,transparent 56px)" }} />
+
+        {/* ── Main layout: three columns ── */}
+        <div className="relative h-full flex flex-col">
+          {/* Top header */}
+          <div className="flex-none pt-6 pb-2 text-center z-10">
+            <span className="text-primary text-[11px] font-black tracking-[0.2em] uppercase">Interactive Experience</span>
+            <h2 className="text-2xl md:text-3xl font-black text-foreground mt-0.5">3D Product Showcase</h2>
+            <motion.p animate={{ opacity: [0.4, 1, 0.4] }} transition={{ duration: 2.5, repeat: Infinity }}
+              className="text-muted-foreground text-xs mt-0.5">↓ Scroll to explore</motion.p>
+          </div>
+
+          {/* Three columns: left card | canvas | right card */}
+          <div className="flex-1 flex items-center gap-4 px-4 md:px-8 lg:px-12 min-h-0 pb-10">
+            {/* Left column */}
+            <div className="hidden md:flex w-[220px] lg:w-[240px] xl:w-[260px] shrink-0 flex-col items-center justify-center">
+              <AnimatePresence mode="wait">
+                {curLeft && (
+                  <motion.div key={curLeft.tag} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.35 }} className="w-full">
+                    <StepCard step={curLeft} visible />
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+
+            {/* Center: 3D canvas — fills remaining space */}
+            <div className="flex-1 min-w-0 h-full flex items-center justify-center">
+              <div className="w-full h-full max-w-[420px] max-h-[580px]">
+                <Canvas
+                  camera={{ position: [0, 0, 5], fov: 50 }}
+                  shadows={{ type: THREE.PCFShadowMap }}
+                  gl={{ antialias: true }}
+                >
+                  <ambientLight intensity={0.65} />
+                  <directionalLight position={[4, 5, 4]} intensity={1.7} castShadow shadow-mapSize={[1024, 1024]} />
+                  <directionalLight position={[-4, 2, -2]} intensity={0.4} color="#0096C7" />
+                  <pointLight position={[0, -3, 3]} intensity={0.3} color="#48CAE4" />
+                  <CaulkCartridge scrollProgress={progress} />
+                  <Environment preset="studio" />
+                </Canvas>
+              </div>
+            </div>
+
+            {/* Right column */}
+            <div className="hidden md:flex w-[220px] lg:w-[240px] xl:w-[260px] shrink-0 flex-col items-center justify-center">
+              <AnimatePresence mode="wait">
+                {curRight && (
+                  <motion.div key={curRight.tag} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }} transition={{ duration: 0.35 }} className="w-full">
+                    <StepCard step={curRight} visible />
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          </div>
+
+          {/* Mobile card — below canvas */}
+          <div className="md:hidden px-4 pb-4">
+            <AnimatePresence mode="wait">
+              {step >= 0 && (
+                <motion.div key={step} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -12 }} transition={{ duration: 0.35 }}>
+                  <StepCard step={STEPS[step]} visible />
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
+          {/* Progress dots */}
+          <div className="flex-none pb-5 flex items-center justify-center gap-2.5 z-10">
+            {STEPS.map((_, i) => (
+              <div key={i} className={`rounded-full transition-all duration-300 ${step >= i ? "w-6 h-2 bg-primary" : "w-2 h-2 bg-border"}`} />
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ── Export ───────────────────────────────────────────────────────── */
+export default function Product3D() {
+  const [webgl] = useState(isWebGLAvailable);
+  if (!webgl) return <FallbackSection />;
+  return (
+    <WebGLErrorBoundary fallback={<FallbackSection />}>
       <Product3DInner />
     </WebGLErrorBoundary>
   );

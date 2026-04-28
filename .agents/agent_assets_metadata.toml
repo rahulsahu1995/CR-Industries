@@ -1,0 +1,26 @@
+uploads = []
+outputs = []
+
+[[generated]]
+id = "p_rKBSmGAF1ZgErNwUYgI"
+uri = "file://artifacts/cr-industries/public/steps/step1.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "3dvLFF6lrW2ByAGcGNFGr"
+uri = "file://artifacts/cr-industries/public/steps/step2.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "EpjWIkdZELrXZgVAor6WG"
+uri = "file://artifacts/cr-industries/public/steps/step3.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "t_F-pR9MkcYQPxbsDYNKv"
+uri = "file://artifacts/cr-industries/public/steps/step4.png"
+type = "image"
+title = "generated_image"
