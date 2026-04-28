@@ -605,7 +605,165 @@ function ProductPlaque() {
   );
 }
 
-/* ── 3D inner section ─────────────────────────────────────────────── */
+/* ─────────────────────────────────────────────────────────────────────
+   MOBILE & TABLET LAYOUT
+   Below the `lg` breakpoint the sticky scroll-stack collapses into a
+   natural-flow section: header → canvas → plaque → all 4 cards in a
+   1-col (mobile) / 2-col (tablet) grid, every card always visible and
+   scroll-revealed. Section height is intrinsic, so cards can never be
+   clipped no matter how tall their content grows.
+   ───────────────────────────────────────────────────────────────────── */
+
+function MobileProductCard({ step, index }: { step: typeof STEPS[0]; index: number }) {
+  const Icon = step.icon;
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, margin: "-80px" });
+  return (
+    <motion.div
+      ref={ref}
+      variants={cardVariants}
+      initial="hidden"
+      animate={inView ? "show" : "hidden"}
+      transition={{ delay: index * 0.05 }}
+      style={{
+        transformPerspective: 1400,
+        transformStyle: "preserve-3d",
+        willChange: "transform, opacity, filter, clip-path",
+      }}
+      className="relative rounded-2xl overflow-hidden border border-primary/40 shadow-xl shadow-primary/15 bg-card"
+    >
+      {/* Brand radial sheen */}
+      <span
+        aria-hidden
+        className="pointer-events-none absolute inset-0 rounded-2xl z-[1]"
+        style={{
+          background:
+            "radial-gradient(130% 90% at 0% 0%, rgba(0,150,199,0.12), transparent 55%), radial-gradient(120% 80% at 100% 100%, rgba(3,4,94,0.08), transparent 60%)",
+        }}
+      />
+
+      {/* Image */}
+      <div className="relative w-full aspect-[16/10] sm:aspect-[5/3] overflow-hidden">
+        <motion.img
+          src={step.img}
+          alt={step.imgAlt}
+          variants={imageVariants}
+          className="absolute inset-0 w-full h-full object-cover"
+          style={{ transformOrigin: "center", willChange: "transform, filter, opacity" }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-card/60 via-card/5 to-transparent" />
+      </div>
+
+      {/* Content */}
+      <div className="relative p-5">
+        <div className="flex items-center gap-3 mb-2.5">
+          <motion.div
+            variants={iconVariants}
+            className="w-10 h-10 rounded-lg brand-gradient shadow-md shadow-primary/30 flex items-center justify-center shrink-0"
+          >
+            <Icon className="w-5 h-5 text-white" />
+          </motion.div>
+          <motion.h3
+            variants={titleVariants}
+            className="text-base sm:text-lg font-bold text-foreground leading-snug min-w-0"
+          >
+            {step.title}
+          </motion.h3>
+        </div>
+        <motion.p
+          variants={descVariants}
+          className="text-sm text-muted-foreground leading-relaxed"
+        >
+          {step.desc}
+        </motion.p>
+      </div>
+    </motion.div>
+  );
+}
+
+function Product3DMobileTablet() {
+  /* Mobile cartridge gets a slow auto-tick so it has a gentle idle
+     motion — no sticky scroll progress to drive it on this layout. */
+  const cartridgeRef = useRef(0.25);
+  useEffect(() => {
+    let rafId = 0;
+    let t = 0.25;
+    let dir = 1;
+    const tick = () => {
+      t += 0.0006 * dir;
+      if (t > 0.85) dir = -1;
+      else if (t < 0.15) dir = 1;
+      cartridgeRef.current = t;
+      rafId = requestAnimationFrame(tick);
+    };
+    rafId = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(rafId);
+  }, []);
+
+  return (
+    <section
+      id="product"
+      className="relative overflow-hidden py-12 sm:py-16 px-4 sm:px-6"
+    >
+      {/* Background — matches desktop ambience */}
+      <div className="absolute inset-0 bg-gradient-to-b from-background via-muted/40 to-muted -z-10" />
+      <div
+        className="absolute inset-0 opacity-[0.03] -z-10"
+        style={{
+          backgroundImage:
+            "repeating-linear-gradient(0deg,#0096C7 0,transparent 1px,transparent 56px),repeating-linear-gradient(90deg,#0096C7 0,transparent 1px,transparent 56px)",
+        }}
+      />
+
+      {/* Header */}
+      <div className="text-center mb-8 sm:mb-10 max-w-3xl mx-auto">
+        <span className="inline-block px-4 py-1.5 bg-primary/10 text-primary text-xs sm:text-sm font-bold tracking-widest uppercase rounded-full mb-4">
+          Product Range
+        </span>
+        <h2 className="text-3xl sm:text-4xl font-black text-foreground mb-3 leading-tight">
+          Industrial Sealant Solutions
+        </h2>
+        <div className="w-16 h-1 bg-primary mx-auto rounded-full" />
+      </div>
+
+      {/* Canvas + plaque */}
+      <div className="max-w-md sm:max-w-lg mx-auto mb-10 sm:mb-12">
+        <div className="h-[40vh] sm:h-[46vh] min-h-[260px] max-h-[420px] mb-3">
+          <Canvas
+            camera={{ position: [0, 0, 7], fov: 42 }}
+            shadows={{ type: THREE.PCFShadowMap }}
+            gl={{ antialias: true, powerPreference: "high-performance" }}
+            style={{ width: "100%", height: "100%", display: "block" }}
+          >
+            <ambientLight intensity={0.5} />
+            <directionalLight position={[4, 6, 5]} intensity={2.2} castShadow shadow-mapSize={[2048, 2048]} />
+            <directionalLight position={[-4, 2, -3]} intensity={0.55} color="#48CAE4" />
+            <directionalLight position={[0, -4, 2]} intensity={0.25} color="#ffffff" />
+            <pointLight position={[2, 3, 2]} intensity={0.6} color="#ffffff" />
+            <pointLight position={[-2, -1, 3]} intensity={0.35} color="#0096C7" />
+            <CaulkCartridge scrollProgressRef={cartridgeRef} />
+            <Environment preset="studio" />
+          </Canvas>
+        </div>
+        <div className="flex justify-center">
+          <ProductPlaque />
+        </div>
+      </div>
+
+      {/* All 4 cards — always visible, scroll-revealed individually */}
+      <div
+        className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5 max-w-2xl mx-auto"
+        style={{ perspective: "1400px" }}
+      >
+        {STEPS.map((step, i) => (
+          <MobileProductCard key={step.tag} step={step} index={i} />
+        ))}
+      </div>
+    </section>
+  );
+}
+
+/* ── 3D inner section (DESKTOP ONLY — lg and up) ──────────────────── */
 function Product3DInner() {
   const wrapRef       = useRef<HTMLDivElement>(null);
   const progressRef   = useRef(0);              // always-fresh ref for useFrame
@@ -754,12 +912,30 @@ function Product3DInner() {
 }
 
 /* ── Export ───────────────────────────────────────────────────────── */
+/* Switches between the desktop sticky-scroll layout (lg+) and the
+   natural-flow mobile/tablet layout via matchMedia. Only one tree is
+   ever mounted, so a single WebGL context is created. Desktop logic
+   above is unchanged. */
 export default function Product3D() {
   const [webgl] = useState(isWebGLAvailable);
+  const [isDesktop, setIsDesktop] = useState(() =>
+    typeof window !== "undefined"
+      ? window.matchMedia("(min-width: 1024px)").matches
+      : true,
+  );
+
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 1024px)");
+    const onChange = (e: MediaQueryListEvent) => setIsDesktop(e.matches);
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
+  }, []);
+
   if (!webgl) return <FallbackSection />;
+
   return (
     <WebGLErrorBoundary fallback={<FallbackSection />}>
-      <Product3DInner />
+      {isDesktop ? <Product3DInner /> : <Product3DMobileTablet />}
     </WebGLErrorBoundary>
   );
 }
