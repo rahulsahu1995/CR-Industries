@@ -1,5 +1,5 @@
 import { useRef, useEffect, useState, Component, ErrorInfo, ReactNode } from "react";
-import { motion, useInView, AnimatePresence } from "framer-motion";
+import { motion, useInView } from "framer-motion";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Environment, Text } from "@react-three/drei";
 import * as THREE from "three";
@@ -290,27 +290,15 @@ const STEPS = [
   },
 ];
 
-/* ── Side card ────────────────────────────────────────────────────── */
-function StepCard({ step, visible }: { step: typeof STEPS[0]; visible: boolean }) {
+/* ── Full card (used by fallback section) ─────────────────────────── */
+function StepCard({ step }: { step: typeof STEPS[0] }) {
   const Icon = step.icon;
-  const fromX = step.side === "right" ? 24 : -24;
   return (
-    <motion.div
-      initial={false}
-      animate={{ opacity: visible ? 1 : 0, x: visible ? 0 : fromX }}
-      transition={{ duration: 0.4, ease: "easeOut" }}
-      className="bg-card/90 backdrop-blur-md border border-border/70 rounded-2xl overflow-hidden shadow-xl w-full"
-    >
-      {/* Image */}
+    <div className="bg-card/90 backdrop-blur-md border border-border/70 rounded-2xl overflow-hidden shadow-xl w-full">
       <div className="relative w-full aspect-[4/3] overflow-hidden bg-muted">
-        <img
-          src={step.img}
-          alt={step.imgAlt}
-          className="w-full h-full object-cover"
-        />
+        <img src={step.img} alt={step.imgAlt} className="w-full h-full object-cover" />
         <div className="absolute inset-0 bg-gradient-to-t from-card/60 to-transparent" />
       </div>
-      {/* Text */}
       <div className="p-4">
         <div className="flex items-center gap-2 mb-2">
           <div className="w-6 h-6 rounded-lg brand-gradient flex items-center justify-center shrink-0">
@@ -320,6 +308,50 @@ function StepCard({ step, visible }: { step: typeof STEPS[0]; visible: boolean }
         </div>
         <h3 className="text-sm font-bold text-foreground mb-1 leading-snug">{step.title}</h3>
         <p className="text-muted-foreground text-[11px] leading-relaxed">{step.desc}</p>
+      </div>
+    </div>
+  );
+}
+
+/* ── Compact stacking card ────────────────────────────────────────── */
+function StackCard({ step, isNewest, fromSide }: {
+  step: typeof STEPS[0];
+  isNewest: boolean;
+  fromSide: "left" | "right";
+}) {
+  const Icon = step.icon;
+  return (
+    <motion.div
+      initial={{ opacity: 0, x: fromSide === "right" ? 32 : -32, y: 8 }}
+      animate={{ opacity: 1, x: 0, y: 0 }}
+      transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+      className={`flex gap-0 rounded-xl overflow-hidden shadow-lg border transition-all duration-300 ${
+        isNewest
+          ? "border-primary/60 shadow-primary/15 bg-card"
+          : "border-border/40 bg-card/80 opacity-80"
+      }`}
+    >
+      {/* Thumbnail */}
+      <div className="w-[78px] shrink-0 self-stretch">
+        <img
+          src={step.img}
+          alt={step.imgAlt}
+          className="w-full h-full object-cover"
+          style={{ minHeight: "70px", maxHeight: "90px" }}
+        />
+      </div>
+      {/* Content */}
+      <div className={`flex-1 py-2 px-2.5 min-w-0 border-l-2 ${isNewest ? "border-primary" : "border-border/30"}`}>
+        <div className="flex items-center gap-1 mb-0.5">
+          <div className={`w-3.5 h-3.5 rounded flex items-center justify-center shrink-0 ${isNewest ? "brand-gradient" : "bg-muted"}`}>
+            <Icon className={`w-2 h-2 ${isNewest ? "text-white" : "text-muted-foreground"}`} />
+          </div>
+          <span className="text-[8.5px] font-black tracking-widest text-primary uppercase">Step {step.tag}</span>
+        </div>
+        <p className="text-[10.5px] font-bold text-foreground leading-tight line-clamp-1">{step.title}</p>
+        <p className={`text-[9px] leading-tight mt-0.5 line-clamp-2 ${isNewest ? "text-muted-foreground" : "text-muted-foreground/60"}`}>
+          {step.desc}
+        </p>
       </div>
     </motion.div>
   );
@@ -377,6 +409,51 @@ function FallbackSection() {
   );
 }
 
+/* ── Product label / tag header ──────────────────────────────────── */
+function ProductTag() {
+  return (
+    <div className="flex flex-col items-center">
+      {/* Hanging string */}
+      <div className="w-px h-6 bg-border/60" />
+      {/* Punch hole */}
+      <div className="w-3.5 h-3.5 rounded-full border-2 border-border/70 bg-background z-10 -mb-[7px]" />
+      {/* Tag body */}
+      <div
+        className="relative bg-card border-2 border-border/70 rounded-xl px-7 py-3.5 text-center overflow-hidden"
+        style={{ boxShadow: "0 6px 24px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.07)" }}
+      >
+        {/* Subtle horizontal rule texture */}
+        <div className="absolute inset-0 opacity-[0.025]"
+          style={{ backgroundImage: "repeating-linear-gradient(0deg,#000 0,transparent 1px,transparent 5px)" }} />
+        {/* Brand line */}
+        <p className="relative text-[9px] font-black tracking-[0.35em] uppercase text-primary mb-0.5">
+          C·R Industries
+        </p>
+        {/* Title */}
+        <h2 className="relative text-[18px] font-black text-foreground tracking-[0.15em] uppercase leading-tight">
+          3D Showcase
+        </h2>
+        {/* Mini barcode */}
+        <div className="relative flex justify-center items-end gap-px mt-2">
+          {[2,1,3,1,2,1,1,3,2,1,2,1,3,1,1,2,3,1].map((w, i) => (
+            <div key={i} className="bg-foreground/55 rounded-[1px]"
+              style={{ width: `${w}px`, height: i % 4 === 0 ? "9px" : "6px" }} />
+          ))}
+        </div>
+        <p className="relative text-[7px] text-muted-foreground tracking-[0.3em] mt-0.5">CR-3D · 2026</p>
+      </div>
+      {/* Scroll hint */}
+      <motion.p
+        animate={{ opacity: [0.35, 1, 0.35] }}
+        transition={{ duration: 2.5, repeat: Infinity }}
+        className="text-muted-foreground text-[10px] mt-2 tracking-wide"
+      >
+        ↓ scroll to explore
+      </motion.p>
+    </div>
+  );
+}
+
 /* ── 3D inner section ─────────────────────────────────────────────── */
 function Product3DInner() {
   const wrapRef = useRef<HTMLDivElement>(null);
@@ -386,59 +463,62 @@ function Product3DInner() {
   useEffect(() => {
     const onScroll = () => {
       if (!wrapRef.current) return;
-      const rect = wrapRef.current.getBoundingClientRect();
+      const rect  = wrapRef.current.getBoundingClientRect();
       const total = wrapRef.current.offsetHeight - window.innerHeight;
-      const scrolled = Math.max(0, -rect.top);
-      const p = Math.min(1, scrolled / total);
+      const p     = Math.min(1, Math.max(0, -rect.top) / total);
       setProgress(p);
-      setStep(p < 0.02 ? -1 : p < 0.18 ? 0 : p < 0.34 ? 1 : p < 0.50 ? 2 : p < 0.66 ? 3 : p < 0.82 ? 4 : 5);
+      setStep(
+        p < 0.02 ? -1 : p < 0.18 ? 0 : p < 0.34 ? 1 :
+        p < 0.50 ? 2  : p < 0.66 ? 3 : p < 0.82 ? 4 : 5
+      );
     };
     window.addEventListener("scroll", onScroll, { passive: true });
     onScroll();
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  /* index of currently active left/right card */
-  const activeLeft  = STEPS.filter((s, i) => s.side === "left"  && step >= i);
-  const activeRight = STEPS.filter((s, i) => s.side === "right" && step >= i);
-  const curLeft  = activeLeft[activeLeft.length - 1]   ?? null;
-  const curRight = activeRight[activeRight.length - 1] ?? null;
+  /* All revealed cards per side — accumulate, never discard */
+  const revealedLeft  = STEPS.filter((s, i) => s.side === "left"  && step >= i);
+  const revealedRight = STEPS.filter((s, i) => s.side === "right" && step >= i);
+
+  /* Mobile: all revealed steps in order */
+  const revealedAll = STEPS.filter((_, i) => step >= i);
 
   return (
-    <section id="product" ref={wrapRef} className="relative h-[800vh]">
+    <section id="product" ref={wrapRef} className="relative h-[1200vh]">
       <div className="sticky top-0 h-screen overflow-hidden">
 
         {/* Background */}
         <div className="absolute inset-0 bg-gradient-to-b from-background via-muted/40 to-muted" />
-        <div className="absolute inset-0 opacity-[0.035]"
+        <div className="absolute inset-0 opacity-[0.03]"
           style={{ backgroundImage: "repeating-linear-gradient(0deg,#0096C7 0,transparent 1px,transparent 56px),repeating-linear-gradient(90deg,#0096C7 0,transparent 1px,transparent 56px)" }} />
 
-        {/* ── Main layout: three columns ── */}
+        {/* ── Three-column layout ── */}
         <div className="relative h-full flex flex-col">
-          {/* Top header */}
-          <div className="flex-none pt-6 pb-2 text-center z-10">
-            <span className="text-primary text-[11px] font-black tracking-[0.2em] uppercase">Interactive Experience</span>
-            <h2 className="text-2xl md:text-3xl font-black text-foreground mt-0.5">3D Product Showcase</h2>
-            <motion.p animate={{ opacity: [0.4, 1, 0.4] }} transition={{ duration: 2.5, repeat: Infinity }}
-              className="text-muted-foreground text-xs mt-0.5">↓ Scroll to explore</motion.p>
+
+          {/* ── Tag header ── */}
+          <div className="flex-none pt-4 pb-1 flex justify-center z-10">
+            <ProductTag />
           </div>
 
-          {/* Three columns: left card | canvas | right card */}
-          <div className="flex-1 flex items-center gap-4 px-4 md:px-8 lg:px-12 min-h-0 pb-10">
-            {/* Left column */}
-            <div className="hidden md:flex w-[220px] lg:w-[240px] xl:w-[260px] shrink-0 flex-col items-center justify-center">
-              <AnimatePresence mode="wait">
-                {curLeft && (
-                  <motion.div key={curLeft.tag} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.35 }} className="w-full">
-                    <StepCard step={curLeft} visible />
-                  </motion.div>
-                )}
-              </AnimatePresence>
+          {/* ── Columns ── */}
+          <div className="flex-1 flex items-stretch gap-3 px-3 md:px-6 lg:px-10 min-h-0 pb-4">
+
+            {/* Left stacking column */}
+            <div className="hidden md:flex w-[200px] lg:w-[220px] xl:w-[240px] shrink-0 flex-col justify-end gap-2 pb-2">
+              {revealedLeft.map((s, i) => (
+                <StackCard
+                  key={s.tag}
+                  step={s}
+                  isNewest={i === revealedLeft.length - 1}
+                  fromSide="left"
+                />
+              ))}
             </div>
 
-            {/* Center: 3D canvas — fills remaining space */}
+            {/* Center: 3D canvas */}
             <div className="flex-1 min-w-0 h-full flex items-center justify-center">
-              <div className="w-full h-full max-w-[420px] max-h-[580px]">
+              <div className="w-full h-full max-w-[400px] max-h-[560px]">
                 <Canvas
                   camera={{ position: [0, 0, 5.5], fov: 50 }}
                   shadows={{ type: THREE.PCFShadowMap }}
@@ -456,27 +536,30 @@ function Product3DInner() {
               </div>
             </div>
 
-            {/* Right column */}
-            <div className="hidden md:flex w-[220px] lg:w-[240px] xl:w-[260px] shrink-0 flex-col items-center justify-center">
-              <AnimatePresence mode="wait">
-                {curRight && (
-                  <motion.div key={curRight.tag} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }} transition={{ duration: 0.35 }} className="w-full">
-                    <StepCard step={curRight} visible />
-                  </motion.div>
-                )}
-              </AnimatePresence>
+            {/* Right stacking column */}
+            <div className="hidden md:flex w-[200px] lg:w-[220px] xl:w-[240px] shrink-0 flex-col justify-end gap-2 pb-2">
+              {revealedRight.map((s, i) => (
+                <StackCard
+                  key={s.tag}
+                  step={s}
+                  isNewest={i === revealedRight.length - 1}
+                  fromSide="right"
+                />
+              ))}
             </div>
+
           </div>
 
-          {/* Mobile card — below canvas */}
-          <div className="md:hidden px-4 pb-4">
-            <AnimatePresence mode="wait">
-              {step >= 0 && (
-                <motion.div key={step} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -12 }} transition={{ duration: 0.35 }}>
-                  <StepCard step={STEPS[step]} visible />
-                </motion.div>
-              )}
-            </AnimatePresence>
+          {/* Mobile stacking column */}
+          <div className="md:hidden flex flex-col gap-2 px-3 pb-3 max-h-[30vh] overflow-y-auto">
+            {revealedAll.map((s, i) => (
+              <StackCard
+                key={s.tag}
+                step={s}
+                isNewest={i === revealedAll.length - 1}
+                fromSide={s.side}
+              />
+            ))}
           </div>
 
         </div>
