@@ -6,8 +6,8 @@ import { useTheme } from "@/context/ThemeContext";
 import { Link, useLocation } from "wouter";
 
 const NAV_LINKS = [
-  { label: "Home", href: "#home" },
-  { label: "Product", href: "#product" },
+  { label: "Home", href: "/" },
+  { label: "Product", href: "/product" },
   { label: "About", href: "#about" },
   { label: "E-BROCHURES", href: "#ebrochures" },
   {
@@ -20,7 +20,7 @@ const NAV_LINKS = [
       { label: "Customer Reviews", href: "#reviews" },
     ],
   },
-  { label: "Contact Us", href: "#contact" },
+  { label: "Contact Us", href: "/contact" },
 ];
 
 function smoothScrollTo(hash: string) {
@@ -35,9 +35,9 @@ export default function Navbar() {
   const { theme, toggleTheme } = useTheme();
   const [scrolled, setScrolled] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [newsOpen, setNewsOpen] = useState(false);
   const [mobileNewsOpen, setMobileNewsOpen] = useState(false);
   const [desktopNewsOpen, setDesktopNewsOpen] = useState(false);
+  const [location, navigate] = useLocation();
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -47,7 +47,20 @@ export default function Navbar() {
 
   const handleNavClick = (href: string) => {
     setSidebarOpen(false);
-    setTimeout(() => smoothScrollTo(href), 100);
+    if (href.startsWith("/")) {
+      // Route navigation
+      navigate(href);
+      window.scrollTo({ top: 0, behavior: "auto" });
+      return;
+    }
+    // Hash-based scroll
+    if (location !== "/") {
+      // Navigate to home first, then scroll after render
+      navigate("/");
+      setTimeout(() => smoothScrollTo(href), 350);
+    } else {
+      setTimeout(() => smoothScrollTo(href), 100);
+    }
   };
 
   return (
