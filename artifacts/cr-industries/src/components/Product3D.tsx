@@ -3,7 +3,7 @@ import { motion, useInView } from "framer-motion";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Environment, Text } from "@react-three/drei";
 import * as THREE from "three";
-import { Droplets, ShieldCheck, Wrench, Zap, Layers, Package } from "lucide-react";
+import { Droplets, ShieldCheck, Wrench, Zap } from "lucide-react";
 
 /* ── WebGL detection (before any Three.js code runs) ─────────────── */
 function isWebGLAvailable(): boolean {
@@ -240,7 +240,7 @@ function CaulkCartridge({ scrollProgressRef }: { scrollProgressRef: { current: n
   );
 }
 
-/* ── Step data (6 steps — CR Industries product range) ───────────── */
+/* ── Step data (4 steps — CR Industries product range) ───────────── */
 const STEPS = [
   {
     side: "right" as const,
@@ -278,24 +278,6 @@ const STEPS = [
     img: "/steps/step4.png",
     imgAlt: "Industrial angle grinder with sparks on metal",
   },
-  {
-    side: "right" as const,
-    tag: "05",
-    icon: Layers,
-    title: "Gasket Seals",
-    desc: "C R Industries manufactures cut and moulded gasket seals in NBR, EPDM, and compressed fibre. Designed for flange joints operating under high temperature and pressure in oil, gas, and water systems.",
-    img: "/steps/step5.png",
-    imgAlt: "Rubber gasket seal on steel pipe flange",
-  },
-  {
-    side: "left" as const,
-    tag: "06",
-    icon: Package,
-    title: "Silicone & Adhesive Compounds",
-    desc: "Our cartridge-dispensed silicone and epoxy compounds create structural, weatherproof bonds on metal, glass, and concrete. Used across construction, HVAC, and heavy plant maintenance.",
-    img: "/steps/step6.png",
-    imgAlt: "Silicone sealant cartridge applying compound on metal joint",
-  },
 ];
 
 /* ── Full card (used by fallback section) ─────────────────────────── */
@@ -330,33 +312,37 @@ function StackCard({ step, isNewest, fromSide }: {
   const Icon = step.icon;
   return (
     <motion.div
-      initial={{ opacity: 0, x: fromSide === "right" ? 48 : -48 }}
+      initial={{ opacity: 0, x: fromSide === "right" ? 56 : -56 }}
       animate={{ opacity: 1, x: 0 }}
-      transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-      className={`flex gap-0 rounded-xl overflow-hidden shadow-lg border transition-all duration-500 ${
+      transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
+      className={`rounded-2xl overflow-hidden shadow-xl border transition-all duration-500 ${
         isNewest
-          ? "border-primary/60 shadow-primary/20 bg-card"
-          : "border-border/40 bg-card/75 opacity-70"
+          ? "border-primary/60 shadow-primary/25 bg-card"
+          : "border-border/35 bg-card/70 opacity-65"
       }`}
     >
-      {/* Thumbnail — slightly larger */}
-      <div className="w-[92px] shrink-0 self-stretch">
+      {/* Image — 16/10 proportions */}
+      <div className="relative w-full overflow-hidden" style={{ paddingBottom: "58%" }}>
         <img
           src={step.img}
           alt={step.imgAlt}
-          className="w-full h-full object-cover"
-          style={{ minHeight: "82px", maxHeight: "110px" }}
+          className="absolute inset-0 w-full h-full object-cover transition-transform duration-700"
+          style={{ transform: isNewest ? "scale(1.03)" : "scale(1)" }}
         />
+        {!isNewest && <div className="absolute inset-0 bg-background/25" />}
+        {isNewest && (
+          <div className="absolute inset-0 bg-gradient-to-t from-card/50 via-transparent to-transparent" />
+        )}
       </div>
-      {/* Content — no step label */}
-      <div className={`flex-1 py-2.5 px-3 min-w-0 border-l-2 ${isNewest ? "border-primary" : "border-border/25"}`}>
-        <div className="flex items-center gap-1.5 mb-1">
-          <div className={`w-4 h-4 rounded flex items-center justify-center shrink-0 ${isNewest ? "brand-gradient" : "bg-muted"}`}>
-            <Icon className={`w-2.5 h-2.5 ${isNewest ? "text-white" : "text-muted-foreground"}`} />
+      {/* Content */}
+      <div className={`px-4 py-3 border-t-2 ${isNewest ? "border-primary" : "border-border/20"}`}>
+        <div className="flex items-center gap-2 mb-2">
+          <div className={`w-6 h-6 rounded-lg flex items-center justify-center shrink-0 ${isNewest ? "brand-gradient" : "bg-muted"}`}>
+            <Icon className={`w-3.5 h-3.5 ${isNewest ? "text-white" : "text-muted-foreground"}`} />
           </div>
+          <p className="text-[12.5px] font-bold text-foreground leading-snug line-clamp-1">{step.title}</p>
         </div>
-        <p className="text-[11.5px] font-bold text-foreground leading-tight line-clamp-1">{step.title}</p>
-        <p className={`text-[9.5px] leading-snug mt-1 line-clamp-2 ${isNewest ? "text-muted-foreground" : "text-muted-foreground/50"}`}>
+        <p className={`text-[10.5px] leading-relaxed line-clamp-2 ${isNewest ? "text-muted-foreground" : "text-muted-foreground/45"}`}>
           {step.desc}
         </p>
       </div>
@@ -481,8 +467,8 @@ function Product3DInner() {
       const p     = Math.min(1, Math.max(0, -rect.top) / total);
       progressRef.current = p;
       setStep(
-        p < 0.02 ? -1 : p < 0.18 ? 0 : p < 0.34 ? 1 :
-        p < 0.50 ? 2  : p < 0.66 ? 3 : p < 0.82 ? 4 : 5
+        p < 0.03 ? -1 : p < 0.27 ? 0 : p < 0.52 ? 1 :
+        p < 0.76 ? 2  : 3
       );
     };
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -498,7 +484,7 @@ function Product3DInner() {
   const revealedAll = STEPS.filter((_, i) => step >= i);
 
   return (
-    <section id="product" ref={wrapRef} className="relative h-[1200vh]">
+    <section id="product" ref={wrapRef} className="relative h-[900vh]">
       <div className="sticky top-0 h-screen overflow-hidden">
 
         {/* Background */}
@@ -510,7 +496,7 @@ function Product3DInner() {
         <div className="relative h-full flex items-stretch gap-3 px-3 md:px-6 lg:px-10 py-4">
 
           {/* ── Left stacking column — cards grow top-down ── */}
-          <div className="hidden md:flex w-[200px] lg:w-[220px] xl:w-[240px] shrink-0 flex-col justify-start gap-2 pt-10">
+          <div className="hidden md:flex w-[260px] lg:w-[280px] xl:w-[300px] shrink-0 flex-col justify-start gap-4 pt-10">
             {revealedLeft.map((s, i) => (
               <StackCard
                 key={s.tag}
@@ -533,9 +519,9 @@ function Product3DInner() {
             </motion.p>
 
             {/* 3D canvas — fills remaining space, clipped to container */}
-            <div className="flex-1 w-full min-h-0 max-w-[420px] overflow-hidden" style={{ minHeight: "300px" }}>
+            <div className="flex-1 w-full min-h-0 max-w-[380px] overflow-hidden" style={{ minHeight: "380px" }}>
               <Canvas
-                camera={{ position: [0, 0, 5.5], fov: 50 }}
+                camera={{ position: [0, 0, 7], fov: 42 }}
                 shadows={{ type: THREE.PCFShadowMap }}
                 gl={{ antialias: true, powerPreference: "high-performance" }}
                 style={{ width: "100%", height: "100%" }}
@@ -570,7 +556,7 @@ function Product3DInner() {
           </div>
 
           {/* ── Right stacking column — cards grow top-down ── */}
-          <div className="hidden md:flex w-[200px] lg:w-[220px] xl:w-[240px] shrink-0 flex-col justify-start gap-2 pt-10">
+          <div className="hidden md:flex w-[260px] lg:w-[280px] xl:w-[300px] shrink-0 flex-col justify-start gap-4 pt-10">
             {revealedRight.map((s, i) => (
               <StackCard
                 key={s.tag}
