@@ -5,12 +5,14 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Send, CheckCircle, MapPin, Phone, Mail } from "lucide-react";
 
+/* Limits mirror the server-side zod schema so the form never lets
+   through values that the API will reject with a 400. */
 const schema = z.object({
-  name: z.string().min(2, "Name must be at least 2 characters"),
-  email: z.string().email("Please enter a valid email"),
-  phone: z.string().optional(),
-  subject: z.string().min(3, "Subject must be at least 3 characters"),
-  message: z.string().min(10, "Message must be at least 10 characters"),
+  name: z.string().min(2, "Name must be at least 2 characters").max(120, "Name is too long"),
+  email: z.string().email("Please enter a valid email").max(254, "Email is too long"),
+  phone: z.string().max(40, "Phone number is too long").optional(),
+  subject: z.string().min(3, "Subject must be at least 3 characters").max(200, "Subject is too long"),
+  message: z.string().min(10, "Message must be at least 10 characters").max(5000, "Message is too long (max 5000 characters)"),
 });
 
 type FormData = z.infer<typeof schema>;

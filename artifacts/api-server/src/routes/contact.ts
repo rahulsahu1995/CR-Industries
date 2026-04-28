@@ -5,11 +5,15 @@ import { z } from "zod";
 const router: IRouter = Router();
 
 /* ── Validation ─────────────────────────────────────────────── */
+/* Strips CR/LF from any string field to defeat header-injection
+   attempts on values that flow into mail headers (Subject, Reply-To name). */
+const safeLine = (s: string) => s.replace(/[\r\n]+/g, " ").trim();
+
 const ContactSchema = z.object({
-  name: z.string().trim().min(2, "Name must be at least 2 characters").max(120),
+  name: z.string().trim().min(2, "Name must be at least 2 characters").max(120).transform(safeLine),
   email: z.string().trim().toLowerCase().email("Please enter a valid email").max(254),
   phone: z.string().trim().max(40).optional().or(z.literal("")),
-  subject: z.string().trim().min(3, "Subject must be at least 3 characters").max(200),
+  subject: z.string().trim().min(3, "Subject must be at least 3 characters").max(200).transform(safeLine),
   message: z.string().trim().min(10, "Message must be at least 10 characters").max(5000),
 });
 
@@ -225,12 +229,32 @@ router.post("/contact", async (req, res) => {
     );
     res.json({ message: "Message sent successfully", delivered: true });
   } catch (err: unknown) {
-    // Surface SendGrid response body to logs for diagnosis
-    const sgErr = err as { response?: { body?: unknown }; message?: string; code?: number };
-    req.log.error(
-      { err: sgErr?.message, code: sgErr?.code, body: sgErr?.response?.body },
-      "Failed to send contact email via SendGrid",
-    );
+    /* Log only structured status + error codes/messages.
+       The full `response.body` is included in development for diagnosis,
+       but suppressed in production to avoid surfacing PII or provider
+       internals to log aggregators. */
+    type SgError = {
+      message?: string;
+      code?: number;
+      response?: { body?: { errors?: Array<{ message?: string; field?: string | null }> } };
+    };
+    const sgErr = err as SgError;
+    const errorSummaries = sgErr?.response?.body?.errors?.map((e) => ({
+      field: e.field ?? null,
+      message: e.message,
+    }));
+
+    const logPayload: Record<string, unknown> = {
+      code: sgErr?.code,
+      message: sgErr?.message,
+      sendgridErrors: errorSummaries,
+    };
+    if (process.env.NODE_ENV !== "production") {
+      logPayload["body"] = sgErr?.response?.body;
+    }
+
+    req.log.error(logPayload, "Failed to send contact email via SendGrid");
+
     res.status(502).json({
       message:
         "We couldn't deliver your message right now. Please try again in a moment, or email us directly at crindustries21@gmail.com.",
