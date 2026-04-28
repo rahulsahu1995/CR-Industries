@@ -39,4 +39,4 @@ externalPort = 3000
 
 [userenv.shared]
 CONTACT_EMAIL = "rahul.sahu1995@gmail.com"
-SENDGRID_FROM_EMAIL = "crindustries21@gmail.com"
+SENDGRID_FROM_EMAIL = "rahul.sahu1995@gmail.com"
