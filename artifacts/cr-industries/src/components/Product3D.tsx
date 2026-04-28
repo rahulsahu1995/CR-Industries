@@ -3,7 +3,7 @@ import { motion, useInView, AnimatePresence } from "framer-motion";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Environment } from "@react-three/drei";
 import * as THREE from "three";
-import { ShieldCheck, Zap, Layers, Rocket, Sun, Link2 } from "lucide-react";
+import { Droplets, ShieldCheck, Wrench, Zap, Layers, Package } from "lucide-react";
 
 /* ── WebGL detection (before any Three.js code runs) ─────────────── */
 function isWebGLAvailable(): boolean {
@@ -118,61 +118,61 @@ function CaulkCartridge({ scrollProgress }: { scrollProgress: number }) {
   );
 }
 
-/* ── Step data (6 steps) ──────────────────────────────────────────── */
+/* ── Step data (6 steps — CR Industries product range) ───────────── */
 const STEPS = [
   {
     side: "right" as const,
     tag: "01",
-    icon: ShieldCheck,
-    title: "Precision Thread Sealant",
-    desc: "Industrial-grade PTFE compound locks into pipe threads for a permanent, leak-free seal. Rated to 200 bar and resistant to most chemicals.",
+    icon: Droplets,
+    title: "Gum Hydra Waterproof Compound",
+    desc: "Gum Hydra is C R Industries' hydrophilic expanding sealant — injected into wet or actively leaking concrete joints to form a permanent water-stop seal, even under hydrostatic pressure.",
     img: "/steps/step1.png",
-    imgAlt: "PTFE thread sealant on pipe threads",
+    imgAlt: "Gum Hydra compound applied into concrete expansion joint",
   },
   {
     side: "left" as const,
     tag: "02",
-    icon: Zap,
-    title: "High-Temperature Adhesive",
-    desc: "Specially formulated silicone compound withstands up to 300°C. Ideal for exhaust manifolds, furnaces, and thermal cycling environments.",
+    icon: ShieldCheck,
+    title: "Industrial Sealants",
+    desc: "Our PTFE-based pipe and joint sealants deliver a chemically resistant, vibration-proof seal on metal and plastic threads. Rated up to 200 bar across a full spectrum of gases, oils, and aggressive media.",
     img: "/steps/step2.png",
-    imgAlt: "High-temperature sealant on exhaust joint",
+    imgAlt: "Industrial sealant compound on pipe threads",
   },
   {
     side: "right" as const,
     tag: "03",
-    icon: Layers,
-    title: "Flexible Pipe Jointing",
-    desc: "Anaerobic sealant that remains permanently flexible after cure — engineered for vibration-prone pipeline connections and flanged joints.",
+    icon: Wrench,
+    title: "Precision Taps & Fittings",
+    desc: "C R Industries supplies high-tolerance chrome and brass taps engineered for industrial pipeline systems. Each fitting is pressure-tested and compatible with standard ISO thread forms.",
     img: "/steps/step3.png",
-    imgAlt: "Flexible anaerobic sealant on pipe flange",
+    imgAlt: "Precision chrome industrial tap fitting",
   },
   {
     side: "left" as const,
     tag: "04",
-    icon: Rocket,
-    title: "Fast-Cure Compound",
-    desc: "Sets in 60 seconds with full mechanical strength in 24 hours. Designed for rapid maintenance and emergency pipeline repairs.",
+    icon: Zap,
+    title: "Industrial Grinders",
+    desc: "Our range of industrial angle grinders and abrasive discs prepare metal surfaces for sealing and bonding. Engineered for heavy-duty continuous use in manufacturing and maintenance environments.",
     img: "/steps/step4.png",
-    imgAlt: "Fast-cure sealant being dispensed from nozzle",
+    imgAlt: "Industrial angle grinder with sparks on metal",
   },
   {
     side: "right" as const,
     tag: "05",
-    icon: Sun,
-    title: "UV-Resistant Exterior Sealant",
-    desc: "Weatherproof formulation resists UV degradation, rain, and temperature extremes. Maintains a durable, flexible bead on exterior façades and roofing joints for 20+ years.",
+    icon: Layers,
+    title: "Gasket Seals",
+    desc: "C R Industries manufactures cut and moulded gasket seals in NBR, EPDM, and compressed fibre. Designed for flange joints operating under high temperature and pressure in oil, gas, and water systems.",
     img: "/steps/step5.png",
-    imgAlt: "UV-resistant sealant on exterior facade joint",
+    imgAlt: "Rubber gasket seal on steel pipe flange",
   },
   {
     side: "left" as const,
     tag: "06",
-    icon: Link2,
-    title: "Corrosion-Resistant Metal Bond",
-    desc: "Two-part epoxy adhesive creates a structural bond between dissimilar metals. Provides cathodic protection and resists salt-spray, acids, and industrial solvents.",
+    icon: Package,
+    title: "Silicone & Adhesive Compounds",
+    desc: "Our cartridge-dispensed silicone and epoxy compounds create structural, weatherproof bonds on metal, glass, and concrete. Used across construction, HVAC, and heavy plant maintenance.",
     img: "/steps/step6.png",
-    imgAlt: "Epoxy bonding compound between steel plates",
+    imgAlt: "Silicone sealant cartridge applying compound on metal joint",
   },
 ];
 
