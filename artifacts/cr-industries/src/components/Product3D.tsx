@@ -321,13 +321,13 @@ function StackCard({ step, isNewest, fromSide }: {
           : "border-border/35 bg-card/70 opacity-65"
       }`}
     >
-      {/* Image — 16/10 proportions */}
-      <div className="relative w-full overflow-hidden" style={{ paddingBottom: "58%" }}>
+      {/* Image — fixed height so cards don't exceed column bounds */}
+      <div className="relative w-full h-32 overflow-hidden">
         <img
           src={step.img}
           alt={step.imgAlt}
-          className="absolute inset-0 w-full h-full object-cover transition-transform duration-700"
-          style={{ transform: isNewest ? "scale(1.03)" : "scale(1)" }}
+          className="w-full h-full object-cover transition-transform duration-700"
+          style={{ transform: isNewest ? "scale(1.04)" : "scale(1)" }}
         />
         {!isNewest && <div className="absolute inset-0 bg-background/25" />}
         {isNewest && (
@@ -485,6 +485,7 @@ function Product3DInner() {
 
   return (
     <section id="product" ref={wrapRef} className="relative h-[900vh]">
+      {/* sticky panel — strictly h-screen, nothing escapes */}
       <div className="sticky top-0 h-screen overflow-hidden">
 
         {/* Background */}
@@ -492,77 +493,92 @@ function Product3DInner() {
         <div className="absolute inset-0 opacity-[0.03]"
           style={{ backgroundImage: "repeating-linear-gradient(0deg,#0096C7 0,transparent 1px,transparent 56px),repeating-linear-gradient(90deg,#0096C7 0,transparent 1px,transparent 56px)" }} />
 
-        {/* ── Three-column layout (full height) ── */}
-        <div className="relative h-full flex items-stretch gap-3 px-3 md:px-6 lg:px-10 py-4">
+        {/*
+          Content wrapper:
+          - pt-16  = clears the sticky 64px navbar
+          - pb-3   = small bottom breathing room
+          - overflow-hidden = hard clip — nothing leaks out
+        */}
+        <div className="relative h-full overflow-hidden flex flex-col pt-16 pb-3 px-3 md:px-5 lg:px-8">
 
-          {/* ── Left stacking column — cards grow top-down ── */}
-          <div className="hidden md:flex w-[260px] lg:w-[280px] xl:w-[300px] shrink-0 flex-col justify-start gap-4 pt-10">
-            {revealedLeft.map((s, i) => (
-              <StackCard
-                key={s.tag}
-                step={s}
-                isNewest={i === revealedLeft.length - 1}
-                fromSide="left"
-              />
-            ))}
-          </div>
+          {/* Scroll hint ── tiny, never grows */}
+          <motion.p
+            animate={{ opacity: [0.3, 0.85, 0.3] }}
+            transition={{ duration: 2.6, repeat: Infinity }}
+            className="flex-none text-center text-[9px] text-muted-foreground tracking-widest mb-1"
+          >
+            ↓ scroll to explore
+          </motion.p>
 
-          {/* ── Centre: scroll hint → canvas → plaque ── */}
-          <div className="flex-1 min-w-0 h-full flex flex-col items-center">
-            {/* Scroll hint — top */}
-            <motion.p
-              animate={{ opacity: [0.3, 0.85, 0.3] }}
-              transition={{ duration: 2.6, repeat: Infinity }}
-              className="flex-none text-[9.5px] text-muted-foreground tracking-widest pt-1 pb-0.5"
-            >
-              ↓ scroll to explore
-            </motion.p>
+          {/* Three columns ── fills all remaining space */}
+          <div className="flex-1 min-h-0 flex gap-3">
 
-            {/* 3D canvas — fills remaining space, clipped to container */}
-            <div className="flex-1 w-full min-h-0 max-w-[380px] overflow-hidden" style={{ minHeight: "380px" }}>
-              <Canvas
-                camera={{ position: [0, 0, 7], fov: 42 }}
-                shadows={{ type: THREE.PCFShadowMap }}
-                gl={{ antialias: true, powerPreference: "high-performance" }}
-                style={{ width: "100%", height: "100%" }}
-              >
-                <ambientLight intensity={0.5} />
-                <directionalLight position={[4, 6, 5]} intensity={2.2} castShadow shadow-mapSize={[2048, 2048]} />
-                <directionalLight position={[-4, 2, -3]} intensity={0.55} color="#48CAE4" />
-                <directionalLight position={[0, -4, 2]} intensity={0.25} color="#ffffff" />
-                <pointLight position={[2, 3, 2]} intensity={0.6} color="#ffffff" />
-                <pointLight position={[-2, -1, 3]} intensity={0.35} color="#0096C7" />
-                <CaulkCartridge scrollProgressRef={progressRef} />
-                <Environment preset="studio" />
-              </Canvas>
-            </div>
-
-            {/* Plaque — affixed below the 3D model */}
-            <div className="flex-none py-3 w-full max-w-[320px]">
-              <ProductPlaque />
-            </div>
-
-            {/* Mobile stacking cards — below plaque */}
-            <div className="md:hidden w-full flex flex-col gap-2 pb-2 max-h-[28vh] overflow-y-auto">
-              {revealedAll.map((s, i) => (
+            {/* ── Left column ── clips overflow, no pt bleed */}
+            <div className="hidden md:flex w-[220px] lg:w-[245px] xl:w-[265px] shrink-0
+                            flex-col gap-3 overflow-hidden pt-2">
+              {revealedLeft.map((s, i) => (
                 <StackCard
                   key={s.tag}
                   step={s}
-                  isNewest={i === revealedAll.length - 1}
-                  fromSide={s.side}
+                  isNewest={i === revealedLeft.length - 1}
+                  fromSide="left"
                 />
               ))}
             </div>
+
+            {/* ── Centre: canvas + plaque ── */}
+            <div className="flex-1 min-w-0 min-h-0 flex flex-col overflow-hidden">
+
+              {/* Canvas: flex-1 + min-h-0 lets the flex parent control height exactly */}
+              <div className="flex-1 min-h-0 overflow-hidden">
+                <Canvas
+                  camera={{ position: [0, 0, 7], fov: 42 }}
+                  shadows={{ type: THREE.PCFShadowMap }}
+                  gl={{ antialias: true, powerPreference: "high-performance" }}
+                  style={{ width: "100%", height: "100%", display: "block" }}
+                >
+                  <ambientLight intensity={0.5} />
+                  <directionalLight position={[4, 6, 5]} intensity={2.2} castShadow shadow-mapSize={[2048, 2048]} />
+                  <directionalLight position={[-4, 2, -3]} intensity={0.55} color="#48CAE4" />
+                  <directionalLight position={[0, -4, 2]} intensity={0.25} color="#ffffff" />
+                  <pointLight position={[2, 3, 2]} intensity={0.6} color="#ffffff" />
+                  <pointLight position={[-2, -1, 3]} intensity={0.35} color="#0096C7" />
+                  <CaulkCartridge scrollProgressRef={progressRef} />
+                  <Environment preset="studio" />
+                </Canvas>
+              </div>
+
+              {/* Plaque ── fixed height, always at bottom of canvas area */}
+              <div className="flex-none py-2 flex justify-center">
+                <ProductPlaque />
+              </div>
+
+            </div>
+
+            {/* ── Right column ── same constraints as left */}
+            <div className="hidden md:flex w-[220px] lg:w-[245px] xl:w-[265px] shrink-0
+                            flex-col gap-3 overflow-hidden pt-2">
+              {revealedRight.map((s, i) => (
+                <StackCard
+                  key={s.tag}
+                  step={s}
+                  isNewest={i === revealedRight.length - 1}
+                  fromSide="right"
+                />
+              ))}
+            </div>
+
           </div>
 
-          {/* ── Right stacking column — cards grow top-down ── */}
-          <div className="hidden md:flex w-[260px] lg:w-[280px] xl:w-[300px] shrink-0 flex-col justify-start gap-4 pt-10">
-            {revealedRight.map((s, i) => (
+          {/* Mobile: cards beneath canvas, strictly clipped */}
+          <div className="md:hidden flex-none mt-2 flex flex-col gap-2 overflow-hidden"
+               style={{ maxHeight: "26vh" }}>
+            {revealedAll.map((s, i) => (
               <StackCard
                 key={s.tag}
                 step={s}
-                isNewest={i === revealedRight.length - 1}
-                fromSide="right"
+                isNewest={i === revealedAll.length - 1}
+                fromSide={s.side}
               />
             ))}
           </div>
