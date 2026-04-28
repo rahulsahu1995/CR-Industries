@@ -43,9 +43,11 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
           {/* Column 1: Brand */}
           <div className="flex flex-col items-center text-center">
-            <div className="w-16 h-16 rounded-2xl brand-gradient flex items-center justify-center mb-4">
-              <span className="text-white font-black text-xl">CR</span>
-            </div>
+            <img
+              src="/logo.jpeg"
+              alt="C R Industries Logo"
+              className="w-16 h-16 rounded-2xl object-cover mb-4"
+            />
             <h3 className="text-2xl font-black tracking-widest text-foreground mb-4">
               C R INDUSTRIES
             </h3>

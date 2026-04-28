@@ -63,9 +63,11 @@ export default function Navbar() {
           <div className="flex items-center justify-between h-16 lg:h-20">
             {/* Logo */}
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg brand-gradient flex items-center justify-center">
-                <span className="text-white font-black text-sm">CR</span>
-              </div>
+              <img
+                src="/logo.jpeg"
+                alt="C R Industries Logo"
+                className="w-10 h-10 rounded-lg object-cover"
+              />
               <span
                 className="font-black text-xl tracking-widest"
                 style={{ color: theme === "dark" ? "#e2e8f0" : "#03045E" }}
