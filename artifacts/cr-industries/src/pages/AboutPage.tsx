@@ -22,13 +22,16 @@ import {
 import { useLocation } from "wouter";
 import CountUp from "@/components/CountUp";
 
-/* High-quality industrial imagery — distinct from Home/Product pages */
+/* High-quality industrial imagery — fresh, unique, never reused on this site */
+// Hero: refinery skyline at dusk — chemical engineering at scale
 const HERO_IMG =
-  "https://images.unsplash.com/photo-1720036236694-d0a231c52563?fm=jpg&q=80&w=2400&auto=format&fit=crop";
+  "https://images.unsplash.com/photo-1588011930968-eadac80e6a5a?fm=jpg&q=80&w=2400&auto=format&fit=crop";
+// Section 2: chemistry lab bench with pipettes & glassware — R&D / quality assurance
 const LAB_IMG =
-  "https://images.unsplash.com/photo-1574689036779-bf2052a275c2?fm=jpg&q=80&w=1600&auto=format&fit=crop";
+  "https://images.unsplash.com/photo-1646956141271-05281b4ef472?fm=jpg&q=80&w=1600&auto=format&fit=crop";
+// Section 3: refinery at twilight — global infrastructure & vision
 const SKYLINE_IMG =
-  "https://images.unsplash.com/photo-1768675142255-7d64378910eb?fm=jpg&q=80&w=2400&auto=format&fit=crop";
+  "https://images.unsplash.com/photo-1602056820935-316884c035f8?fm=jpg&q=80&w=2400&auto=format&fit=crop";
 
 /* Product portfolio aligned with C R Industries' core range */
 const PORTFOLIO = [
@@ -117,7 +120,7 @@ export default function AboutPage() {
       <section
         ref={heroRef}
         aria-labelledby="about-hero-title"
-        className="relative h-[100vh] min-h-[640px] flex items-center justify-center overflow-hidden"
+        className="relative h-[100vh] min-h-[680px] flex items-center justify-center overflow-hidden pt-24 lg:pt-28"
       >
         {/* Background with parallax + continuous Ken Burns scale */}
         <motion.div
@@ -212,13 +215,39 @@ export default function AboutPage() {
             transition={{ duration: 0.8, delay: 0.45 }}
             className="text-white/85 text-base sm:text-lg md:text-xl max-w-3xl mx-auto leading-relaxed"
           >
-            C R Industries stands at the forefront of chemical engineering,
-            providing the backbone for modern construction and manufacturing.
-            We specialize in high-grade{" "}
-            <span className="text-white font-bold">Sealants</span> and{" "}
-            <span className="text-white font-bold">Adhesives</span> that ensure
-            structural integrity in the most demanding environments.
+            C R Industries is a premier provider of high-performance{" "}
+            <span className="text-white font-bold">Sealants</span>,{" "}
+            <span className="text-white font-bold">Adhesives</span>,{" "}
+            <span className="text-white font-bold">Industrial Foams</span>,{" "}
+            <span className="text-white font-bold">Protective Coatings</span>,
+            and{" "}
+            <span className="text-white font-bold">Specialty Compounds</span> —
+            products our customers trust completely for their unmatched
+            reliability, rigorous quality assurance, and uncompromising
+            industrial excellence.
           </motion.p>
+
+          {/* Brand-trust pill row */}
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={heroInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.7, delay: 0.7 }}
+            className="mt-8 flex flex-wrap items-center justify-center gap-2 sm:gap-3"
+          >
+            {[
+              "Trusted by 1,200+ Clients",
+              "ISO-Verified Quality",
+              "25 Years of Excellence",
+            ].map((label) => (
+              <span
+                key={label}
+                className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/25 text-white text-[11px] sm:text-xs font-bold tracking-wide"
+              >
+                <span className="w-1.5 h-1.5 rounded-full bg-[#48CAE4]" />
+                {label}
+              </span>
+            ))}
+          </motion.div>
 
           {/* Scroll indicator */}
           <motion.div
@@ -290,16 +319,43 @@ export default function AboutPage() {
                 <span className="text-foreground font-semibold">
                   Protective Coatings
                 </span>{" "}
-                designed for extreme weather resistance, our portfolio is built
-                on a foundation of rigorous testing.
+                engineered for extreme weather resistance, our complete
+                portfolio is built on a foundation of rigorous testing and
+                certified{" "}
+                <span className="text-foreground font-semibold">
+                  quality assurance
+                </span>
+                .
               </p>
-              <p className="text-muted-foreground text-base sm:text-lg leading-relaxed">
-                We don't just sell products — we provide the{" "}
+              <p className="text-muted-foreground text-base sm:text-lg leading-relaxed mb-7">
+                We don't just sell products — we deliver the{" "}
                 <span className="text-primary font-bold">
                   specialty compounds
                 </span>{" "}
-                that power global infrastructure.
+                that power global infrastructure, earning the complete trust
+                of every customer through unwavering reliability.
               </p>
+
+              {/* Trust signals row */}
+              <div className="grid grid-cols-3 gap-3">
+                {[
+                  { num: "100%", label: "Batch Tested" },
+                  { num: "ISO", label: "Certified" },
+                  { num: "24/7", label: "Tech Support" },
+                ].map((t) => (
+                  <div
+                    key={t.label}
+                    className="text-center p-3 rounded-xl border border-border bg-card/40"
+                  >
+                    <div className="text-primary text-base sm:text-lg font-black">
+                      {t.num}
+                    </div>
+                    <div className="text-muted-foreground text-[10px] sm:text-[11px] font-bold uppercase tracking-wider mt-0.5">
+                      {t.label}
+                    </div>
+                  </div>
+                ))}
+              </div>
             </motion.div>
 
             {/* Image — slides in from RIGHT */}
