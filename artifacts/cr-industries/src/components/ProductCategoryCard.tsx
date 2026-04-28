@@ -18,9 +18,13 @@ export default function ProductCategoryCard({
   return (
     <motion.div
       ref={ref}
-      initial={{ opacity: 0, y: 50 }}
-      animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.6, delay: (index % 4) * 0.1, ease: "easeOut" }}
+      initial={{ opacity: 0, y: 60, scale: 0.96 }}
+      animate={inView ? { opacity: 1, y: 0, scale: 1 } : {}}
+      transition={{
+        duration: 0.7,
+        delay: (index % 3) * 0.12 + Math.floor(index / 3) * 0.06,
+        ease: [0.16, 1, 0.3, 1],
+      }}
       whileHover={{ y: -10 }}
       className="group relative bg-card border border-border rounded-3xl overflow-hidden cursor-pointer transition-shadow duration-400"
       style={{ boxShadow: "0 4px 20px rgba(0,0,0,0.04)" }}

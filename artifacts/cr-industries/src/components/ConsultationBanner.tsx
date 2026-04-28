@@ -1,6 +1,6 @@
 import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
-import { Headphones, ArrowRight, Sparkles } from "lucide-react";
+import { MessageSquareText, ArrowRight, Sparkles } from "lucide-react";
 import { useLocation } from "wouter";
 
 export default function ConsultationBanner() {
@@ -120,7 +120,7 @@ export default function ConsultationBanner() {
                 transition={{ type: "spring", stiffness: 280, damping: 15 }}
                 className="relative w-16 h-16 rounded-2xl bg-white/15 backdrop-blur-md border border-white/30 flex items-center justify-center shadow-xl"
               >
-                <Headphones className="w-8 h-8 text-white" />
+                <MessageSquareText className="w-8 h-8 text-white" />
               </motion.div>
             </div>
 
