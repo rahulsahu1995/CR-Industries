@@ -24,3 +24,15 @@ id = "t_F-pR9MkcYQPxbsDYNKv"
 uri = "file://artifacts/cr-industries/public/steps/step4.png"
 type = "image"
 title = "generated_image"
+
+[[generated]]
+id = "6LdT_w37iIivEdN2U2SiN"
+uri = "file://artifacts/cr-industries/public/steps/step5.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "4xklLahMdgVX65cExlrCJ"
+uri = "file://artifacts/cr-industries/public/steps/step6.png"
+type = "image"
+title = "generated_image"

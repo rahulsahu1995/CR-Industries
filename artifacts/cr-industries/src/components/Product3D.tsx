@@ -3,7 +3,7 @@ import { motion, useInView, AnimatePresence } from "framer-motion";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Environment } from "@react-three/drei";
 import * as THREE from "three";
-import { ShieldCheck, Zap, Layers, Rocket } from "lucide-react";
+import { ShieldCheck, Zap, Layers, Rocket, Sun, Link2 } from "lucide-react";
 
 /* ── WebGL detection (before any Three.js code runs) ─────────────── */
 function isWebGLAvailable(): boolean {
@@ -58,8 +58,8 @@ function CaulkCartridge({ scrollProgress }: { scrollProgress: number }) {
   const dark  = <meshStandardMaterial color="#03045E" metalness={0.6}  roughness={0.25} />;
 
   return (
-    /* scale 0.6 shrinks total model; position offsets center to y≈0 */
-    <group ref={rootRef} scale={0.6} position={[0, -0.6, 0]}>
+    /* scale 0.8 — larger model; position offsets center to y≈0 */
+    <group ref={rootRef} scale={0.8} position={[0, -0.8, 0]}>
       <group ref={spinRef}>
         {/* body */}
         <mesh castShadow>
@@ -118,7 +118,7 @@ function CaulkCartridge({ scrollProgress }: { scrollProgress: number }) {
   );
 }
 
-/* ── Step data ────────────────────────────────────────────────────── */
+/* ── Step data (6 steps) ──────────────────────────────────────────── */
 const STEPS = [
   {
     side: "right" as const,
@@ -155,6 +155,24 @@ const STEPS = [
     desc: "Sets in 60 seconds with full mechanical strength in 24 hours. Designed for rapid maintenance and emergency pipeline repairs.",
     img: "/steps/step4.png",
     imgAlt: "Fast-cure sealant being dispensed from nozzle",
+  },
+  {
+    side: "right" as const,
+    tag: "05",
+    icon: Sun,
+    title: "UV-Resistant Exterior Sealant",
+    desc: "Weatherproof formulation resists UV degradation, rain, and temperature extremes. Maintains a durable, flexible bead on exterior façades and roofing joints for 20+ years.",
+    img: "/steps/step5.png",
+    imgAlt: "UV-resistant sealant on exterior facade joint",
+  },
+  {
+    side: "left" as const,
+    tag: "06",
+    icon: Link2,
+    title: "Corrosion-Resistant Metal Bond",
+    desc: "Two-part epoxy adhesive creates a structural bond between dissimilar metals. Provides cathodic protection and resists salt-spray, acids, and industrial solvents.",
+    img: "/steps/step6.png",
+    imgAlt: "Epoxy bonding compound between steel plates",
   },
 ];
 
@@ -259,16 +277,13 @@ function Product3DInner() {
       const scrolled = Math.max(0, -rect.top);
       const p = Math.min(1, scrolled / total);
       setProgress(p);
-      setStep(p < 0.02 ? -1 : p < 0.28 ? 0 : p < 0.52 ? 1 : p < 0.76 ? 2 : 3);
+      setStep(p < 0.02 ? -1 : p < 0.18 ? 0 : p < 0.34 ? 1 : p < 0.50 ? 2 : p < 0.66 ? 3 : p < 0.82 ? 4 : 5);
     };
     window.addEventListener("scroll", onScroll, { passive: true });
     onScroll();
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  /* split steps by side */
-  const leftSteps  = STEPS.filter(s => s.side === "left");
-  const rightSteps = STEPS.filter(s => s.side === "right");
   /* index of currently active left/right card */
   const activeLeft  = STEPS.filter((s, i) => s.side === "left"  && step >= i);
   const activeRight = STEPS.filter((s, i) => s.side === "right" && step >= i);
@@ -276,7 +291,7 @@ function Product3DInner() {
   const curRight = activeRight[activeRight.length - 1] ?? null;
 
   return (
-    <section id="product" ref={wrapRef} className="relative h-[450vh]">
+    <section id="product" ref={wrapRef} className="relative h-[650vh]">
       <div className="sticky top-0 h-screen overflow-hidden">
 
         {/* Background */}
@@ -348,12 +363,6 @@ function Product3DInner() {
             </AnimatePresence>
           </div>
 
-          {/* Progress dots */}
-          <div className="flex-none pb-5 flex items-center justify-center gap-2.5 z-10">
-            {STEPS.map((_, i) => (
-              <div key={i} className={`rounded-full transition-all duration-300 ${step >= i ? "w-6 h-2 bg-primary" : "w-2 h-2 bg-border"}`} />
-            ))}
-          </div>
         </div>
       </div>
     </section>
