@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useState, useRef } from "react";
+import { motion, AnimatePresence, useInView } from "framer-motion";
 import { ChevronDown, MapPin, Phone, Mail } from "lucide-react";
 import { FaInstagram, FaFacebook, FaLinkedin, FaWhatsapp } from "react-icons/fa";
 
@@ -36,13 +36,30 @@ function smoothScrollTo(hash: string) {
 
 export default function Footer() {
   const [newsExpanded, setNewsExpanded] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+  const inView = useInView(ref, { once: true, margin: "-80px" });
+
+  const colVariant = {
+    hidden: { opacity: 0, y: 30 },
+    show: (i: number) => ({
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.55, delay: i * 0.12, ease: "easeOut" as const },
+    }),
+  };
 
   return (
-    <footer className="bg-card border-t border-border">
+    <footer className="bg-card border-t border-border" ref={ref}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
           {/* Column 1: Brand */}
-          <div className="flex flex-col items-center text-center">
+          <motion.div
+            custom={0}
+            variants={colVariant}
+            initial="hidden"
+            animate={inView ? "show" : "hidden"}
+            className="flex flex-col items-center text-center"
+          >
             <img
               src="/logo.jpeg"
               alt="C R Industries Logo"
@@ -58,10 +75,16 @@ export default function Footer() {
               <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
               <span className="text-xs text-muted-foreground">Operating since 2005</span>
             </div>
-          </div>
+          </motion.div>
 
           {/* Column 2: Quick Links */}
-          <div className="flex flex-col items-center text-center">
+          <motion.div
+            custom={1}
+            variants={colVariant}
+            initial="hidden"
+            animate={inView ? "show" : "hidden"}
+            className="flex flex-col items-center text-center"
+          >
             <h4 className="font-black text-foreground text-lg mb-6 tracking-wider uppercase">
               Quick Links
             </h4>
@@ -113,10 +136,16 @@ export default function Footer() {
                 )
               )}
             </nav>
-          </div>
+          </motion.div>
 
           {/* Column 3: Contact & Social */}
-          <div className="flex flex-col items-center text-center">
+          <motion.div
+            custom={2}
+            variants={colVariant}
+            initial="hidden"
+            animate={inView ? "show" : "hidden"}
+            className="flex flex-col items-center text-center"
+          >
             <h4 className="font-black text-foreground text-lg mb-6 tracking-wider uppercase">
               Contact Us
             </h4>
@@ -153,7 +182,7 @@ export default function Footer() {
                 </a>
               ))}
             </div>
-          </div>
+          </motion.div>
         </div>
       </div>
 
