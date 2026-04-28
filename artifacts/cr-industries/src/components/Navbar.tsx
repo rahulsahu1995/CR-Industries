@@ -88,6 +88,8 @@ export default function Navbar() {
               </span>
             </div>
 
+            {/* Right cluster: nav + controls */}
+            <div className="flex items-center gap-6">
             {/* Desktop Nav */}
             <nav className="hidden lg:flex items-center gap-6">
               {NAV_LINKS.map((link) =>
@@ -143,7 +145,7 @@ export default function Navbar() {
             </nav>
 
             {/* Theme toggle + hamburger */}
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 lg:border-l lg:border-border/60 lg:pl-5">
               <button
                 onClick={toggleTheme}
                 className="w-9 h-9 rounded-full flex items-center justify-center bg-secondary hover:bg-primary hover:text-white transition-all duration-200"
@@ -158,6 +160,7 @@ export default function Navbar() {
               >
                 <Menu className="w-5 h-5" />
               </button>
+            </div>
             </div>
           </div>
         </div>
