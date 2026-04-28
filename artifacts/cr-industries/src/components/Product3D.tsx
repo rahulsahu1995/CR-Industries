@@ -1,7 +1,7 @@
 import { useRef, useEffect, useState, Component, ErrorInfo, ReactNode } from "react";
 import { motion, useInView, AnimatePresence } from "framer-motion";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { Environment } from "@react-three/drei";
+import { Environment, Text } from "@react-three/drei";
 import * as THREE from "three";
 import { Droplets, ShieldCheck, Wrench, Zap, Layers, Package } from "lucide-react";
 
@@ -34,85 +34,199 @@ class WebGLErrorBoundary extends Component<
   }
 }
 
-/* ── Caulk cartridge model ────────────────────────────────────────── */
-/* Model local-space bounds:
-   bottom cap: y ≈ -1.65   nozzle tip: y ≈ 3.66
-   center: y ≈ 1.0
-   wrapped in <group scale={0.6} position={[0,-0.6,0]}> → world center ≈ 0 */
+/* ── Polished Caulk Cartridge ─────────────────────────────────────── */
+/* Local-space bounds: bottom ≈ -1.65, nozzle tip ≈ 3.66, center ≈ 1.0
+   scale=0.9, position=[0,-0.9,0] → world top≈2.39, bottom≈-2.39        */
 function CaulkCartridge({ scrollProgress }: { scrollProgress: number }) {
   const rootRef = useRef<THREE.Group>(null);
   const spinRef = useRef<THREE.Group>(null);
 
   useFrame((_, dt) => {
     if (!rootRef.current) return;
-    if (spinRef.current) spinRef.current.rotation.y += dt * 0.45;
-    // Subtle tilt on scroll
-    const tx = scrollProgress * Math.PI * 0.14;
-    const tz = Math.sin(scrollProgress * Math.PI * 2) * 0.08;
+    if (spinRef.current) spinRef.current.rotation.y += dt * 0.4;
+    const tx = scrollProgress * Math.PI * 0.13;
+    const tz = Math.sin(scrollProgress * Math.PI * 2) * 0.07;
     rootRef.current.rotation.x += (tx - rootRef.current.rotation.x) * 0.07;
     rootRef.current.rotation.z += (tz - rootRef.current.rotation.z) * 0.07;
   });
 
-  const white = <meshPhysicalMaterial color="#efefed" metalness={0.04} roughness={0.3} transmission={0.12} thickness={0.3} />;
-  const blue  = <meshStandardMaterial color="#0096C7" metalness={0.75} roughness={0.18} />;
-  const dark  = <meshStandardMaterial color="#03045E" metalness={0.6}  roughness={0.25} />;
-
   return (
-    /* scale 0.8 — larger model; position offsets center to y≈0 */
-    <group ref={rootRef} scale={0.8} position={[0, -0.8, 0]}>
+    <group ref={rootRef} scale={0.9} position={[0, -0.9, 0]}>
       <group ref={spinRef}>
-        {/* body */}
-        <mesh castShadow>
-          <cylinderGeometry args={[0.42, 0.42, 3.2, 52]} />
-          {white}
+
+        {/* ── Main body — clearcoat gloss plastic ── */}
+        <mesh castShadow receiveShadow>
+          <cylinderGeometry args={[0.42, 0.42, 3.2, 64]} />
+          <meshPhysicalMaterial
+            color="#f2f0ec"
+            metalness={0.0}
+            roughness={0.25}
+            clearcoat={0.9}
+            clearcoatRoughness={0.1}
+            reflectivity={0.6}
+          />
         </mesh>
-        {/* bottom cap */}
+
+        {/* ── Bottom cap — dark metallic ── */}
         <mesh castShadow position={[0, -1.62, 0]}>
-          <cylinderGeometry args={[0.42, 0.42, 0.07, 52]} />
-          {dark}
+          <cylinderGeometry args={[0.42, 0.42, 0.07, 64]} />
+          <meshPhysicalMaterial color="#0d0e1a" metalness={0.85} roughness={0.18} clearcoat={0.5} />
         </mesh>
-        {/* bottom ring */}
-        <mesh position={[0, -1.51, 0]}>
-          <torusGeometry args={[0.42, 0.026, 16, 64]} />
-          {blue}
+
+        {/* ── Bottom piston lip ring ── */}
+        <mesh position={[0, -1.535, 0]}>
+          <torusGeometry args={[0.42, 0.032, 20, 80]} />
+          <meshPhysicalMaterial color="#0096C7" metalness={0.85} roughness={0.12} clearcoat={1.0} clearcoatRoughness={0.05} />
         </mesh>
-        {/* shoulder reducer */}
+
+        {/* ── Bottom body accent band ── */}
+        <mesh position={[0, -1.28, 0]}>
+          <cylinderGeometry args={[0.424, 0.424, 0.08, 64]} />
+          <meshStandardMaterial color="#0096C7" metalness={0.8} roughness={0.15} />
+        </mesh>
+
+        {/* ── Shoulder reducer ── */}
         <mesh castShadow position={[0, 1.74, 0]}>
-          <cylinderGeometry args={[0.18, 0.42, 0.62, 52]} />
-          {white}
+          <cylinderGeometry args={[0.18, 0.42, 0.62, 64]} />
+          <meshPhysicalMaterial
+            color="#f2f0ec"
+            metalness={0.0}
+            roughness={0.25}
+            clearcoat={0.9}
+            clearcoatRoughness={0.1}
+          />
         </mesh>
-        {/* nozzle collar */}
+
+        {/* ── Shoulder-top ring ── */}
+        <mesh position={[0, 1.46, 0]}>
+          <torusGeometry args={[0.42, 0.018, 16, 80]} />
+          <meshPhysicalMaterial color="#0096C7" metalness={0.85} roughness={0.12} clearcoat={1.0} clearcoatRoughness={0.05} />
+        </mesh>
+
+        {/* ── Nozzle collar ── */}
         <mesh castShadow position={[0, 2.14, 0]}>
-          <cylinderGeometry args={[0.14, 0.18, 0.16, 32]} />
-          {blue}
+          <cylinderGeometry args={[0.145, 0.185, 0.18, 40]} />
+          <meshPhysicalMaterial color="#0096C7" metalness={0.85} roughness={0.12} clearcoat={1.0} clearcoatRoughness={0.05} />
         </mesh>
-        {/* tapered nozzle */}
-        <mesh castShadow position={[0, 2.89, 0]}>
-          <cylinderGeometry args={[0.022, 0.12, 1.34, 28]} />
-          {white}
+
+        {/* ── Nozzle thread ring ── */}
+        <mesh position={[0, 2.24, 0]}>
+          <torusGeometry args={[0.155, 0.014, 12, 40]} />
+          <meshStandardMaterial color="#03045E" metalness={0.7} roughness={0.2} />
         </mesh>
-        {/* tip */}
-        <mesh castShadow position={[0, 3.6, 0]}>
-          <coneGeometry args={[0.022, 0.11, 16]} />
-          {white}
+
+        {/* ── Long tapered nozzle ── */}
+        <mesh castShadow position={[0, 2.9, 0]}>
+          <cylinderGeometry args={[0.024, 0.122, 1.35, 32]} />
+          <meshPhysicalMaterial
+            color="#dcdad6"
+            metalness={0.0}
+            roughness={0.3}
+            clearcoat={0.7}
+            clearcoatRoughness={0.15}
+          />
         </mesh>
-        {/* label band */}
-        <mesh position={[0, 0, 0]}>
-          <cylinderGeometry args={[0.426, 0.426, 1.6, 52]} />
-          <meshStandardMaterial color="#ffffff" roughness={0.75} metalness={0} transparent opacity={0.96} />
+
+        {/* ── Nozzle tip cone ── */}
+        <mesh castShadow position={[0, 3.61, 0]}>
+          <coneGeometry args={[0.024, 0.12, 20]} />
+          <meshPhysicalMaterial color="#dcdad6" metalness={0.0} roughness={0.3} clearcoat={0.7} />
         </mesh>
-        {/* label accent stripes */}
-        {[0.82, -0.82].map((y, i) => (
-          <mesh key={i} position={[0, y, 0]}>
-            <torusGeometry args={[0.43, 0.019, 12, 64]} />
-            {blue}
+
+        {/* ── White label background cylinder ── */}
+        <mesh position={[0, 0.05, 0]}>
+          <cylinderGeometry args={[0.427, 0.427, 1.65, 64]} />
+          <meshStandardMaterial color="#ffffff" roughness={0.6} metalness={0.0} transparent opacity={0.97} />
+        </mesh>
+
+        {/* ── Top label blue band ── */}
+        <mesh position={[0, 0.89, 0]}>
+          <cylinderGeometry args={[0.429, 0.429, 0.14, 64]} />
+          <meshStandardMaterial color="#0096C7" metalness={0.5} roughness={0.3} />
+        </mesh>
+
+        {/* ── Bottom label blue band ── */}
+        <mesh position={[0, -0.77, 0]}>
+          <cylinderGeometry args={[0.429, 0.429, 0.12, 64]} />
+          <meshStandardMaterial color="#0096C7" metalness={0.5} roughness={0.3} />
+        </mesh>
+
+        {/* ── Label accent stripe (thin, mid) ── */}
+        <mesh position={[0, 0.16, 0]}>
+          <torusGeometry args={[0.432, 0.008, 10, 80]} />
+          <meshStandardMaterial color="#03045E" metalness={0.4} roughness={0.4} transparent opacity={0.5} />
+        </mesh>
+
+        {/* ── "C·R INDUSTRIES" brand line ── */}
+        <Text
+          position={[0, 0.6, 0.435]}
+          fontSize={0.056}
+          color="#03045E"
+          anchorX="center"
+          anchorY="middle"
+          letterSpacing={0.18}
+          font={undefined}
+        >
+          C·R INDUSTRIES
+        </Text>
+
+        {/* ── "SEALANT" main label ── */}
+        {/* @ts-ignore */}
+        <Text
+          position={[0, 0.25, 0.435]}
+          fontSize={0.155}
+          color="#0096C7"
+          anchorX="center"
+          anchorY="middle"
+          letterSpacing={0.08}
+          outlineWidth={0.004}
+          outlineColor="#03045E"
+        >
+          SEALANT
+        </Text>
+
+        {/* ── "INDUSTRIAL GRADE" sub-line ── */}
+        <Text
+          position={[0, -0.12, 0.435]}
+          fontSize={0.044}
+          color="#555555"
+          anchorX="center"
+          anchorY="middle"
+          letterSpacing={0.12}
+          font={undefined}
+        >
+          INDUSTRIAL GRADE
+        </Text>
+
+        {/* ── Volume text ── */}
+        <Text
+          position={[0, -0.34, 0.435]}
+          fontSize={0.038}
+          color="#888888"
+          anchorX="center"
+          anchorY="middle"
+          letterSpacing={0.06}
+          font={undefined}
+        >
+          300 ML / 10.1 FL OZ
+        </Text>
+
+        {/* ── Top accent stripes ── */}
+        {[1.04, 1.1].map((y, i) => (
+          <mesh key={`top-${i}`} position={[0, y, 0]}>
+            <torusGeometry args={[0.432, 0.007, 10, 80]} />
+            <meshStandardMaterial color="#0096C7" metalness={0.6} roughness={0.2} />
           </mesh>
         ))}
-        {/* center ring */}
-        <mesh position={[0, 0, 0]}>
-          <torusGeometry args={[0.43, 0.012, 12, 64]} />
-          <meshStandardMaterial color="#0096C7" metalness={0.5} roughness={0.3} transparent opacity={0.45} />
-        </mesh>
+
+        {/* ── Bottom accent stripes ── */}
+        {[-0.64, -0.7].map((y, i) => (
+          <mesh key={`bot-${i}`} position={[0, y, 0]}>
+            <torusGeometry args={[0.432, 0.007, 10, 80]} />
+            <meshStandardMaterial color="#0096C7" metalness={0.6} roughness={0.2} />
+          </mesh>
+        ))}
+
       </group>
     </group>
   );
@@ -291,7 +405,7 @@ function Product3DInner() {
   const curRight = activeRight[activeRight.length - 1] ?? null;
 
   return (
-    <section id="product" ref={wrapRef} className="relative h-[650vh]">
+    <section id="product" ref={wrapRef} className="relative h-[800vh]">
       <div className="sticky top-0 h-screen overflow-hidden">
 
         {/* Background */}
@@ -326,14 +440,16 @@ function Product3DInner() {
             <div className="flex-1 min-w-0 h-full flex items-center justify-center">
               <div className="w-full h-full max-w-[420px] max-h-[580px]">
                 <Canvas
-                  camera={{ position: [0, 0, 5], fov: 50 }}
+                  camera={{ position: [0, 0, 5.5], fov: 50 }}
                   shadows={{ type: THREE.PCFShadowMap }}
-                  gl={{ antialias: true }}
+                  gl={{ antialias: true, powerPreference: "high-performance" }}
                 >
-                  <ambientLight intensity={0.65} />
-                  <directionalLight position={[4, 5, 4]} intensity={1.7} castShadow shadow-mapSize={[1024, 1024]} />
-                  <directionalLight position={[-4, 2, -2]} intensity={0.4} color="#0096C7" />
-                  <pointLight position={[0, -3, 3]} intensity={0.3} color="#48CAE4" />
+                  <ambientLight intensity={0.5} />
+                  <directionalLight position={[4, 6, 5]} intensity={2.2} castShadow shadow-mapSize={[2048, 2048]} />
+                  <directionalLight position={[-4, 2, -3]} intensity={0.55} color="#48CAE4" />
+                  <directionalLight position={[0, -4, 2]} intensity={0.25} color="#ffffff" />
+                  <pointLight position={[2, 3, 2]} intensity={0.6} color="#ffffff" />
+                  <pointLight position={[-2, -1, 3]} intensity={0.35} color="#0096C7" />
                   <CaulkCartridge scrollProgress={progress} />
                   <Environment preset="studio" />
                 </Canvas>
