@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import soudalLogo from "@assets/SOUDAL_1777887969287.webp";
+import cumiLogo from "@assets/CUMI_1777888092659.png";
 
 /* ────────────────────────────────────────────────────────────────────
    Strategic Partners — primary landing hero
@@ -95,6 +96,7 @@ const PARTNERS: Partner[] = [
     summary:
       "Carborundum Universal Limited — a leading materials sciences engineering solutions provider, part of the 125-year-old Murugappa Group, listed on NSE and BSE.",
     monogram: "C",
+    logo: cumiLogo,
     accent: "#C8102E",
     accent2: "#1B1B1B",
     facts: [
