@@ -418,7 +418,7 @@ export default function PartnerDetailPage() {
       {/* Partnership Pillars — editorial typography layout */}
       <section
         ref={pillarsRef}
-        className="relative py-16 sm:py-24 lg:py-28 px-4 sm:px-6 overflow-hidden"
+        className="relative py-10 sm:py-14 lg:py-16 px-4 sm:px-6 overflow-hidden"
       >
         {/* Parallax brand-tinted background blobs */}
         <motion.div
@@ -457,7 +457,7 @@ export default function PartnerDetailPage() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-80px" }}
             transition={{ duration: 0.6 }}
-            className="mb-12 sm:mb-16 text-center"
+            className="mb-8 sm:mb-10 text-center"
           >
             <span
               className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-4 border"
@@ -500,7 +500,7 @@ export default function PartnerDetailPage() {
                   delay: i * 0.04,
                   ease: [0.16, 1, 0.3, 1],
                 }}
-                className="group relative py-5 sm:py-6 border-b border-border/60 last:border-0 list-none"
+                className="group relative py-3 sm:py-3.5 border-b border-border/60 last:border-0 list-none"
                 style={
                   {
                     ["--partner-accent" as string]: partner.accent,
