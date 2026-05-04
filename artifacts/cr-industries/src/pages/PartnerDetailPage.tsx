@@ -415,6 +415,105 @@ export default function PartnerDetailPage() {
         </div>
       </section>
 
+      {/* Gallery — only when partner has images (positioned above pillars for prominence) */}
+      {partner.gallery && partner.gallery.length > 0 && (
+        <section className="relative pb-4 sm:pb-6 px-4 sm:px-6">
+          <div
+            className={`mx-auto ${
+              partner.gallery.length === 1
+                ? "max-w-2xl"
+                : partner.gallery.length === 2
+                  ? "max-w-4xl"
+                  : "max-w-6xl"
+            }`}
+          >
+            <motion.div
+              initial={reduce ? undefined : { opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-80px" }}
+              transition={{ duration: 0.6 }}
+              className="text-center mb-6 sm:mb-8"
+            >
+              <span
+                className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-3 border"
+                style={{
+                  backgroundColor: `${partner.accent}10`,
+                  borderColor: `${partner.accent}30`,
+                  color: partner.accent,
+                }}
+              >
+                <Sparkles className="w-3.5 h-3.5" />
+                <span className="text-[11px] font-bold tracking-widest uppercase">
+                  In Pictures
+                </span>
+              </span>
+              <h3 className="text-2xl md:text-3xl font-black text-foreground tracking-tight">
+                Inside {partner.shortName}
+              </h3>
+            </motion.div>
+
+            <div
+              className={`grid gap-4 sm:gap-5 ${
+                partner.gallery.length === 1
+                  ? "grid-cols-1"
+                  : partner.gallery.length === 2
+                    ? "grid-cols-1 md:grid-cols-2"
+                    : "grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
+              }`}
+            >
+              {partner.gallery.map((img, i) => (
+                <motion.figure
+                  key={img.src}
+                  initial={reduce ? undefined : { opacity: 0, y: 24 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-60px" }}
+                  transition={{
+                    duration: 0.55,
+                    delay: i * 0.08,
+                    ease: [0.16, 1, 0.3, 1],
+                  }}
+                  whileHover={
+                    reduce ? undefined : { y: -6, transition: { duration: 0.3 } }
+                  }
+                  className="group relative rounded-2xl overflow-hidden bg-card border border-border shadow-md shadow-foreground/5 hover:shadow-2xl hover:shadow-foreground/10 transition-shadow duration-300"
+                >
+                  <div className="relative aspect-[4/3] overflow-hidden bg-muted">
+                    <img
+                      src={img.src}
+                      alt={img.alt}
+                      loading="lazy"
+                      decoding="async"
+                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-110"
+                    />
+                    {/* Accent corner ribbon — grows on hover */}
+                    <div
+                      aria-hidden
+                      className="absolute top-0 left-0 right-0 h-1 transition-all duration-500 group-hover:h-1.5"
+                      style={{
+                        background: `linear-gradient(90deg, ${partner.accent} 0%, ${partner.accent2} 100%)`,
+                      }}
+                    />
+                    {/* Hover overlay — subtle brand-tinted veil */}
+                    <div
+                      aria-hidden
+                      className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+                      style={{
+                        background: `linear-gradient(180deg, transparent 40%, ${partner.accent}55 100%)`,
+                      }}
+                    />
+                  </div>
+                  {img.caption && (
+                    <figcaption className="px-4 sm:px-5 py-3.5 text-xs sm:text-sm text-muted-foreground leading-relaxed border-t border-border bg-background transition-colors duration-300 group-hover:bg-muted/30">
+                      {img.caption}
+                    </figcaption>
+                  )}
+                </motion.figure>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* Partnership Pillars — editorial typography layout */}
       <section
         ref={pillarsRef}
@@ -532,97 +631,6 @@ export default function PartnerDetailPage() {
           </ol>
         </div>
       </section>
-
-      {/* Gallery — only when partner has images */}
-      {partner.gallery && partner.gallery.length > 0 && (
-        <section className="relative pb-12 sm:pb-16 px-4 sm:px-6">
-          <div className="max-w-6xl mx-auto">
-            <motion.div
-              initial={reduce ? undefined : { opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-80px" }}
-              transition={{ duration: 0.6 }}
-              className="text-center mb-8 sm:mb-10"
-            >
-              <span
-                className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-4 border"
-                style={{
-                  backgroundColor: `${partner.accent}10`,
-                  borderColor: `${partner.accent}30`,
-                  color: partner.accent,
-                }}
-              >
-                <Sparkles className="w-3.5 h-3.5" />
-                <span className="text-[11px] font-bold tracking-widest uppercase">
-                  In Pictures
-                </span>
-              </span>
-              <h3 className="text-2xl md:text-3xl font-black text-foreground tracking-tight">
-                Inside {partner.shortName}
-              </h3>
-            </motion.div>
-
-            <div
-              className={`grid gap-4 sm:gap-5 ${
-                partner.gallery.length === 1
-                  ? "grid-cols-1"
-                  : partner.gallery.length === 2
-                    ? "grid-cols-1 md:grid-cols-2"
-                    : "grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
-              }`}
-            >
-              {partner.gallery.map((img, i) => (
-                <motion.figure
-                  key={img.src}
-                  initial={reduce ? undefined : { opacity: 0, y: 24 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: "-60px" }}
-                  transition={{
-                    duration: 0.55,
-                    delay: i * 0.08,
-                    ease: [0.16, 1, 0.3, 1],
-                  }}
-                  whileHover={
-                    reduce ? undefined : { y: -6, transition: { duration: 0.3 } }
-                  }
-                  className="group relative rounded-2xl overflow-hidden bg-card border border-border shadow-md shadow-foreground/5 hover:shadow-2xl hover:shadow-foreground/10 transition-shadow duration-300"
-                >
-                  <div className="relative aspect-[4/3] overflow-hidden bg-muted">
-                    <img
-                      src={img.src}
-                      alt={img.alt}
-                      loading="lazy"
-                      decoding="async"
-                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-110"
-                    />
-                    {/* Accent corner ribbon — grows on hover */}
-                    <div
-                      aria-hidden
-                      className="absolute top-0 left-0 right-0 h-1 transition-all duration-500 group-hover:h-1.5"
-                      style={{
-                        background: `linear-gradient(90deg, ${partner.accent} 0%, ${partner.accent2} 100%)`,
-                      }}
-                    />
-                    {/* Hover overlay — subtle brand-tinted veil */}
-                    <div
-                      aria-hidden
-                      className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
-                      style={{
-                        background: `linear-gradient(180deg, transparent 40%, ${partner.accent}55 100%)`,
-                      }}
-                    />
-                  </div>
-                  {img.caption && (
-                    <figcaption className="px-4 sm:px-5 py-3.5 text-xs sm:text-sm text-muted-foreground leading-relaxed border-t border-border bg-background transition-colors duration-300 group-hover:bg-muted/30">
-                      {img.caption}
-                    </figcaption>
-                  )}
-                </motion.figure>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
 
       {/* CTA strip */}
       <section className="relative py-12 sm:py-16 px-4 sm:px-6">
