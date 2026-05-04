@@ -505,11 +505,11 @@ export default function StrategicPartnersHero() {
                       <div className="relative">
                         <div className="absolute inset-0 rounded-full bg-white/15 blur-2xl scale-125" />
                         {partner.logo ? (
-                          <div className="relative w-44 h-44 md:w-56 md:h-56 rounded-3xl bg-white border border-white/40 flex items-center justify-center shadow-2xl p-5 md:p-6">
+                          <div className="relative w-52 h-52 md:w-64 md:h-64 rounded-3xl bg-white border border-white/40 shadow-2xl p-5 md:p-7 flex items-center justify-center overflow-hidden">
                             <img
                               src={partner.logo}
                               alt={`${partner.name} logo`}
-                              className="max-w-full max-h-full w-auto h-auto object-contain"
+                              className="block w-full h-full object-contain object-center"
                               loading="lazy"
                               decoding="async"
                             />
@@ -783,12 +783,12 @@ function PartnerModal({
                 {partner.tagline}
               </p>
             </div>
-            <div className="hidden sm:flex shrink-0 w-20 h-20 rounded-2xl bg-white/95 border border-white/35 backdrop-blur-md items-center justify-center overflow-hidden p-2">
+            <div className="hidden sm:flex shrink-0 w-24 h-20 rounded-2xl bg-white/95 border border-white/35 backdrop-blur-md items-center justify-center overflow-hidden p-2">
               {partner.logo ? (
                 <img
                   src={partner.logo}
                   alt={`${partner.name} logo`}
-                  className="max-w-full max-h-full w-auto h-auto object-contain"
+                  className="block w-full h-full object-contain object-center"
                   loading="lazy"
                   decoding="async"
                 />
