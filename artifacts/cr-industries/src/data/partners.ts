@@ -19,6 +19,12 @@ import kiplAbrasives from "@assets/Abrasives_1777894859206.jpg";
 import kiplButyl from "@assets/Butyl_Rubber_Products_1777894893448.jpg";
 import kiplFilters from "@assets/Air_&_Liquid_Filters_1777894918740.jpg";
 import kiplPneumatic from "@assets/Pneumatic_Tools_1777894939109.jpg";
+import soudalSilirubSsw from "@assets/Soudal_image_-1_1777895435896.webp";
+import soudalGasketSeal from "@assets/Soudal_image_-2_1777895468706.webp";
+import soudalFirecrylFr from "@assets/Soudal_image_-3_1777895500308.webp";
+import soudalFireSiliconeB1 from "@assets/Soudal_image_-4_1777895535292.webp";
+import soudalSoudagumHydro from "@assets/Soudal_image_-5_1777895584925.webp";
+import soudalApplicator from "@assets/Soudal_image_-6_1777895650520.webp";
 
 export type Fact = { icon: LucideIcon; label: string; value: string };
 export type Section = { heading: string; body: string };
@@ -72,27 +78,15 @@ export const PARTNERS: Partner[] = [
     detail: {
       heading: "The Soudal Group is Building the Future",
       intro:
-        "The Soudal Group is the largest independent European manufacturer of sealants, adhesives and polyurethane foams for professional and private users. This Belgian family business, based in Turnhout and founded by Vic Swerts in 1966, has developed into an international player and expert in chemical construction specialities. The group operates 19 production branches on 5 continents, sales offices in 44 countries and employs around 3,100 people worldwide. A long-term vision for innovation — with substantial investment in R&D — and adaptations to local market requirements have driven the success of the Soudal Group.",
+        "Founded by Vic Swerts in Turnhout, Belgium in 1966, the Soudal Group is the largest independent European manufacturer of sealants, adhesives and polyurethane foams. With 19 production branches across 5 continents, sales offices in 44 countries and around 3,100 people worldwide, Soudal is a Belgian family business and global expert in chemical construction specialities — driven by long-term innovation and deep R&D investment.",
       sections: [
         {
-          heading: "Innovation",
-          body: "The research and development of new products, product technologies and production methods is in our genes. A team of highly qualified researchers, engineers and technicians is continuously working on the development of new products and applications adapted to the specific requirements of customers in various countries — resulting in pioneering innovative products that strengthen Soudal's market position. Innovation is the driver for organic growth at the Soudal Group.",
-        },
-        {
-          heading: "Facts & Figures",
-          body: "A consolidated turnover of €835 million in 2018; 350 million sealant and polyurethane foam units produced across 19 production branches; around 3,100 employees worldwide; almost €59 million in investment in 2018 — those are the impressive facts and figures of the Soudal Group.",
-        },
-        {
           heading: "Our Activities",
-          body: "The Soudal Group manufactures products for its own brands and private labels covering 7 groups: silicones and other sealants, polyurethane foams, adhesives, hybrid polymers, technical aerosols and chemical building products. With its own brands, the Soudal Group focuses on 3 market segments: construction, industrial and retail.",
+          body: "The Soudal Group manufactures products for its own brands and private labels covering 7 groups: silicones and other sealants, polyurethane foams, adhesives, hybrid polymers, technical aerosols and chemical building products — focused on three market segments: construction, industrial and retail.",
         },
         {
-          heading: "Sustainability",
-          body: "The Soudal Group is leading the way in the development of products for sustainable construction, which are safe for people and the environment. As a result of the most modern production technology, energy, water usage, and residual waste are limited. The welfare of employees is another key priority.",
-        },
-        {
-          heading: "Sponsoring",
-          body: "From 2023 onwards, the Soudal-Quick Step team represents Soudal at all large international cycling competitions and provides publicity in 190 countries (especially via the Tour de France). The basic values propagated by Soudal — hard work, perseverance and being better than your competitors — are also found in cycling, leading to a positive image transfer to the Soudal brand. Soudal also sponsors KVC Westerlo (football), Soudal Classics (cyclocross) and the Soudal Open (Belgian Open Golf).",
+          heading: "Innovation & Sustainability",
+          body: "Research and development is in our genes — a team of qualified researchers, engineers and technicians continuously develops pioneering products adapted to local requirements. The group leads in sustainable construction, with modern production technology that limits energy use, water consumption and residual waste.",
         },
         {
           heading: "Why This Partnership",
@@ -101,6 +95,44 @@ export const PARTNERS: Partner[] = [
       ],
       cta: "Discover Soudal",
     },
+    products: [
+      {
+        name: "Silirub SSW",
+        description:
+          "A one-part, premium neutral cure, high-modulus silicone sealant for a wide variety of glazing applications in facades and fenestration. Cures into a durable, permanently flexible silicone rubber upon exposure to atmospheric moisture — its exceptional tensile strength and aging resistance makes it ideal for architectural glazing and bonding.",
+        image: soudalSilirubSsw,
+      },
+      {
+        name: "Gasket Seal — RTV Silicone Gasket Maker",
+        description:
+          "A temperature-resistant, elastic, one-component silicone sealant that replaces all cork, felt, fiber, paper and rubber gaskets in all thicknesses and widths — the dependable RTV gasket-making solution for engines and machinery.",
+        image: soudalGasketSeal,
+      },
+      {
+        name: "Firecryl FR — Fire Retardant Paintable Acrylic Sealant",
+        description:
+          "A fire-rated acrylic sealant and filler with up to 4 hours fire rating. Intumescent at temperatures above 120°C, it prevents the penetration of smoke and fire through joints and gaps. Fully paintable for clean architectural finishes.",
+        image: soudalFirecrylFr,
+      },
+      {
+        name: "Firesilicone B1 FR — Fire Retardant B1 Silicone Sealant",
+        description:
+          "A high-quality, neutral, elastic, one-component silicone sealant conforming to the DIN 4102 B1 standard for fire retardancy — with a fire rating of up to 4 hours in certain joint configurations (EN 1366 Part 4 — NN713.020 — BS 476/20).",
+        image: soudalFireSiliconeB1,
+      },
+      {
+        name: "Soudagum Hydro",
+        description:
+          "A one-component, solvent-free waterproofing product for horizontal and vertical surfaces — a flexible, watertight membrane with excellent adhesion to most common substrates, even old or humid, without the use of a primer.",
+        image: soudalSoudagumHydro,
+      },
+      {
+        name: "Sealant Applicators",
+        description:
+          "A complete range of professional applicators — including the MS 168 C (Camel) manual applicator, the Trent pneumatic applicator (600 ml) and the Tyne pneumatic applicator (300 ml) — engineered for smooth, consistent dispensing of sealants and adhesives on every job.",
+        image: soudalApplicator,
+      },
+    ],
     gallery: [
       {
         src: soudalBuilding,
