@@ -535,7 +535,7 @@ function FallbackSection() {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true });
   return (
-    <section id="product" className="py-0 bg-gradient-to-b from-background to-muted">
+    <section id="product" className="py-4 sm:py-6 bg-gradient-to-b from-background to-muted">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div ref={ref} initial={{ opacity: 0, y: 30 }}
           animate={inView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.6 }}
@@ -703,7 +703,7 @@ function Product3DMobileTablet() {
   return (
     <section
       id="product"
-      className="relative overflow-hidden py-0 px-4 sm:px-6"
+      className="relative overflow-hidden py-4 sm:py-6 px-4 sm:px-6"
     >
       {/* Background — matches desktop ambience */}
       <div className="absolute inset-0 bg-gradient-to-b from-background via-muted/40 to-muted -z-10" />
