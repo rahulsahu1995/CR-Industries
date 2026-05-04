@@ -383,7 +383,7 @@ export default function PartnerDetailPage() {
       </section>
 
       {/* Intro band */}
-      <section className="relative py-12 sm:py-16 px-4 sm:px-6">
+      <section className="relative pt-10 sm:pt-12 pb-6 sm:pb-8 px-4 sm:px-6">
         <div className="max-w-4xl mx-auto">
           <motion.div
             initial={reduce ? undefined : { opacity: 0, y: 20 }}
@@ -417,7 +417,7 @@ export default function PartnerDetailPage() {
 
       {/* Gallery — only when partner has images (positioned above pillars for prominence) */}
       {partner.gallery && partner.gallery.length > 0 && (
-        <section className="relative pb-4 sm:pb-6 px-4 sm:px-6">
+        <section className="relative pb-2 sm:pb-3 px-4 sm:px-6">
           <div
             className={`mx-auto ${
               partner.gallery.length === 1
@@ -432,10 +432,10 @@ export default function PartnerDetailPage() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-80px" }}
               transition={{ duration: 0.6 }}
-              className="text-center mb-6 sm:mb-8"
+              className="text-center mb-4 sm:mb-5"
             >
               <span
-                className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-3 border"
+                className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-2.5 border"
                 style={{
                   backgroundColor: `${partner.accent}10`,
                   borderColor: `${partner.accent}30`,
@@ -517,7 +517,7 @@ export default function PartnerDetailPage() {
       {/* Partnership Pillars — editorial typography layout */}
       <section
         ref={pillarsRef}
-        className="relative py-10 sm:py-14 lg:py-16 px-4 sm:px-6 overflow-hidden"
+        className="relative py-6 sm:py-8 lg:py-10 px-4 sm:px-6 overflow-hidden"
       >
         {/* Parallax brand-tinted background blobs */}
         <motion.div
@@ -556,7 +556,7 @@ export default function PartnerDetailPage() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-80px" }}
             transition={{ duration: 0.6 }}
-            className="mb-8 sm:mb-10 text-center"
+            className="mb-5 sm:mb-6 text-center"
           >
             <span
               className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-4 border"
@@ -634,14 +634,14 @@ export default function PartnerDetailPage() {
 
       {/* Products grid — only when partner has products */}
       {partner.products && partner.products.length > 0 && (
-        <section className="relative py-12 sm:py-16 lg:py-20 px-4 sm:px-6 bg-muted/30 border-t border-border">
+        <section className="relative py-8 sm:py-10 lg:py-12 px-4 sm:px-6 bg-muted/30 border-t border-border">
           <div className="max-w-7xl mx-auto">
             <motion.div
               initial={reduce ? undefined : { opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-80px" }}
               transition={{ duration: 0.6 }}
-              className="text-center mb-10 sm:mb-12"
+              className="text-center mb-6 sm:mb-8"
             >
               <span
                 className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-4 border"
@@ -656,7 +656,7 @@ export default function PartnerDetailPage() {
                   Product Range
                 </span>
               </span>
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-foreground tracking-tight leading-[1.05]">
+              <h2 className="text-3xl sm:text-4xl md:text-[2.75rem] font-black text-foreground tracking-tight leading-[1.05]">
                 Products by{" "}
                 <span
                   style={{
@@ -670,7 +670,7 @@ export default function PartnerDetailPage() {
                   {partner.shortName}
                 </span>
               </h2>
-              <p className="mt-4 text-muted-foreground text-sm md:text-base max-w-2xl mx-auto leading-relaxed">
+              <p className="mt-3 text-muted-foreground text-sm md:text-base max-w-2xl mx-auto leading-relaxed">
                 A complete range of quality-assured industrial solutions —
                 engineered for performance and reliability.
               </p>
@@ -742,7 +742,7 @@ export default function PartnerDetailPage() {
       )}
 
       {/* CTA strip */}
-      <section className="relative py-12 sm:py-16 px-4 sm:px-6">
+      <section className="relative py-8 sm:py-10 px-4 sm:px-6">
         <div className="max-w-5xl mx-auto">
           <motion.div
             initial={reduce ? undefined : { opacity: 0, y: 20 }}
@@ -813,9 +813,9 @@ export default function PartnerDetailPage() {
       </section>
 
       {/* Other partners */}
-      <section className="relative py-12 sm:py-16 px-4 sm:px-6 bg-muted/30 border-t border-border">
+      <section className="relative py-8 sm:py-10 px-4 sm:px-6 bg-muted/30 border-t border-border">
         <div className="max-w-7xl mx-auto">
-          <div className="flex items-end justify-between mb-6 sm:mb-8 flex-wrap gap-3">
+          <div className="flex items-end justify-between mb-4 sm:mb-5 flex-wrap gap-3">
             <div>
               <span className="text-primary text-[11px] font-bold tracking-widest uppercase">
                 Continue Exploring
