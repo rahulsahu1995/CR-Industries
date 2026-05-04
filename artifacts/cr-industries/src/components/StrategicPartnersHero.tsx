@@ -73,20 +73,6 @@ export default function StrategicPartnersHero() {
             <PartnerGridCard key={partner.id} partner={partner} index={i} />
           ))}
         </div>
-
-        {/* Footnote */}
-        <motion.p
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.3 }}
-          className="mt-10 text-center text-xs sm:text-sm text-muted-foreground"
-        >
-          {PARTNERS.length} active strategic partnerships across{" "}
-          <span className="text-foreground font-bold">3 continents</span> —
-          delivering world-class chemistry, materials and adhesive technology to
-          every Indian project we touch.
-        </motion.p>
       </div>
     </section>
   );
