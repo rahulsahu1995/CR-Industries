@@ -321,10 +321,10 @@ export default function StrategicPartnersHero() {
               Strategic Alliances
             </span>
           </span>
-          <h2 className="mt-4 text-3xl md:text-4xl lg:text-5xl font-black text-foreground tracking-tight">
+          <h2 className="mt-3 text-2xl md:text-3xl lg:text-4xl font-black text-foreground tracking-tight">
             Our <span className="text-primary">Strategic Partners</span>
           </h2>
-          <p className="mt-3 text-muted-foreground text-base md:text-lg max-w-2xl">
+          <p className="mt-2 text-muted-foreground text-sm md:text-base max-w-2xl">
             World-class manufacturers and innovators who power C R Industries'
             commitment to excellence.
           </p>
@@ -352,32 +352,32 @@ export default function StrategicPartnersHero() {
                 exit={{ opacity: 0, x: -direction * 60 }}
                 transition={{ duration: 0.55, ease: [0.32, 0.72, 0, 1] }}
               >
-                <h1 className="text-4xl sm:text-5xl md:text-6xl xl:text-7xl font-black text-foreground leading-[1.05] tracking-tight mb-5 break-words">
+                <h1 className="text-3xl sm:text-4xl md:text-5xl xl:text-6xl font-black text-foreground leading-[1.05] tracking-tight mb-4 break-words">
                   {partner.name}
                 </h1>
-                <p className="text-foreground/85 text-lg md:text-xl font-semibold mb-4 leading-snug">
+                <p className="text-foreground/85 text-base md:text-lg font-semibold mb-3 leading-snug">
                   {partner.tagline}
                 </p>
-                <p className="text-muted-foreground text-base md:text-lg leading-relaxed max-w-lg mb-8">
+                <p className="text-muted-foreground text-sm md:text-base leading-relaxed max-w-lg mb-7">
                   {partner.summary}
                 </p>
 
                 {/* Facts strip */}
-                <div className="grid grid-cols-3 gap-3 mb-9 max-w-lg">
+                <div className="grid grid-cols-3 gap-2.5 mb-7 max-w-md">
                   {partner.facts.map((f) => {
                     const Icon = f.icon;
                     return (
                       <div
                         key={f.label}
-                        className="bg-card border border-border rounded-xl p-3 hover:border-primary/40 transition-colors"
+                        className="bg-card border border-border rounded-xl p-2.5 hover:border-primary/40 transition-colors"
                       >
-                        <div className="flex items-center gap-1.5 mb-1.5">
-                          <Icon className="w-3.5 h-3.5 text-primary" />
-                          <span className="text-[10px] tracking-widest uppercase font-bold text-muted-foreground">
+                        <div className="flex items-center gap-1.5 mb-1">
+                          <Icon className="w-3 h-3 text-primary" />
+                          <span className="text-[9px] tracking-widest uppercase font-bold text-muted-foreground">
                             {f.label}
                           </span>
                         </div>
-                        <p className="font-black text-foreground text-sm md:text-base leading-tight">
+                        <p className="font-black text-foreground text-xs md:text-sm leading-tight">
                           {f.value}
                         </p>
                       </div>
@@ -398,7 +398,7 @@ export default function StrategicPartnersHero() {
                 whileHover={{ scale: 1.04 }}
                 whileTap={{ scale: 0.97 }}
                 onClick={() => handleOpen(partner.id)}
-                className="group flex items-center gap-2 px-7 py-3.5 bg-primary text-white font-bold rounded-xl shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/40 hover:bg-[#00B4D8] transition-colors duration-200"
+                className="group flex items-center gap-2 px-6 py-3 text-sm bg-primary text-white font-bold rounded-xl shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/40 hover:bg-[#00B4D8] transition-colors duration-200"
               >
                 Explore Partnership
                 <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-200" />
@@ -411,7 +411,7 @@ export default function StrategicPartnersHero() {
                     .getElementById("contact")
                     ?.scrollIntoView({ behavior: "smooth" })
                 }
-                className="px-7 py-3.5 text-foreground font-bold rounded-xl border-2 border-border hover:border-primary hover:text-primary transition-colors duration-200"
+                className="px-6 py-3 text-sm text-foreground font-bold rounded-xl border-2 border-border hover:border-primary hover:text-primary transition-colors duration-200"
               >
                 Become a Partner
               </motion.button>
@@ -420,7 +420,7 @@ export default function StrategicPartnersHero() {
 
           {/* ── RIGHT — branded partner card ── */}
           <div className="lg:col-span-6 relative">
-            <div className="relative mx-auto w-full max-w-[520px] aspect-square">
+            <div className="relative mx-auto w-full max-w-[400px] aspect-square">
               {/* Brand-colored glow blob */}
               <AnimatePresence mode="wait">
                 <motion.div
@@ -494,19 +494,19 @@ export default function StrategicPartnersHero() {
                     <div className="absolute inset-0 flex items-center justify-center">
                       <div className="relative">
                         <div className="absolute inset-0 rounded-full bg-white/15 blur-2xl scale-125" />
-                        <div className="relative w-44 h-44 md:w-52 md:h-52 rounded-3xl bg-white/15 border border-white/35 backdrop-blur-md flex items-center justify-center shadow-2xl">
-                          <span className="text-white font-black text-7xl md:text-8xl tracking-tighter drop-shadow-2xl">
+                        <div className="relative w-32 h-32 md:w-40 md:h-40 rounded-3xl bg-white/15 border border-white/35 backdrop-blur-md flex items-center justify-center shadow-2xl">
+                          <span className="text-white font-black text-5xl md:text-6xl tracking-tighter drop-shadow-2xl">
                             {partner.monogram}
                           </span>
                         </div>
                       </div>
                     </div>
                     {/* Bottom name plate */}
-                    <div className="absolute bottom-6 left-6 right-6 text-white">
-                      <p className="text-[10px] font-bold tracking-[0.32em] uppercase opacity-80 mb-1">
+                    <div className="absolute bottom-5 left-5 right-5 text-white">
+                      <p className="text-[9px] font-bold tracking-[0.32em] uppercase opacity-80 mb-0.5">
                         Partnership in Excellence
                       </p>
-                      <p className="text-white text-xl md:text-2xl font-black leading-tight">
+                      <p className="text-white text-base md:text-lg font-black leading-tight">
                         {partner.name}
                       </p>
                     </div>
@@ -533,12 +533,12 @@ export default function StrategicPartnersHero() {
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: -10, scale: 0.95 }}
                   transition={{ duration: 0.45, ease: "easeOut" }}
-                  className="absolute -bottom-8 -left-4 sm:-left-8 z-10 bg-card border border-border backdrop-blur-md rounded-2xl px-5 py-4 shadow-2xl shadow-primary/10 max-w-[260px]"
+                  className="absolute -bottom-6 -left-3 sm:-left-6 z-10 bg-card border border-border backdrop-blur-md rounded-xl px-4 py-3 shadow-2xl shadow-primary/10 max-w-[220px]"
                 >
-                  <p className="text-primary text-[10px] font-bold tracking-widest uppercase mb-1">
+                  <p className="text-primary text-[9px] font-bold tracking-widest uppercase mb-0.5">
                     {partner.shortName}
                   </p>
-                  <p className="text-foreground text-base font-black leading-tight">
+                  <p className="text-foreground text-sm font-black leading-tight">
                     {partner.tagline}
                   </p>
                 </motion.div>
@@ -549,10 +549,10 @@ export default function StrategicPartnersHero() {
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.6, delay: 0.4 }}
-                className="absolute -top-3 -right-3 sm:-top-4 sm:-right-4 bg-card border border-border rounded-full px-4 py-2 shadow-xl shadow-primary/10 flex items-center gap-2"
+                className="absolute -top-2 -right-2 sm:-top-3 sm:-right-3 bg-card border border-border rounded-full px-3 py-1.5 shadow-xl shadow-primary/10 flex items-center gap-1.5"
               >
-                <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                <span className="text-foreground text-[10px] font-bold tracking-widest uppercase">
+                <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+                <span className="text-foreground text-[9px] font-bold tracking-widest uppercase">
                   Active
                 </span>
               </motion.div>
