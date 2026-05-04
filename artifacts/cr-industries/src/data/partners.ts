@@ -221,7 +221,7 @@ export const PARTNERS: Partner[] = [
           "Ray Stanton 'Stan' Avery in 1935 — inventor of the world's first self-adhesive label. With a few spare parts, one bright idea and a $100 loan, he founded Avery Adhesives in downtown Los Angeles.",
       },
     ],
-    website: "https://www.averydennison.com/",
+    website: "https://www.averydennison.com/en/home.html",
   },
   {
     id: "kipl",
