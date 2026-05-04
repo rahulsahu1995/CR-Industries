@@ -212,9 +212,9 @@ export const PARTNERS: Partner[] = [
     id: "kipl",
     name: "KIPL",
     shortName: "Keshav Innovations Pvt. Ltd.",
-    tagline: "Leading India's Transformation in Adhesive Technology",
+    tagline: "Holding Industries Together",
     summary:
-      "Keshav Innovations Pvt Ltd — one of India's leading manufacturers of industrial adhesive tapes, abrasives and surface protection products. ISO 9001:2015 certified with 14+ years of production and export experience.",
+      "One of India's leading manufacturers of industrial adhesive tapes, abrasives and surface protection products — ISO 9001:2015 certified with 14+ years of production and export experience, and an authorised distributor for ORAFOL and other renowned global brands.",
     monogram: "K",
     logo: kiplLogo,
     accent: "#0A66B7",
@@ -222,34 +222,40 @@ export const PARTNERS: Partner[] = [
     facts: [
       { icon: Calendar, label: "Founded", value: "2006" },
       { icon: Award, label: "Certified", value: "ISO 9001:2015" },
-      { icon: Building2, label: "Specialty", value: "Adhesive Tapes" },
+      { icon: Building2, label: "Experience", value: "14+ Years" },
     ],
     detail: {
+      heading: "KIPL is Holding Industries Together",
       intro:
-        "Founded in 2006 as Keshav Enterprises and rebranded as KIPL in 2022, our journey reflects a legacy of growth, innovation and trust. KIPL has evolved into one of India's leading manufacturers of industrial adhesive tapes, abrasives and surface protection products — delivering excellence across a wide range of applications and industries.",
+        "Founded in 2006 as Keshav Enterprises and rebranded as KIPL in 2022, our journey reflects a legacy of growth, innovation and trust. KIPL has evolved into one of India's leading manufacturers of industrial adhesive tapes, abrasives and surface protection products — delivering excellence across automotive, electronics, packaging, construction, renewable energy and general industrial applications. Alongside our own product lines, we are an authorised distributor for ORAFOL's reflective materials and other renowned global brands — offering clients a complete range of quality-assured solutions under one roof. Guided by a vision to deliver reliability through innovation, KIPL operates as an ISO 9001:2015 certified organisation with a strict focus on quality management, sustainable growth and the customer trust that drives every adhesive bond we make.",
       sections: [
         {
+          heading: "Heritage & Legacy",
+          body: "Established in 2006 as Keshav Enterprises and rebranded as KIPL in 2022 — a journey reflecting a legacy of growth, innovation and trust. Today KIPL is a recognised name in the manufacturing and distribution of premium industrial adhesive tapes, abrasives and maintenance products, serving customers across automotive, electrical, packaging and construction sectors with solutions made in India.",
+        },
+        {
           heading: "What We Do",
-          body: "Manufacturing customisable adhesive solutions for leading industries — combining innovation, technology and precision through a controlled process from material selection to final quality checks.",
+          body: "We manufacture customisable adhesive solutions for leading industries — combining innovation, technology and precision through a tightly controlled process from material selection to final quality checks. Backed by ISO 9001:2015 standards, we don't just make products — we engineer adhesive solutions that hold industries together, with consistent performance and durability under the most demanding conditions.",
         },
         {
-          heading: "Experienced Team",
-          body: "Extensive experience in adhesive tape conversion. Highly trained professionals ensure precise and consistent production quality at every step.",
+          heading: "Industries Served",
+          body: "From automotive and electronics to packaging, construction, renewable energy and general industrial applications, KIPL products are engineered to perform under the most demanding conditions. Our customer-focused approach lets us design and deliver tailored adhesive tapes that meet specific industrial requirements with precision and reliability.",
         },
         {
-          heading: "Customised Solutions",
-          body: "Free samples are provided until the application is fully approved. Both OEM and ODM customisation requirements are fully supported.",
+          heading: "The KIPL Difference",
+          body: "Six pillars set us apart — an experienced team highly trained in adhesive tape conversion, a one-stop solutions partner from coating and processing to die-cutting and printing, free samples until the application is fully approved (OEM and ODM both supported), professional teams across production, engineering and sales for smooth order execution, 100% authentic branded materials, and ready stock plus strong production capability for fast, reliable dispatch.",
         },
         {
-          heading: "Original & Reliable",
-          body: "All branded tapes and materials are 100% authentic. Standard materials are stocked for quick dispatch, with strong production capability for rapid order completion.",
+          heading: "Distribution Partnerships",
+          body: "Beyond our own product lines, KIPL is an authorised distributor for ORAFOL's reflective materials and other renowned global brands — offering clients a complete, quality-assured range of solutions under one roof. This distribution depth, combined with in-house manufacturing, makes KIPL a single-source partner for the most demanding industrial adhesive and surface-protection projects.",
         },
         {
           heading: "Why This Partnership",
-          body: "KIPL is C R Industries' trusted Indian manufacturing partner — together we deliver custom adhesive engineering, fast turnaround, and world-class quality across the network.",
+          body: "KIPL is C R Industries' trusted Indian manufacturing partner — together we deliver custom adhesive engineering, ORAFOL-grade reflective materials, fast turnaround and world-class quality, holding our customers' projects together one bond at a time.",
         },
       ],
       cta: "Discover KIPL",
     },
+    website: "https://kipl.co.in/",
   },
 ];
