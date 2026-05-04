@@ -62,6 +62,8 @@ export type Partner = {
   products?: Product[];
   /** Optional official partner website (external). Renders a "Visit Website" CTA. */
   website?: string;
+  /** Optional external "see more products" catalogue URL. Renders a "More Products" button under the products grid. */
+  moreProductsUrl?: string;
 };
 
 export const PARTNERS: Partner[] = [
@@ -160,6 +162,7 @@ export const PARTNERS: Partner[] = [
       },
     ],
     website: "https://soudal.in/",
+    moreProductsUrl: "https://soudal.in/professional-product-category/",
   },
   {
     id: "cumi",
@@ -236,6 +239,7 @@ export const PARTNERS: Partner[] = [
       },
     ],
     website: "https://www.cumi-murugappa.com/",
+    moreProductsUrl: "https://cumiabrasive.in/shop-abrasives/",
   },
   {
     id: "avery-dennison",
@@ -364,5 +368,6 @@ export const PARTNERS: Partner[] = [
       },
     ],
     website: "https://kipl.co.in/",
+    moreProductsUrl: "https://kipl.co.in/products/",
   },
 ];

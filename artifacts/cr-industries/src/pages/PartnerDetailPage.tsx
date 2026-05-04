@@ -760,6 +760,35 @@ export default function PartnerDetailPage() {
                 </motion.article>
               ))}
             </div>
+
+            {partner.moreProductsUrl && (
+              <motion.div
+                initial={reduce ? undefined : { opacity: 0, y: 12 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-60px" }}
+                transition={{ duration: 0.5 }}
+                className="mt-5 sm:mt-6 flex justify-center"
+              >
+                <motion.a
+                  href={partner.moreProductsUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  whileHover={
+                    reduce ? undefined : { scale: 1.04, y: -2 }
+                  }
+                  whileTap={reduce ? undefined : { scale: 0.97 }}
+                  className="group inline-flex items-center gap-2 px-6 py-3 text-sm font-bold text-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-200"
+                  style={{
+                    background: `linear-gradient(135deg, ${partner.accent} 0%, ${partner.accent2} 100%)`,
+                  }}
+                  aria-label={`See more ${partner.shortName} products (opens in new tab)`}
+                >
+                  More Products
+                  <ExternalLink className="w-3.5 h-3.5 opacity-90" />
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </motion.a>
+              </motion.div>
+            )}
           </div>
         </section>
       )}
