@@ -1,4 +1,4 @@
-import HeroCarousel from "@/components/HeroCarousel";
+import StrategicPartnersHero from "@/components/StrategicPartnersHero";
 import Product3D from "@/components/Product3D";
 import WhyChooseUs from "@/components/WhyChooseUs";
 import WhatMakesUsDifferent from "@/components/WhatMakesUsDifferent";
@@ -16,7 +16,7 @@ export default function HomePage() {
 
   return (
     <main>
-      <HeroCarousel />
+      <StrategicPartnersHero />
       <Product3D />
       <WhyChooseUs />
       <WhatMakesUsDifferent />
