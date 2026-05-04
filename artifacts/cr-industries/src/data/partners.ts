@@ -120,43 +120,49 @@ export const PARTNERS: Partner[] = [
     shortName: "Carborundum Universal Ltd.",
     tagline: "Materials Sciences Engineering Excellence",
     summary:
-      "Carborundum Universal Limited — a leading materials sciences engineering solutions provider, part of the 125-year-old Murugappa Group, listed on NSE and BSE.",
+      "A leading materials sciences engineering solutions provider — part of the 125-year-old Murugappa Group, listed on NSE and BSE, with operations spanning six continents and exports to 60+ countries.",
     monogram: "C",
     logo: cumiLogo,
     accent: "#C8102E",
     accent2: "#1B1B1B",
     facts: [
       { icon: Calendar, label: "Established", value: "1954" },
-      { icon: Building2, label: "Group", value: "Murugappa" },
-      { icon: Award, label: "Revenue", value: "₹4,834 Cr" },
+      { icon: MapPin, label: "HQ", value: "Chennai, IN" },
+      { icon: Users, label: "People", value: "10,000+" },
     ],
     detail: {
+      heading: "CUMI is Engineering Materials Science Excellence",
       intro:
-        "Carborundum Universal Limited (CUMI) was established in 1954 as a tripartite joint venture between Carborundum Co. (USA), Universal Grinding Wheel (UK) and the Murugappa Group (India). Today CUMI is a leading materials sciences engineering solutions provider with consolidated revenue of ₹4,834 crores and PAT of ₹293 crores in FY 2024-25.",
+        "Carborundum Universal Limited (CUMI) was established in 1954 as a tripartite joint venture between Carborundum Co. (USA), Universal Grinding Wheel (UK) and the Murugappa Group of India. Today CUMI is a leading materials sciences engineering solutions provider with consolidated revenue of ₹4,834 crores and PAT of ₹293 crores in FY 2024-25. As part of the 125-year-old Murugappa Group and listed on the NSE and BSE, CUMI operates a uniquely integrated 'Mines to Market' model — spanning mining, power generation, fusion, manufacturing, marketing and distribution. Over 10,000 employees worldwide collaborate to deliver world-class solutions across Abrasives, Electrominerals, Ceramics and Refractories — serving customers in engineering, auto, infrastructure, steel, glass, power, mining and aerospace across six continents and 60+ countries.",
       sections: [
         {
+          heading: "Heritage & Legacy",
+          body: "Incorporated in 1954 with a Coated Abrasives facility acquired from Ajax Products, a Bonded Abrasives plant set up at Chennai and Bauxite mining at Bhatia, Gujarat. Seven decades of disciplined growth — through landmark plants in Edappally, Koratty, Hosur and Sriperumbudur and a string of strategic acquisitions across Russia, South Africa, India and beyond — have made CUMI a publicly listed materials sciences leader on India's NSE and BSE.",
+        },
+        {
           heading: "Mines to Market",
-          body: "Integrated operations spanning mining, power generation, fusion, manufacturing, marketing and distribution — a uniquely vertically integrated model.",
+          body: "CUMI operates a uniquely vertically integrated model — from owned mining and captive power generation, to fusion processing, advanced manufacturing, and direct global marketing and distribution. This end-to-end control delivers consistent quality, supply security and cost competitiveness that few peers in the materials sciences space can match.",
         },
         {
-          heading: "Pioneering Plants",
-          body: "Brown Fused Alumina (1964, Edappally), Bauxite Mining (1965, Gujarat), Silicon Carbide (1984, Koratty), AzureS Sol-Gel (2006), Alumina Zirconia (2013) — decades of breakthrough manufacturing.",
+          heading: "Facts & Figures",
+          body: "Consolidated revenue of ₹4,834 crores and PAT of ₹293 crores in FY 2024-25. Over 10,000 employees worldwide. A geographical footprint spanning six continents with exports to more than 60 countries. Plants and subsidiaries across India, Russia, South Africa, China, the USA, Australia, Europe and the Middle East — a truly global Indian materials science powerhouse.",
         },
         {
-          heading: "Global Acquisitions",
-          body: "Volzhsky Abrasive Works, Russia (2007) — the world's 2nd largest SiC manufacturer. Foskor Zirconia, South Africa (2008) — strategic Zirconia segment leadership.",
+          heading: "Product Portfolio",
+          body: "World-class solutions across four pillars — Abrasives (bonded, coated, super-abrasives, thin wheels and power tools), Electrominerals (silicon carbide, fused alumina, zirconia), Ceramics (industrial, technical and advanced) and Refractories (super, monolithic and anti-corrosive). Serving engineering, fabrication, auto and auto components, infrastructure, steel, glass, power generation and distribution, mining and aerospace.",
         },
         {
-          heading: "Energy Independence",
-          body: "Mini-hydel plant at Maniyar (1994) generates over 30% of CUMI's captive power needs — sustainable, secure and self-reliant.",
+          heading: "The Murugappa Group",
+          body: "CUMI is part of the 124-year-old Murugappa Group — an INR 778 billion (₹77,881 crore) conglomerate with 9 listed companies including Tube Investments of India, Cholamandalam Investment & Finance, Coromandel International, CG Power, E.I.D Parry, Shanthi Gears and Wendt (India). Guided by the five lights — integrity, passion, quality, respect and responsibility — and powered by over 83,500 employees across agriculture, engineering, financial services and more.",
         },
         {
           heading: "Why This Partnership",
-          body: "CUMI's deep mineral and abrasive expertise powers C R Industries' precision surface-preparation and bonding solutions across India's most demanding industrial sectors.",
+          body: "CUMI's deep mineral and abrasive expertise — backed by 'Mines to Market' integration and seven decades of materials science leadership — powers C R Industries' precision surface-preparation, grinding and bonding solutions across India's most demanding industrial sectors.",
         },
       ],
       cta: "Discover CUMI",
     },
+    website: "https://www.cumi-murugappa.com/",
   },
   {
     id: "avery-dennison",
