@@ -10,9 +10,13 @@ import soudalLogo from "@assets/SOUDAL_1777887969287.webp";
 import cumiLogo from "@assets/CUMI_1777888092659.png";
 import averyDennisonLogo from "@assets/AVERY_DENNISON_1777888167310.png";
 import kiplLogo from "@assets/Screenshot_2026-05-04_152249_1777888385161.png";
+import soudalBuilding from "@assets/SOUDAL_image_1_1777891254847.webp";
+import soudalProducts from "@assets/fe3854ab-07d5-45f5-8e48-b608c1992e93_1777891257643.webp";
+import soudalGlobe from "@assets/SOUDAL_image_3_1777891266326.webp";
 
 export type Fact = { icon: LucideIcon; label: string; value: string };
 export type Section = { heading: string; body: string };
+export type GalleryImage = { src: string; alt: string; caption?: string };
 
 export type Partner = {
   id: string;
@@ -27,10 +31,14 @@ export type Partner = {
   accent2: string;
   facts: Fact[];
   detail: {
+    /** Optional override for the intro-band heading. Falls back to tagline. */
+    heading?: string;
     intro: string;
     sections: Section[];
     cta: string;
   };
+  /** Optional editorial gallery rendered on the detail page. */
+  gallery?: GalleryImage[];
 };
 
 export const PARTNERS: Partner[] = [
@@ -51,24 +59,29 @@ export const PARTNERS: Partner[] = [
       { icon: Users, label: "People", value: "3,100+" },
     ],
     detail: {
+      heading: "The Soudal Group is Building the Future",
       intro:
-        "The Soudal Group is the largest independent European manufacturer of sealants, adhesives and polyurethane foams for both professional and private users. Founded in 1966 by Vic Swerts in Turnhout, Belgium, this family business has grown into a true international expert in chemical construction specialities.",
+        "The Soudal Group is the largest independent European manufacturer of sealants, adhesives and polyurethane foams for professional and private users. This Belgian family business, based in Turnhout and founded by Vic Swerts in 1966, has developed into an international player and expert in chemical construction specialities. The group operates 19 production branches on 5 continents, sales offices in 44 countries and employs around 3,100 people worldwide. A long-term vision for innovation — with substantial investment in R&D — and adaptations to local market requirements have driven the success of the Soudal Group.",
       sections: [
         {
-          heading: "Global Footprint",
-          body: "19 production branches across 5 continents, sales offices in 44 countries, and a workforce of around 3,100 people worldwide.",
-        },
-        {
-          heading: "Innovation in Our Genes",
-          body: "A continuous R&D investment culture — qualified researchers, engineers and technicians develop pioneering products tailored to local market requirements.",
+          heading: "Innovation",
+          body: "The research and development of new products, product technologies and production methods is in our genes. A team of highly qualified researchers, engineers and technicians is continuously working on the development of new products and applications adapted to the specific requirements of customers in various countries — resulting in pioneering innovative products that strengthen Soudal's market position. Innovation is the driver for organic growth at the Soudal Group.",
         },
         {
           heading: "Facts & Figures",
-          body: "Consolidated turnover of €835 million; 350 million sealant and polyurethane foam units produced annually; nearly €59 million invested every year.",
+          body: "A consolidated turnover of €835 million in 2018; 350 million sealant and polyurethane foam units produced across 19 production branches; around 3,100 employees worldwide; almost €59 million in investment in 2018 — those are the impressive facts and figures of the Soudal Group.",
+        },
+        {
+          heading: "Our Activities",
+          body: "The Soudal Group manufactures products for its own brands and private labels covering 7 groups: silicones and other sealants, polyurethane foams, adhesives, hybrid polymers, technical aerosols and chemical building products. With its own brands, the Soudal Group focuses on 3 market segments: construction, industrial and retail.",
         },
         {
           heading: "Sustainability",
-          body: "Pioneering products for sustainable construction that are safe for people and the environment, manufactured with state-of-the-art energy- and water-efficient technology.",
+          body: "The Soudal Group is leading the way in the development of products for sustainable construction, which are safe for people and the environment. As a result of the most modern production technology, energy, water usage, and residual waste are limited. The welfare of employees is another key priority.",
+        },
+        {
+          heading: "Sponsoring",
+          body: "From 2023 onwards, the Soudal-Quick Step team represents Soudal at all large international cycling competitions and provides publicity in 190 countries (especially via the Tour de France). The basic values propagated by Soudal — hard work, perseverance and being better than your competitors — are also found in cycling, leading to a positive image transfer to the Soudal brand. Soudal also sponsors KVC Westerlo (football), Soudal Classics (cyclocross) and the Soudal Open (Belgian Open Golf).",
         },
         {
           heading: "Why This Partnership",
@@ -77,6 +90,26 @@ export const PARTNERS: Partner[] = [
       ],
       cta: "Discover Soudal",
     },
+    gallery: [
+      {
+        src: soudalBuilding,
+        alt: "Soudal headquarters building exterior with the Soudal logo",
+        caption:
+          "Soudal HQ — Turnhout, Belgium. The home of a Belgian family powerhouse in chemical construction specialities.",
+      },
+      {
+        src: soudalProducts,
+        alt: "Rows of Soudal Silirub silicone sealant cartridges in a display",
+        caption:
+          "Silirub® and Soudal's broader product family — silicones, polyurethane foams, adhesives and hybrid polymers across 7 product groups.",
+      },
+      {
+        src: soudalGlobe,
+        alt: "Stylised globe with the Soudal logo overlaid, illustrating global presence",
+        caption:
+          "19 production branches across 5 continents, 44 sales offices, 3,100 people — a truly global Belgian family business.",
+      },
+    ],
   },
   {
     id: "cumi",

@@ -281,7 +281,7 @@ export default function PartnerDetailPage() {
               </span>
             </span>
             <h2 className="text-2xl md:text-3xl lg:text-4xl font-black text-foreground tracking-tight mb-4 leading-tight">
-              {partner.tagline}
+              {partner.detail.heading ?? partner.tagline}
             </h2>
             <p className="text-muted-foreground text-sm md:text-base leading-relaxed">
               {partner.detail.intro}
@@ -339,6 +339,86 @@ export default function PartnerDetailPage() {
           </div>
         </div>
       </section>
+
+      {/* Gallery — only when partner has images */}
+      {partner.gallery && partner.gallery.length > 0 && (
+        <section className="relative pb-12 sm:pb-16 px-4 sm:px-6">
+          <div className="max-w-6xl mx-auto">
+            <motion.div
+              initial={reduce ? undefined : { opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-80px" }}
+              transition={{ duration: 0.6 }}
+              className="text-center mb-8 sm:mb-10"
+            >
+              <span
+                className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-4 border"
+                style={{
+                  backgroundColor: `${partner.accent}10`,
+                  borderColor: `${partner.accent}30`,
+                  color: partner.accent,
+                }}
+              >
+                <Sparkles className="w-3.5 h-3.5" />
+                <span className="text-[11px] font-bold tracking-widest uppercase">
+                  In Pictures
+                </span>
+              </span>
+              <h3 className="text-2xl md:text-3xl font-black text-foreground tracking-tight">
+                Inside {partner.shortName}
+              </h3>
+            </motion.div>
+
+            <div
+              className={`grid gap-4 sm:gap-5 ${
+                partner.gallery.length === 1
+                  ? "grid-cols-1"
+                  : partner.gallery.length === 2
+                    ? "grid-cols-1 md:grid-cols-2"
+                    : "grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
+              }`}
+            >
+              {partner.gallery.map((img, i) => (
+                <motion.figure
+                  key={img.src}
+                  initial={reduce ? undefined : { opacity: 0, y: 24 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-60px" }}
+                  transition={{
+                    duration: 0.55,
+                    delay: i * 0.08,
+                    ease: [0.16, 1, 0.3, 1],
+                  }}
+                  className="group relative rounded-2xl overflow-hidden bg-card border border-border shadow-md shadow-foreground/5 hover:shadow-xl transition-all duration-300"
+                >
+                  <div className="relative aspect-[4/3] overflow-hidden bg-muted">
+                    <img
+                      src={img.src}
+                      alt={img.alt}
+                      loading="lazy"
+                      decoding="async"
+                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
+                    />
+                    {/* Accent corner ribbon */}
+                    <div
+                      aria-hidden
+                      className="absolute top-0 left-0 right-0 h-1"
+                      style={{
+                        background: `linear-gradient(90deg, ${partner.accent} 0%, ${partner.accent2} 100%)`,
+                      }}
+                    />
+                  </div>
+                  {img.caption && (
+                    <figcaption className="px-4 sm:px-5 py-3.5 text-xs sm:text-sm text-muted-foreground leading-relaxed border-t border-border bg-background">
+                      {img.caption}
+                    </figcaption>
+                  )}
+                </motion.figure>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* CTA strip */}
       <section className="relative py-12 sm:py-16 px-4 sm:px-6">
