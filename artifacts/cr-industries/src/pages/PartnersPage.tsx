@@ -41,69 +41,98 @@ function PartnerCard({ partner, index }: { partner: Partner; index: number }) {
           {/* Logo card */}
           <div className="lg:col-span-5 [direction:ltr]">
             <div className="relative">
-              {/* Decorative blurred orb */}
+              {/* Decorative blurred orb behind the card */}
               <div
                 aria-hidden
-                className="absolute -inset-6 rounded-[2rem] opacity-25 blur-2xl"
+                className="absolute -inset-6 rounded-[2rem] opacity-30 blur-2xl"
                 style={{
                   background: `radial-gradient(circle at 30% 30%, ${partner.accent} 0%, transparent 60%), radial-gradient(circle at 70% 70%, ${partner.accent2} 0%, transparent 60%)`,
                 }}
               />
               <div
-                className="relative aspect-[4/3] rounded-3xl overflow-hidden border shadow-2xl"
-                style={{
-                  background: `linear-gradient(135deg, ${partner.accent} 0%, ${partner.accent}E6 50%, ${partner.accent2} 100%)`,
-                  borderColor: `${partner.accent}40`,
-                }}
+                className="relative aspect-[4/3] rounded-3xl overflow-hidden bg-white border shadow-2xl flex flex-col"
+                style={{ borderColor: `${partner.accent}30` }}
               >
-                {/* Soft top sheen */}
+                {/* Brand accent bar */}
                 <div
                   aria-hidden
-                  className="absolute inset-0 opacity-40"
+                  className="h-2 w-full shrink-0"
                   style={{
-                    background:
-                      "linear-gradient(180deg, rgba(255,255,255,0.25) 0%, transparent 45%)",
+                    background: `linear-gradient(90deg, ${partner.accent} 0%, ${partner.accent2} 100%)`,
                   }}
                 />
+
                 {/* Eyebrow */}
-                <div className="absolute top-5 left-5 right-5 flex items-center justify-between text-white/95">
-                  <span className="text-[10px] font-bold tracking-[0.32em] uppercase opacity-90">
+                <div className="px-5 pt-4 flex items-center justify-between shrink-0">
+                  <span
+                    className="text-[10px] font-bold tracking-[0.32em] uppercase"
+                    style={{ color: partner.accent }}
+                  >
                     Strategic Partner
                   </span>
-                  <span className="px-2.5 py-1 rounded-full bg-white/20 border border-white/30 text-[10px] font-bold tracking-widest uppercase backdrop-blur-sm">
+                  <span
+                    className="px-2.5 py-1 rounded-full text-[10px] font-bold tracking-widest uppercase"
+                    style={{
+                      backgroundColor: `${partner.accent}12`,
+                      color: partner.accent,
+                      border: `1px solid ${partner.accent}30`,
+                    }}
+                  >
                     Verified
                   </span>
                 </div>
-                {/* Logo tile */}
-                <div className="absolute inset-0 flex items-center justify-center">
+
+                {/* Big logo */}
+                <div className="flex-1 min-h-0 flex items-center justify-center px-8 md:px-12 py-6">
                   {partner.logo ? (
-                    <div className="relative w-[68%] h-[55%] rounded-2xl bg-white border border-white/40 shadow-2xl overflow-hidden">
-                      <div className="absolute inset-0 flex items-center justify-center p-6 md:p-8">
-                        <img
-                          src={partner.logo}
-                          alt={`${partner.name} logo`}
-                          className="block max-w-full max-h-full w-auto h-auto object-contain"
-                          loading="lazy"
-                          decoding="async"
-                        />
-                      </div>
-                    </div>
+                    <img
+                      src={partner.logo}
+                      alt={`${partner.name} logo`}
+                      className="block max-w-full max-h-full w-auto h-auto object-contain drop-shadow-sm"
+                      loading="lazy"
+                      decoding="async"
+                    />
                   ) : (
-                    <div className="w-32 h-32 rounded-3xl bg-white/15 border border-white/35 backdrop-blur-md flex items-center justify-center shadow-2xl">
+                    <div
+                      className="w-32 h-32 rounded-3xl flex items-center justify-center shadow-lg"
+                      style={{
+                        background: `linear-gradient(135deg, ${partner.accent} 0%, ${partner.accent2} 100%)`,
+                      }}
+                    >
                       <span className="text-white font-black text-5xl tracking-tighter">
                         {partner.monogram}
                       </span>
                     </div>
                   )}
                 </div>
+
                 {/* Bottom plate */}
-                <div className="absolute bottom-4 left-5 right-5 text-white">
-                  <p className="text-[9px] font-bold tracking-[0.32em] uppercase opacity-80">
-                    Partnership in Excellence
-                  </p>
-                  <p className="text-base md:text-lg font-black leading-tight mt-0.5">
-                    {partner.name}
-                  </p>
+                <div
+                  className="px-5 py-3.5 border-t shrink-0 flex items-center justify-between"
+                  style={{
+                    borderColor: `${partner.accent}1F`,
+                    backgroundColor: `${partner.accent}08`,
+                  }}
+                >
+                  <div>
+                    <p
+                      className="text-[9px] font-bold tracking-[0.3em] uppercase"
+                      style={{ color: `${partner.accent}B0` }}
+                    >
+                      Partnership in Excellence
+                    </p>
+                    <p className="text-sm md:text-base font-black leading-tight mt-0.5 text-foreground">
+                      {partner.name}
+                    </p>
+                  </div>
+                  <div
+                    className="w-9 h-9 rounded-xl flex items-center justify-center text-white font-black text-sm tracking-tighter shrink-0"
+                    style={{
+                      background: `linear-gradient(135deg, ${partner.accent} 0%, ${partner.accent2} 100%)`,
+                    }}
+                  >
+                    {partner.monogram}
+                  </div>
                 </div>
               </div>
             </div>
