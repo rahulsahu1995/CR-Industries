@@ -92,14 +92,14 @@ export default function PartnerDetailPage() {
           }}
         />
 
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 py-12 sm:py-16 lg:py-20">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 py-5 sm:py-7 lg:py-9">
           {/* Breadcrumbs */}
           <motion.nav
             initial={reduce ? undefined : { opacity: 0, y: -8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
             aria-label="Breadcrumb"
-            className="flex items-center gap-1.5 text-white/80 text-xs sm:text-sm font-semibold mb-6 sm:mb-8"
+            className="flex items-center gap-1.5 text-white/80 text-xs sm:text-sm font-semibold mb-3 sm:mb-4"
           >
             <Link
               href="/"
@@ -118,14 +118,14 @@ export default function PartnerDetailPage() {
             <span className="text-white truncate">{partner.name}</span>
           </motion.nav>
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 lg:gap-8 items-center">
             {/* Text */}
             <div className="lg:col-span-7 text-white">
               <motion.div
                 initial={reduce ? undefined : { opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6 }}
-                className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 border border-white/25 backdrop-blur-sm mb-5"
+                className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 border border-white/25 backdrop-blur-sm mb-3"
               >
                 <Sparkles className="w-3.5 h-3.5" />
                 <span className="text-[10px] sm:text-[11px] font-bold tracking-widest uppercase">
@@ -137,7 +137,7 @@ export default function PartnerDetailPage() {
                 initial={reduce ? undefined : { opacity: 0, y: 24 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.7, delay: 0.1 }}
-                className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-black tracking-tight leading-[1.05] mb-3 break-words"
+                className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-black tracking-tight leading-[1.05] mb-2 break-words"
               >
                 {partner.name}
               </motion.h1>
@@ -146,7 +146,7 @@ export default function PartnerDetailPage() {
                 initial={reduce ? undefined : { opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.2 }}
-                className="text-white/95 text-lg sm:text-xl font-semibold mb-5 leading-snug"
+                className="text-white/95 text-base sm:text-lg font-semibold mb-2.5 leading-snug"
               >
                 {partner.tagline}
               </motion.p>
@@ -155,7 +155,7 @@ export default function PartnerDetailPage() {
                 initial={reduce ? undefined : { opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.3 }}
-                className="text-white/85 text-sm sm:text-base lg:text-lg leading-relaxed max-w-2xl mb-7"
+                className="text-white/85 text-sm sm:text-base leading-relaxed max-w-2xl mb-4"
               >
                 {partner.summary}
               </motion.p>
@@ -209,7 +209,7 @@ export default function PartnerDetailPage() {
                   delay: 0.2,
                   ease: [0.16, 1, 0.3, 1],
                 }}
-                className="relative mx-auto max-w-md"
+                className="relative mx-auto max-w-[20rem] lg:max-w-[18rem] xl:max-w-[20rem]"
                 style={{ perspective: 1000 }}
               >
                 {/* Soft animated halo behind the card */}
@@ -347,7 +347,7 @@ export default function PartnerDetailPage() {
       </section>
 
       {/* Intro band */}
-      <section className="relative pt-10 sm:pt-12 pb-6 sm:pb-8 px-4 sm:px-6">
+      <section className="relative pt-5 sm:pt-6 pb-3 sm:pb-4 px-4 sm:px-6">
         <div className="max-w-4xl mx-auto">
           <motion.div
             initial={reduce ? undefined : { opacity: 0, y: 20 }}
@@ -357,7 +357,7 @@ export default function PartnerDetailPage() {
             className="text-center"
           >
             <span
-              className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-5 border"
+              className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-3 border"
               style={{
                 backgroundColor: `${partner.accent}10`,
                 borderColor: `${partner.accent}30`,
@@ -369,10 +369,10 @@ export default function PartnerDetailPage() {
                 About the Partnership
               </span>
             </span>
-            <h2 className="text-2xl md:text-3xl lg:text-4xl font-black text-foreground tracking-tight mb-4 leading-tight">
+            <h2 className="text-xl md:text-2xl lg:text-3xl font-black text-foreground tracking-tight mb-2 leading-tight">
               {partner.detail.heading ?? partner.tagline}
             </h2>
-            <p className="text-muted-foreground text-sm md:text-base leading-relaxed">
+            <p className="text-muted-foreground text-sm leading-relaxed">
               {partner.detail.intro}
             </p>
           </motion.div>
@@ -398,10 +398,10 @@ export default function PartnerDetailPage() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-80px" }}
               transition={{ duration: 0.6 }}
-              className="text-center mb-4 sm:mb-5"
+              className="text-center mb-3 sm:mb-4"
             >
               <span
-                className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-2.5 border"
+                className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-1.5 border"
                 style={{
                   backgroundColor: `${partner.accent}10`,
                   borderColor: `${partner.accent}30`,
@@ -443,7 +443,7 @@ export default function PartnerDetailPage() {
                   }
                   className="group relative rounded-2xl overflow-hidden bg-card border border-border shadow-md shadow-foreground/5 hover:shadow-2xl hover:shadow-foreground/10 transition-shadow duration-300"
                 >
-                  <div className="relative aspect-[4/3] overflow-hidden bg-muted">
+                  <div className="relative aspect-[16/10] overflow-hidden bg-muted">
                     <img
                       src={img.src}
                       alt={img.alt}
@@ -483,7 +483,7 @@ export default function PartnerDetailPage() {
       {/* Partnership Pillars — editorial typography layout */}
       <section
         ref={pillarsRef}
-        className="relative py-6 sm:py-8 lg:py-10 px-4 sm:px-6 overflow-hidden"
+        className="relative py-3 sm:py-4 lg:py-5 px-4 sm:px-6 overflow-hidden"
       >
         {/* Parallax brand-tinted background blobs */}
         <motion.div
@@ -522,10 +522,10 @@ export default function PartnerDetailPage() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-80px" }}
             transition={{ duration: 0.6 }}
-            className="mb-5 sm:mb-6 text-center"
+            className="mb-3 sm:mb-4 text-center"
           >
             <span
-              className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-4 border"
+              className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-2 border"
               style={{
                 backgroundColor: `${partner.accent}10`,
                 borderColor: `${partner.accent}30`,
@@ -537,7 +537,7 @@ export default function PartnerDetailPage() {
                 Partnership Pillars
               </span>
             </span>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-foreground tracking-tight leading-[1.05]">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-foreground tracking-tight leading-[1.05]">
               What drives our work with{" "}
               <span
                 style={{
@@ -618,7 +618,7 @@ export default function PartnerDetailPage() {
                     }}
                     className="group relative order-1 lg:order-2 lg:sticky lg:top-24 rounded-2xl overflow-hidden bg-card border border-border shadow-md shadow-foreground/5 hover:shadow-2xl hover:shadow-foreground/10 transition-shadow duration-300"
                   >
-                    <div className="relative aspect-[4/3] overflow-hidden bg-muted">
+                    <div className="relative aspect-[16/10] overflow-hidden bg-muted">
                       <img
                         src={heroImage.src}
                         alt={heroImage.alt}
@@ -657,17 +657,17 @@ export default function PartnerDetailPage() {
 
       {/* Products grid — only when partner has products */}
       {partner.products && partner.products.length > 0 && (
-        <section className="relative py-8 sm:py-10 lg:py-12 px-4 sm:px-6 bg-muted/30 border-t border-border">
+        <section className="relative py-4 sm:py-5 lg:py-6 px-4 sm:px-6 bg-muted/30 border-t border-border">
           <div className="max-w-7xl mx-auto">
             <motion.div
               initial={reduce ? undefined : { opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-80px" }}
               transition={{ duration: 0.6 }}
-              className="text-center mb-6 sm:mb-8"
+              className="text-center mb-3 sm:mb-4"
             >
               <span
-                className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-4 border"
+                className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-2 border"
                 style={{
                   backgroundColor: `${partner.accent}10`,
                   borderColor: `${partner.accent}30`,
@@ -679,7 +679,7 @@ export default function PartnerDetailPage() {
                   Product Range
                 </span>
               </span>
-              <h2 className="text-3xl sm:text-4xl md:text-[2.75rem] font-black text-foreground tracking-tight leading-[1.05]">
+              <h2 className="text-2xl sm:text-3xl md:text-[2.25rem] font-black text-foreground tracking-tight leading-[1.05]">
                 Products by{" "}
                 <span
                   style={{
@@ -693,13 +693,13 @@ export default function PartnerDetailPage() {
                   {partner.shortName}
                 </span>
               </h2>
-              <p className="mt-3 text-muted-foreground text-sm md:text-base max-w-2xl mx-auto leading-relaxed">
+              <p className="mt-1.5 text-muted-foreground text-sm max-w-2xl mx-auto leading-relaxed">
                 A complete range of quality-assured industrial solutions —
                 engineered for performance and reliability.
               </p>
             </motion.div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
               {partner.products.map((product, i) => (
                 <motion.article
                   key={product.name}
@@ -725,13 +725,13 @@ export default function PartnerDetailPage() {
                     }}
                   />
                   {/* Thumbnail */}
-                  <div className="relative aspect-[4/3] bg-white overflow-hidden">
+                  <div className="relative aspect-[16/10] bg-white overflow-hidden">
                     <img
                       src={product.image}
                       alt={product.name}
                       loading="lazy"
                       decoding="async"
-                      className="absolute inset-0 w-full h-full object-contain p-5 transition-transform duration-[800ms] ease-out group-hover:scale-[1.06]"
+                      className="absolute inset-0 w-full h-full object-contain p-4 transition-transform duration-[800ms] ease-out group-hover:scale-[1.06]"
                     />
                     {/* Brand-tinted hover veil */}
                     <div
@@ -743,8 +743,8 @@ export default function PartnerDetailPage() {
                     />
                   </div>
                   {/* Body */}
-                  <div className="flex-1 flex flex-col p-5 sm:p-6 border-t border-border">
-                    <h3 className="text-lg sm:text-xl font-black text-foreground tracking-tight mb-2 transition-colors duration-300 group-hover:text-[color:var(--partner-accent)]"
+                  <div className="flex-1 flex flex-col p-4 border-t border-border">
+                    <h3 className="text-base sm:text-lg font-black text-foreground tracking-tight mb-1.5 transition-colors duration-300 group-hover:text-[color:var(--partner-accent)]"
                       style={
                         {
                           ["--partner-accent" as string]: partner.accent,
@@ -753,7 +753,7 @@ export default function PartnerDetailPage() {
                     >
                       {product.name}
                     </h3>
-                    <p className="text-sm text-muted-foreground leading-relaxed">
+                    <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
                       {product.description}
                     </p>
                   </div>
@@ -765,14 +765,14 @@ export default function PartnerDetailPage() {
       )}
 
       {/* CTA strip */}
-      <section className="relative py-8 sm:py-10 px-4 sm:px-6">
+      <section className="relative py-4 sm:py-5 px-4 sm:px-6">
         <div className="max-w-5xl mx-auto">
           <motion.div
             initial={reduce ? undefined : { opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-80px" }}
             transition={{ duration: 0.6 }}
-            className="relative rounded-3xl overflow-hidden border border-white/10 text-white p-8 sm:p-10 text-center shadow-2xl shadow-black/30"
+            className="relative rounded-3xl overflow-hidden border border-white/10 text-white p-5 sm:p-6 text-center shadow-2xl shadow-black/30"
             style={{
               background:
                 "linear-gradient(160deg, #0B1220 0%, #0F172A 55%, #020617 100%)",
@@ -786,10 +786,10 @@ export default function PartnerDetailPage() {
               }}
             />
             <div className="relative">
-              <h3 className="text-xl sm:text-2xl md:text-3xl font-black tracking-tight mb-3">
+              <h3 className="text-lg sm:text-xl md:text-2xl font-black tracking-tight mb-2">
                 Want to know more about our work with {partner.shortName}?
               </h3>
-              <p className="text-white/80 text-sm md:text-base max-w-2xl mx-auto leading-relaxed mb-7">
+              <p className="text-white/80 text-sm max-w-2xl mx-auto leading-relaxed mb-3">
                 Talk to our team about products, applications and how this
                 partnership can power your project.
               </p>
@@ -800,7 +800,7 @@ export default function PartnerDetailPage() {
                     reduce ? undefined : { scale: 1.04, y: -2 }
                   }
                   whileTap={reduce ? undefined : { scale: 0.97 }}
-                  className="group inline-flex items-center gap-2 px-6 py-3 bg-white text-[#03045E] font-bold rounded-xl shadow-lg hover:shadow-xl hover:bg-[#48CAE4] hover:text-white transition-colors duration-200"
+                  className="group inline-flex items-center gap-2 px-5 py-2.5 text-sm bg-white text-[#03045E] font-bold rounded-xl shadow-lg hover:shadow-xl hover:bg-[#48CAE4] hover:text-white transition-colors duration-200"
                 >
                   Contact Us
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -814,7 +814,7 @@ export default function PartnerDetailPage() {
                       reduce ? undefined : { scale: 1.04, y: -2 }
                     }
                     whileTap={reduce ? undefined : { scale: 0.97 }}
-                    className="group inline-flex items-center gap-2 px-6 py-3 text-white font-bold rounded-xl border-2 border-white/30 hover:border-white hover:bg-white/10 transition-colors duration-200"
+                    className="group inline-flex items-center gap-2 px-5 py-2.5 text-sm text-white font-bold rounded-xl border-2 border-white/30 hover:border-white hover:bg-white/10 transition-colors duration-200"
                     aria-label={`Visit ${partner.name} official website (opens in new tab)`}
                   >
                     <Globe className="w-4 h-4 transition-transform duration-500 group-hover:rotate-180" />
@@ -824,7 +824,7 @@ export default function PartnerDetailPage() {
                 )}
                 <Link
                   href="/partners"
-                  className="group inline-flex items-center gap-2 px-6 py-3 text-white font-bold rounded-xl border-2 border-white/30 hover:border-white hover:bg-white/10 transition-colors duration-200"
+                  className="group inline-flex items-center gap-2 px-5 py-2.5 text-sm text-white font-bold rounded-xl border-2 border-white/30 hover:border-white hover:bg-white/10 transition-colors duration-200"
                 >
                   <ArrowLeft className="w-4 h-4 transition-transform duration-200 group-hover:-translate-x-1" />
                   All Partners
@@ -836,14 +836,14 @@ export default function PartnerDetailPage() {
       </section>
 
       {/* Other partners */}
-      <section className="relative py-8 sm:py-10 px-4 sm:px-6 bg-muted/30 border-t border-border">
+      <section className="relative py-4 sm:py-5 px-4 sm:px-6 bg-muted/30 border-t border-border">
         <div className="max-w-7xl mx-auto">
-          <div className="flex items-end justify-between mb-4 sm:mb-5 flex-wrap gap-3">
+          <div className="flex items-end justify-between mb-3 sm:mb-4 flex-wrap gap-3">
             <div>
               <span className="text-primary text-[11px] font-bold tracking-widest uppercase">
                 Continue Exploring
               </span>
-              <h3 className="mt-1 text-2xl sm:text-3xl font-black text-foreground tracking-tight">
+              <h3 className="mt-0.5 text-xl sm:text-2xl font-black text-foreground tracking-tight">
                 Other Strategic Partners
               </h3>
             </div>
@@ -856,7 +856,7 @@ export default function PartnerDetailPage() {
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
             {others.map((p) => (
               <OtherPartnerCard key={p.id} partner={p} />
             ))}
