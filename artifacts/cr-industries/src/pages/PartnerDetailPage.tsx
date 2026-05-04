@@ -476,10 +476,11 @@ export default function PartnerDetailPage() {
               What drives our work with{" "}
               <span
                 style={{
-                  background: `linear-gradient(135deg, ${partner.accent} 0%, ${partner.accent2} 100%)`,
+                  background: `linear-gradient(135deg, ${partner.accent} 0%, ${partner.accent} 60%, ${partner.accent2} 100%)`,
                   WebkitBackgroundClip: "text",
                   backgroundClip: "text",
                   color: "transparent",
+                  filter: "saturate(1.15)",
                 }}
               >
                 {partner.shortName}
