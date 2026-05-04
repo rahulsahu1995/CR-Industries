@@ -14,10 +14,16 @@ import soudalBuilding from "@assets/SOUDAL_image_1_1777891254847.webp";
 import soudalProducts from "@assets/fe3854ab-07d5-45f5-8e48-b608c1992e93_1777891257643.webp";
 import soudalGlobe from "@assets/SOUDAL_image_3_1777891266326.webp";
 import stanAvery from "@assets/avery_image_-1_1777893004010.jpg";
+import kiplTapes from "@assets/Self_Adhesive_Tapes_1777894838466.png";
+import kiplAbrasives from "@assets/Abrasives_1777894859206.jpg";
+import kiplButyl from "@assets/Butyl_Rubber_Products_1777894893448.jpg";
+import kiplFilters from "@assets/Air_&_Liquid_Filters_1777894918740.jpg";
+import kiplPneumatic from "@assets/Pneumatic_Tools_1777894939109.jpg";
 
 export type Fact = { icon: LucideIcon; label: string; value: string };
 export type Section = { heading: string; body: string };
 export type GalleryImage = { src: string; alt: string; caption?: string };
+export type Product = { name: string; description: string; image: string };
 
 export type Partner = {
   id: string;
@@ -40,6 +46,8 @@ export type Partner = {
   };
   /** Optional editorial gallery rendered on the detail page. */
   gallery?: GalleryImage[];
+  /** Optional product range — renders a Products grid section on the detail page. */
+  products?: Product[];
   /** Optional official partner website (external). Renders a "Visit Website" CTA. */
   website?: string;
 };
@@ -242,27 +250,15 @@ export const PARTNERS: Partner[] = [
     detail: {
       heading: "KIPL is Holding Industries Together",
       intro:
-        "Founded in 2006 as Keshav Enterprises and rebranded as KIPL in 2022, our journey reflects a legacy of growth, innovation and trust. KIPL has evolved into one of India's leading manufacturers of industrial adhesive tapes, abrasives and surface protection products — delivering excellence across automotive, electronics, packaging, construction, renewable energy and general industrial applications. Alongside our own product lines, we are an authorised distributor for ORAFOL's reflective materials and other renowned global brands — offering clients a complete range of quality-assured solutions under one roof. Guided by a vision to deliver reliability through innovation, KIPL operates as an ISO 9001:2015 certified organisation with a strict focus on quality management, sustainable growth and the customer trust that drives every adhesive bond we make.",
+        "Founded in 2006 and rebranded as KIPL in 2022, we are one of India's leading manufacturers of industrial adhesive tapes, abrasives and surface protection products — and an authorised distributor for ORAFOL and other renowned global brands. As an ISO 9001:2015 certified organisation, we deliver quality-assured solutions across automotive, electronics, packaging, construction, renewable energy and general industrial applications.",
       sections: [
         {
-          heading: "Heritage & Legacy",
-          body: "Established in 2006 as Keshav Enterprises and rebranded as KIPL in 2022 — a journey reflecting a legacy of growth, innovation and trust. Today KIPL is a recognised name in the manufacturing and distribution of premium industrial adhesive tapes, abrasives and maintenance products, serving customers across automotive, electrical, packaging and construction sectors with solutions made in India.",
-        },
-        {
           heading: "What We Do",
-          body: "We manufacture customisable adhesive solutions for leading industries — combining innovation, technology and precision through a tightly controlled process from material selection to final quality checks. Backed by ISO 9001:2015 standards, we don't just make products — we engineer adhesive solutions that hold industries together, with consistent performance and durability under the most demanding conditions.",
-        },
-        {
-          heading: "Industries Served",
-          body: "From automotive and electronics to packaging, construction, renewable energy and general industrial applications, KIPL products are engineered to perform under the most demanding conditions. Our customer-focused approach lets us design and deliver tailored adhesive tapes that meet specific industrial requirements with precision and reliability.",
+          body: "We manufacture customisable adhesive solutions — combining innovation, technology and precision through a tightly controlled process from material selection to final quality checks. Backed by ISO 9001:2015 standards, we engineer adhesive solutions that hold industries together with consistent performance under the most demanding conditions.",
         },
         {
           heading: "The KIPL Difference",
-          body: "Six pillars set us apart — an experienced team highly trained in adhesive tape conversion, a one-stop solutions partner from coating and processing to die-cutting and printing, free samples until the application is fully approved (OEM and ODM both supported), professional teams across production, engineering and sales for smooth order execution, 100% authentic branded materials, and ready stock plus strong production capability for fast, reliable dispatch.",
-        },
-        {
-          heading: "Distribution Partnerships",
-          body: "Beyond our own product lines, KIPL is an authorised distributor for ORAFOL's reflective materials and other renowned global brands — offering clients a complete, quality-assured range of solutions under one roof. This distribution depth, combined with in-house manufacturing, makes KIPL a single-source partner for the most demanding industrial adhesive and surface-protection projects.",
+          body: "An experienced team highly trained in adhesive tape conversion, a one-stop partner from coating and die-cutting to printing, free samples until the application is fully approved (OEM and ODM), 100% authentic branded materials, and ready stock plus strong production capability for fast, reliable dispatch.",
         },
         {
           heading: "Why This Partnership",
@@ -271,6 +267,38 @@ export const PARTNERS: Partner[] = [
       ],
       cta: "Discover KIPL",
     },
+    products: [
+      {
+        name: "Self Adhesive Tapes",
+        description:
+          "A wide range of pressure-sensitive tapes that bond instantly without heat, water or solvent — ideal for bonding, sealing, masking, insulation and surface protection across industrial and general-purpose applications.",
+        image: kiplTapes,
+      },
+      {
+        name: "Abrasives",
+        description:
+          "High-quality sanding and grinding products designed for surface preparation, finishing, polishing and material removal — suitable for metal, wood, automotive and industrial applications.",
+        image: kiplAbrasives,
+      },
+      {
+        name: "Butyl Rubber Products",
+        description:
+          "Manufactured for superior sealing and moisture resistance — ideal for roofing, glazing, insulation and vibration control applications where long-term durability is essential.",
+        image: kiplButyl,
+      },
+      {
+        name: "Air & Liquid Filters",
+        description:
+          "Engineered for efficient filtration, this range removes dust, particles and contaminants from air and liquid systems in demanding industrial environments.",
+        image: kiplFilters,
+      },
+      {
+        name: "Pneumatic Tools",
+        description:
+          "Powered by compressed air, these tools deliver reliable performance for cutting, fastening, grinding and assembly — built for continuous industrial and workshop use.",
+        image: kiplPneumatic,
+      },
+    ],
     website: "https://kipl.co.in/",
   },
 ];

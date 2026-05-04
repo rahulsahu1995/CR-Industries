@@ -632,6 +632,115 @@ export default function PartnerDetailPage() {
         </div>
       </section>
 
+      {/* Products grid — only when partner has products */}
+      {partner.products && partner.products.length > 0 && (
+        <section className="relative py-12 sm:py-16 lg:py-20 px-4 sm:px-6 bg-muted/30 border-t border-border">
+          <div className="max-w-7xl mx-auto">
+            <motion.div
+              initial={reduce ? undefined : { opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-80px" }}
+              transition={{ duration: 0.6 }}
+              className="text-center mb-10 sm:mb-12"
+            >
+              <span
+                className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-4 border"
+                style={{
+                  backgroundColor: `${partner.accent}10`,
+                  borderColor: `${partner.accent}30`,
+                  color: partner.accent,
+                }}
+              >
+                <Sparkles className="w-3.5 h-3.5" />
+                <span className="text-[11px] font-bold tracking-widest uppercase">
+                  Product Range
+                </span>
+              </span>
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-foreground tracking-tight leading-[1.05]">
+                Products by{" "}
+                <span
+                  style={{
+                    background: `linear-gradient(135deg, ${partner.accent} 0%, ${partner.accent} 60%, ${partner.accent2} 100%)`,
+                    WebkitBackgroundClip: "text",
+                    backgroundClip: "text",
+                    color: "transparent",
+                    filter: "saturate(1.15)",
+                  }}
+                >
+                  {partner.shortName}
+                </span>
+              </h2>
+              <p className="mt-4 text-muted-foreground text-sm md:text-base max-w-2xl mx-auto leading-relaxed">
+                A complete range of quality-assured industrial solutions —
+                engineered for performance and reliability.
+              </p>
+            </motion.div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
+              {partner.products.map((product, i) => (
+                <motion.article
+                  key={product.name}
+                  initial={reduce ? undefined : { opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-60px" }}
+                  transition={{
+                    duration: 0.55,
+                    delay: i * 0.07,
+                    ease: [0.16, 1, 0.3, 1],
+                  }}
+                  whileHover={
+                    reduce ? undefined : { y: -6, transition: { duration: 0.3 } }
+                  }
+                  className="group relative bg-card border border-border rounded-2xl overflow-hidden shadow-md shadow-foreground/5 hover:shadow-2xl hover:shadow-foreground/10 transition-shadow duration-300 flex flex-col"
+                >
+                  {/* Top accent strip */}
+                  <div
+                    aria-hidden
+                    className="h-1 w-full transition-all duration-500 group-hover:h-1.5"
+                    style={{
+                      background: `linear-gradient(90deg, ${partner.accent} 0%, ${partner.accent2} 100%)`,
+                    }}
+                  />
+                  {/* Thumbnail */}
+                  <div className="relative aspect-[4/3] bg-white overflow-hidden">
+                    <img
+                      src={product.image}
+                      alt={product.name}
+                      loading="lazy"
+                      decoding="async"
+                      className="absolute inset-0 w-full h-full object-contain p-5 transition-transform duration-[800ms] ease-out group-hover:scale-[1.06]"
+                    />
+                    {/* Brand-tinted hover veil */}
+                    <div
+                      aria-hidden
+                      className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+                      style={{
+                        background: `linear-gradient(180deg, transparent 60%, ${partner.accent}10 100%)`,
+                      }}
+                    />
+                  </div>
+                  {/* Body */}
+                  <div className="flex-1 flex flex-col p-5 sm:p-6 border-t border-border">
+                    <h3 className="text-lg sm:text-xl font-black text-foreground tracking-tight mb-2 transition-colors duration-300 group-hover:text-[color:var(--partner-accent)]"
+                      style={
+                        {
+                          ["--partner-accent" as string]: partner.accent,
+                        } as React.CSSProperties
+                      }
+                    >
+                      {product.name}
+                    </h3>
+                    <p className="text-sm text-muted-foreground leading-relaxed">
+                      {product.description}
+                    </p>
+                  </div>
+                </motion.article>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* CTA strip */}
       <section className="relative py-12 sm:py-16 px-4 sm:px-6">
         <div className="max-w-5xl mx-auto">
