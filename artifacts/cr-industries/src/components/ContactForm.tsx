@@ -55,7 +55,7 @@ export default function ContactForm() {
   };
 
   return (
-    <section id="contact" className="py-12 sm:py-14 bg-muted/40">
+    <section id="contact" className="py-0 bg-muted/40">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           ref={headingRef}

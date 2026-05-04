@@ -97,7 +97,7 @@ export default function WhyChooseUs() {
   const headingInView = useInView(headingRef, { once: true });
 
   return (
-    <section id="about" className="py-12 sm:py-14 bg-background overflow-hidden">
+    <section id="about" className="py-0 bg-background overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           ref={headingRef}
