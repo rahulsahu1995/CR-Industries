@@ -13,6 +13,7 @@ import {
   Building2,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import soudalLogo from "@assets/SOUDAL_1777887969287.webp";
 
 /* ────────────────────────────────────────────────────────────────────
    Strategic Partners — primary landing hero
@@ -29,6 +30,8 @@ type Partner = {
   tagline: string;
   summary: string;
   monogram: string;
+  /** Optional brand logo. When set, replaces the monogram tile on the slide and modal. */
+  logo?: string;
   accent: string;
   accent2: string;
   facts: Fact[];
@@ -48,6 +51,7 @@ const PARTNERS: Partner[] = [
     summary:
       "The largest independent European manufacturer of sealants, adhesives and polyurethane foams. A Belgian family powerhouse delivering chemical construction specialities across 5 continents.",
     monogram: "S",
+    logo: soudalLogo,
     accent: "#003594",
     accent2: "#FFD100",
     facts: [
@@ -490,15 +494,27 @@ export default function StrategicPartnersHero() {
                         Verified
                       </span>
                     </div>
-                    {/* Monogram */}
+                    {/* Logo or monogram */}
                     <div className="absolute inset-0 flex items-center justify-center">
                       <div className="relative">
                         <div className="absolute inset-0 rounded-full bg-white/15 blur-2xl scale-125" />
-                        <div className="relative w-32 h-32 md:w-40 md:h-40 rounded-3xl bg-white/15 border border-white/35 backdrop-blur-md flex items-center justify-center shadow-2xl">
-                          <span className="text-white font-black text-5xl md:text-6xl tracking-tighter drop-shadow-2xl">
-                            {partner.monogram}
-                          </span>
-                        </div>
+                        {partner.logo ? (
+                          <div className="relative w-44 h-44 md:w-56 md:h-56 rounded-3xl bg-white border border-white/40 flex items-center justify-center shadow-2xl p-5 md:p-6">
+                            <img
+                              src={partner.logo}
+                              alt={`${partner.name} logo`}
+                              className="max-w-full max-h-full w-auto h-auto object-contain"
+                              loading="lazy"
+                              decoding="async"
+                            />
+                          </div>
+                        ) : (
+                          <div className="relative w-32 h-32 md:w-40 md:h-40 rounded-3xl bg-white/15 border border-white/35 backdrop-blur-md flex items-center justify-center shadow-2xl">
+                            <span className="text-white font-black text-5xl md:text-6xl tracking-tighter drop-shadow-2xl">
+                              {partner.monogram}
+                            </span>
+                          </div>
+                        )}
                       </div>
                     </div>
                     {/* Bottom name plate */}
@@ -761,10 +777,20 @@ function PartnerModal({
                 {partner.tagline}
               </p>
             </div>
-            <div className="hidden sm:flex shrink-0 w-20 h-20 rounded-2xl bg-white/15 border border-white/35 backdrop-blur-md items-center justify-center">
-              <span className="text-white font-black text-3xl">
-                {partner.monogram}
-              </span>
+            <div className="hidden sm:flex shrink-0 w-20 h-20 rounded-2xl bg-white/95 border border-white/35 backdrop-blur-md items-center justify-center overflow-hidden p-2">
+              {partner.logo ? (
+                <img
+                  src={partner.logo}
+                  alt={`${partner.name} logo`}
+                  className="max-w-full max-h-full w-auto h-auto object-contain"
+                  loading="lazy"
+                  decoding="async"
+                />
+              ) : (
+                <span className="font-black text-3xl" style={{ color: partner.accent }}>
+                  {partner.monogram}
+                </span>
+              )}
             </div>
           </div>
         </div>
