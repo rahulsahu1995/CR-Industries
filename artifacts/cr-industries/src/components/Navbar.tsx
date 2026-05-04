@@ -62,6 +62,22 @@ export default function Navbar() {
     }
   };
 
+  /* Brand mark click — go to Home and smoothly scroll to top.
+     If already on Home, just smooth-scroll. */
+  const handleBrandClick = () => {
+    setSidebarOpen(false);
+    if (location !== "/") {
+      navigate("/");
+      // Wait a tick for the route to mount, then smooth-scroll
+      setTimeout(
+        () => window.scrollTo({ top: 0, behavior: "smooth" }),
+        80,
+      );
+    } else {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
+
   return (
     <>
       <header
@@ -74,19 +90,24 @@ export default function Navbar() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16 lg:h-20">
             {/* Logo */}
-            <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={handleBrandClick}
+              aria-label="C R Industries — back to home"
+              className="group flex items-center gap-3 rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+            >
               <img
                 src="/logo.jpeg"
                 alt="C R Industries Logo"
-                className="w-10 h-10 rounded-lg object-cover"
+                className="w-10 h-10 rounded-lg object-cover transition-transform duration-300 group-hover:scale-105"
               />
               <span
-                className="font-black text-xl tracking-widest"
+                className="font-black text-xl tracking-widest transition-colors duration-200 group-hover:text-primary"
                 style={{ color: theme === "dark" ? "#e2e8f0" : "#03045E" }}
               >
                 C R INDUSTRIES
               </span>
-            </div>
+            </button>
 
             {/* Right cluster: nav + controls */}
             <div className="flex items-center gap-6">
@@ -195,7 +216,14 @@ export default function Navbar() {
               }}
             >
               <div className="flex items-center justify-between p-5 border-b border-white/20">
-                <span className="text-white font-black text-lg tracking-widest">C R INDUSTRIES</span>
+                <button
+                  type="button"
+                  onClick={handleBrandClick}
+                  aria-label="C R Industries — back to home"
+                  className="text-white font-black text-lg tracking-widest hover:opacity-80 transition-opacity focus:outline-none focus-visible:ring-2 focus-visible:ring-white/60 rounded-md"
+                >
+                  C R INDUSTRIES
+                </button>
                 <button
                   onClick={() => setSidebarOpen(false)}
                   className="w-9 h-9 rounded-full bg-white/20 flex items-center justify-center text-white"
