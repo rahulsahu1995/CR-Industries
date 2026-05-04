@@ -13,6 +13,7 @@ import kiplLogo from "@assets/Screenshot_2026-05-04_152249_1777888385161.png";
 import soudalBuilding from "@assets/SOUDAL_image_1_1777891254847.webp";
 import soudalProducts from "@assets/fe3854ab-07d5-45f5-8e48-b608c1992e93_1777891257643.webp";
 import soudalGlobe from "@assets/SOUDAL_image_3_1777891266326.webp";
+import stanAvery from "@assets/avery_image_-1_1777893004010.jpg";
 
 export type Fact = { icon: LucideIcon; label: string; value: string };
 export type Section = { heading: string; body: string };
@@ -170,43 +171,57 @@ export const PARTNERS: Partner[] = [
     shortName: "Avery Dennison",
     tagline: "Making Possible™ — Materials Science & Digital Identity",
     summary:
-      "A global materials science and digital identification solutions company with ~35,000 employees in 50+ countries — inventor of the world's first self-adhesive label nearly 90 years ago.",
+      "A global materials science and digital identification solutions company with approximately 35,000 employees in more than 50 countries — inventor of the world's first self-adhesive label and a Fortune 500® corporation 90 years in the making.",
     monogram: "AD",
     logo: averyDennisonLogo,
     accent: "#CC0000",
     accent2: "#1A1A1A",
     facts: [
-      { icon: Calendar, label: "Heritage", value: "~90 years" },
+      { icon: Calendar, label: "Founded", value: "1935" },
       { icon: MapPin, label: "Countries", value: "50+" },
       { icon: Users, label: "Employees", value: "35,000" },
     ],
     detail: {
+      heading: "Avery Dennison is Making Possible™",
       intro:
-        "Avery Dennison is a global materials science and digital identification solutions company with approximately 35,000 employees in more than 50 countries. We design and develop labelling and functional materials, RFID inlays and tags, software applications and packaging solutions that connect the physical and digital worlds.",
+        "Avery Dennison is a global materials science and digital identification solutions company with approximately 35,000 employees in more than 50 countries. The company was founded in 1935 by Ray Stanton 'Stan' Avery, who invented the world's first self-adhesive label in downtown Los Angeles with a few spare parts, one bright idea and a $100 loan. Following a 1990 merger with Dennison Manufacturing, the company has grown into a Fortune 500® corporation that designs and develops labelling and functional materials, RFID inlays and tags, software applications and offerings that enhance branded packaging — connecting the physical and digital worlds and serving industries from apparel and retail to logistics, food, pharmaceuticals and automotive.",
       sections: [
         {
-          heading: "A Legacy of Invention",
-          body: "Born nearly 90 years ago with the invention of the world's first self-adhesive label — and we've been asking 'What if?' ever since.",
+          heading: "Heritage & Legacy",
+          body: "Our story begins in 1935 with just a few spare parts, one very bright idea and a $100 loan. Ray Stanton 'Stan' Avery invented the world's first self-adhesive label as a way to merchandise objects, founding Avery Adhesives in downtown Los Angeles. In 1990 the company merged with Dennison Manufacturing to form Avery Dennison. Over 90 years later, we've grown from one bright idea into a global Fortune 500® corporation that continues to advance quality and innovation in materials science.",
         },
         {
-          heading: "Industries We Serve",
-          body: "Home and personal care, apparel, general retail, e-commerce, logistics, food and grocery, pharmaceuticals and automotive — connecting brands with consumers.",
+          heading: "What We Do",
+          body: "We design and develop labelling and functional materials, radio frequency identification (RFID) inlays and tags, software applications that connect the physical and digital, and offerings that enhance branded packaging and carry or display information that improves the customer experience. We are Making Possible™ products and solutions that help advance the industries we serve.",
         },
         {
-          heading: "Branding & Information",
-          body: "Solutions that optimise labour and supply-chain efficiency, reduce waste, mitigate loss, and advance sustainability, circularity and transparency.",
+          heading: "Industries Served",
+          body: "We serve industries worldwide — home and personal care, apparel, general retail, e-commerce, logistics, food and grocery, pharmaceuticals and automotive — providing branding and information solutions that optimise labour and supply-chain efficiency, reduce waste and mitigate loss, advance sustainability, circularity and transparency, and better connect brands with consumers.",
         },
         {
           heading: "Connecting Physical & Digital",
-          body: "RFID inlays, intelligent labels and connected packaging that bring transparency to supply chains and richer experiences to consumers.",
+          body: "RFID inlays, intelligent labels, software applications and connected packaging that bring transparency to supply chains and richer experiences to consumers. We are everywhere you look — but so much more than what you see — bridging the physical and digital with materials science engineered for scale.",
+        },
+        {
+          heading: "Maker Culture & Venture Capital",
+          body: "A strong 'maker' culture drives innovation and collaboration as our teams solve some of the world's most complex challenges. The Avery Dennison corporate venture capital programme actively invests and commercially partners with emerging technology and materials science companies — supporting entrepreneurs working on disruptive innovations that strengthen our offering and create value for our customers and strategic partners.",
         },
         {
           heading: "Why This Partnership",
-          body: "Avery Dennison's labelling and adhesive science aligns perfectly with C R Industries' bonding solutions — enabling integrated branding, identification and assembly capabilities for our shared customers.",
+          body: "Avery Dennison's labelling and adhesive science aligns perfectly with C R Industries' bonding and surface solutions — together we deliver integrated branding, identification, RFID-enabled traceability and assembly capabilities for our shared customers across India and beyond.",
         },
       ],
       cta: "Discover Avery Dennison",
     },
+    gallery: [
+      {
+        src: stanAvery,
+        alt: "Black and white archive photo of Ray Stanton 'Stan' Avery — founder of Avery Dennison — at his desk with early label dispensers in 1935",
+        caption:
+          "Ray Stanton 'Stan' Avery in 1935 — inventor of the world's first self-adhesive label. With a few spare parts, one bright idea and a $100 loan, he founded Avery Adhesives in downtown Los Angeles.",
+      },
+    ],
+    website: "https://www.averydennison.com/",
   },
   {
     id: "kipl",
