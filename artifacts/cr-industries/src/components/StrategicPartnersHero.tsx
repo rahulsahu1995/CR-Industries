@@ -505,14 +505,16 @@ export default function StrategicPartnersHero() {
                       <div className="relative">
                         <div className="absolute inset-0 rounded-full bg-white/15 blur-2xl scale-125" />
                         {partner.logo ? (
-                          <div className="relative w-52 h-52 md:w-64 md:h-64 rounded-3xl bg-white border border-white/40 shadow-2xl p-5 md:p-7 flex items-center justify-center overflow-hidden">
-                            <img
-                              src={partner.logo}
-                              alt={`${partner.name} logo`}
-                              className="block w-full h-full object-contain object-center"
-                              loading="lazy"
-                              decoding="async"
-                            />
+                          <div className="relative w-72 h-56 md:w-80 md:h-64 rounded-3xl bg-white border border-white/40 shadow-2xl overflow-hidden">
+                            <div className="absolute inset-0 flex items-center justify-center p-7 md:p-9">
+                              <img
+                                src={partner.logo}
+                                alt={`${partner.name} logo`}
+                                className="block max-w-full max-h-full w-auto h-auto object-contain"
+                                loading="lazy"
+                                decoding="async"
+                              />
+                            </div>
                           </div>
                         ) : (
                           <div className="relative w-32 h-32 md:w-40 md:h-40 rounded-3xl bg-white/15 border border-white/35 backdrop-blur-md flex items-center justify-center shadow-2xl">
@@ -783,19 +785,23 @@ function PartnerModal({
                 {partner.tagline}
               </p>
             </div>
-            <div className="hidden sm:flex shrink-0 w-24 h-20 rounded-2xl bg-white/95 border border-white/35 backdrop-blur-md items-center justify-center overflow-hidden p-2">
+            <div className="hidden sm:block shrink-0 w-28 h-20 rounded-2xl bg-white/95 border border-white/35 backdrop-blur-md overflow-hidden relative">
               {partner.logo ? (
-                <img
-                  src={partner.logo}
-                  alt={`${partner.name} logo`}
-                  className="block w-full h-full object-contain object-center"
-                  loading="lazy"
-                  decoding="async"
-                />
+                <div className="absolute inset-0 flex items-center justify-center p-2.5">
+                  <img
+                    src={partner.logo}
+                    alt={`${partner.name} logo`}
+                    className="block max-w-full max-h-full w-auto h-auto object-contain"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </div>
               ) : (
-                <span className="font-black text-3xl" style={{ color: partner.accent }}>
-                  {partner.monogram}
-                </span>
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <span className="font-black text-3xl" style={{ color: partner.accent }}>
+                    {partner.monogram}
+                  </span>
+                </div>
               )}
             </div>
           </div>
