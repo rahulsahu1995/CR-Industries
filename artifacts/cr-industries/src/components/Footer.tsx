@@ -25,7 +25,7 @@ const COL_COMPANY: LinkItem[] = [
   { label: "Careers", href: "#careers" },
   { label: "Sustainability", href: "#sustainability" },
   { label: "Certifications", href: "#certifications" },
-  { label: "Partner With Us", href: "#partners" },
+  { label: "Partner With Us", href: "/partners" },
 ];
 
 const SOCIAL_LINKS = [
