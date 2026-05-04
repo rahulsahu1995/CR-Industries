@@ -1,7 +1,12 @@
 import { useEffect, useRef } from "react";
 import { motion, useInView, useReducedMotion } from "framer-motion";
 import { useLocation } from "wouter";
-import { ArrowRight, CheckCircle2, Handshake, Sparkles } from "lucide-react";
+import {
+  ArrowRight,
+  ExternalLink,
+  Handshake,
+  Sparkles,
+} from "lucide-react";
 import PageHero from "@/components/PageHero";
 import { PARTNERS, type Partner } from "@/data/partners";
 
@@ -13,6 +18,9 @@ function PartnerCard({ partner, index }: { partner: Partner; index: number }) {
   const reduce = useReducedMotion();
   const inView = useInView(ref, { once: true, margin: "-80px" });
   const reverse = index % 2 === 1;
+  const [, navigate] = useLocation();
+  const numero = String(index + 1).padStart(2, "0");
+  const total = String(PARTNERS.length).padStart(2, "0");
 
   return (
     <motion.article
@@ -21,9 +29,17 @@ function PartnerCard({ partner, index }: { partner: Partner; index: number }) {
       initial={reduce ? undefined : { opacity: 0, y: 40 }}
       animate={inView ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-      className="relative scroll-mt-24"
+      className="relative scroll-mt-24 group/card"
     >
-      <div className="relative bg-card border border-border rounded-3xl overflow-hidden shadow-lg shadow-foreground/5">
+      <div
+        className="relative bg-card border border-border rounded-[2rem] overflow-hidden shadow-xl shadow-foreground/5 hover:shadow-2xl hover:shadow-foreground/10 transition-shadow duration-500"
+        style={
+          {
+            ["--partner-accent" as string]: partner.accent,
+            ["--partner-accent-2" as string]: partner.accent2,
+          } as React.CSSProperties
+        }
+      >
         {/* Top accent strip */}
         <div
           aria-hidden
@@ -33,12 +49,21 @@ function PartnerCard({ partner, index }: { partner: Partner; index: number }) {
           }}
         />
 
+        {/* Subtle brand-tinted background wash */}
         <div
-          className={`grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 p-6 sm:p-8 lg:p-12 items-center ${
+          aria-hidden
+          className="pointer-events-none absolute inset-0 opacity-[0.035]"
+          style={{
+            background: `radial-gradient(circle at ${reverse ? "85%" : "15%"} 50%, ${partner.accent} 0%, transparent 55%)`,
+          }}
+        />
+
+        <div
+          className={`relative grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 p-7 sm:p-10 lg:p-14 items-center ${
             reverse ? "lg:[direction:rtl]" : ""
           }`}
         >
-          {/* Logo card */}
+          {/* Logo card column */}
           <div className="lg:col-span-5 [direction:ltr]">
             <div className="relative">
               {/* Decorative blurred orb behind the card */}
@@ -50,7 +75,7 @@ function PartnerCard({ partner, index }: { partner: Partner; index: number }) {
                 }}
               />
               <div
-                className="relative aspect-[4/3] rounded-3xl overflow-hidden bg-white border shadow-2xl flex flex-col"
+                className="relative aspect-[4/3] rounded-3xl overflow-hidden bg-white border shadow-2xl flex flex-col transition-transform duration-500 group-hover/card:scale-[1.015]"
                 style={{ borderColor: `${partner.accent}30` }}
               >
                 {/* Brand accent bar */}
@@ -144,7 +169,7 @@ function PartnerCard({ partner, index }: { partner: Partner; index: number }) {
                 return (
                   <div
                     key={f.label}
-                    className="rounded-xl bg-muted/40 border border-border px-3 py-2.5 text-left"
+                    className="rounded-xl bg-muted/40 border border-border px-3 py-2.5 text-left transition-colors duration-300 hover:border-[color:var(--partner-accent)]/40"
                   >
                     <div className="flex items-center gap-1.5 mb-1">
                       <Icon
@@ -164,61 +189,105 @@ function PartnerCard({ partner, index }: { partner: Partner; index: number }) {
             </div>
           </div>
 
-          {/* Text */}
+          {/* Content column */}
           <div className="lg:col-span-7 [direction:ltr]">
-            <div className="flex items-center gap-3 flex-wrap mb-4">
+            {/* Big numeric eyebrow + divider + label */}
+            <div className="flex items-center gap-4 mb-5">
               <span
-                className="px-3 py-1 rounded-full text-[11px] font-bold tracking-widest uppercase border"
-                style={{
-                  color: partner.accent,
-                  borderColor: `${partner.accent}40`,
-                  backgroundColor: `${partner.accent}10`,
-                }}
+                className="text-5xl sm:text-6xl font-black tracking-tighter leading-none select-none"
+                style={{ color: `${partner.accent}22` }}
+                aria-hidden
               >
-                Partner {String(index + 1).padStart(2, "0")} /{" "}
-                {String(PARTNERS.length).padStart(2, "0")}
+                {numero}
               </span>
-              <span className="text-muted-foreground/80 text-[11px] tracking-widest uppercase font-bold">
-                {partner.shortName}
-              </span>
+              <div className="flex-1 flex items-center gap-3">
+                <span
+                  aria-hidden
+                  className="block h-px flex-1"
+                  style={{
+                    background: `linear-gradient(90deg, ${partner.accent}50 0%, transparent 100%)`,
+                  }}
+                />
+                <span
+                  className="text-[10px] font-bold tracking-[0.32em] uppercase whitespace-nowrap"
+                  style={{ color: partner.accent }}
+                >
+                  Partner {numero} / {total}
+                </span>
+              </div>
             </div>
 
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-foreground tracking-tight leading-[1.05] mb-3">
+            {/* Title & tagline */}
+            <h2 className="text-3xl sm:text-4xl md:text-[2.75rem] font-black text-foreground tracking-tight leading-[1.05] mb-3">
               {partner.name}
             </h2>
-            <p className="text-foreground/85 text-base md:text-lg font-semibold mb-4 leading-snug">
+            <p
+              className="text-base md:text-lg font-semibold mb-5 leading-snug"
+              style={{ color: partner.accent }}
+            >
               {partner.tagline}
             </p>
-            <p className="text-muted-foreground text-sm md:text-base leading-relaxed mb-6">
-              {partner.detail.intro}
+
+            {/* Concise summary (NOT the full intro — that lives on detail page) */}
+            <p className="text-muted-foreground text-sm md:text-base leading-relaxed mb-7 max-w-2xl">
+              {partner.summary}
             </p>
 
-            {/* Detail sections */}
-            <div className="space-y-3.5">
-              {partner.detail.sections.map((s) => (
-                <div
-                  key={s.heading}
-                  className="flex items-start gap-3 p-3.5 rounded-xl bg-background border border-border hover:border-primary/40 transition-colors duration-200"
-                >
-                  <span
-                    className="shrink-0 mt-0.5 w-7 h-7 rounded-lg flex items-center justify-center"
-                    style={{ backgroundColor: `${partner.accent}15` }}
+            {/* Pillar highlights — headings only, in a refined two-column grid */}
+            <div className="mb-8">
+              <p className="text-[10px] font-bold tracking-[0.28em] uppercase text-muted-foreground/70 mb-3">
+                What This Partnership Delivers
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2.5">
+                {partner.detail.sections.slice(0, 6).map((s) => (
+                  <div
+                    key={s.heading}
+                    className="flex items-center gap-2.5 group/item"
                   >
-                    <CheckCircle2
-                      className="w-4 h-4"
-                      style={{ color: partner.accent }}
+                    <span
+                      aria-hidden
+                      className="shrink-0 w-1.5 h-1.5 rounded-full transition-transform duration-300 group-hover/item:scale-150"
+                      style={{ backgroundColor: partner.accent }}
                     />
-                  </span>
-                  <div className="min-w-0">
-                    <h3 className="text-sm font-black text-foreground tracking-tight mb-0.5">
+                    <span className="text-sm font-semibold text-foreground/90 truncate">
                       {s.heading}
-                    </h3>
-                    <p className="text-muted-foreground text-sm leading-relaxed">
-                      {s.body}
-                    </p>
+                    </span>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
+            </div>
+
+            {/* CTAs */}
+            <div className="flex flex-wrap items-center gap-3">
+              <button
+                type="button"
+                onClick={() => navigate(`/partners/${partner.id}`)}
+                aria-label={`View full profile for ${partner.name}`}
+                className="group/btn inline-flex items-center gap-2.5 px-6 py-3.5 text-white font-bold rounded-xl shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-background"
+                style={{
+                  background: `linear-gradient(135deg, ${partner.accent} 0%, ${partner.accent} 60%, ${partner.accent2} 100%)`,
+                  ["--tw-ring-color" as string]: `${partner.accent}80`,
+                }}
+              >
+                View Full Profile
+                <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover/btn:translate-x-1" />
+              </button>
+              {partner.website && (
+                <a
+                  href={partner.website}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`Visit ${partner.shortName} website`}
+                  className="group/visit inline-flex items-center gap-2 px-5 py-3.5 font-bold rounded-xl border-2 bg-background hover:bg-muted/40 transition-colors duration-300"
+                  style={{
+                    borderColor: `${partner.accent}45`,
+                    color: partner.accent,
+                  }}
+                >
+                  Visit Website
+                  <ExternalLink className="w-3.5 h-3.5 transition-transform duration-300 group-hover/visit:rotate-12" />
+                </a>
+              )}
             </div>
           </div>
         </div>
@@ -251,7 +320,7 @@ export default function PartnersPage() {
       />
 
       {/* Intro band */}
-      <section className="relative py-12 sm:py-16 px-4 sm:px-6">
+      <section className="relative py-14 sm:py-20 px-4 sm:px-6">
         <div className="max-w-5xl mx-auto text-center">
           <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 mb-5">
             <Handshake className="w-3.5 h-3.5 text-primary" />
@@ -259,21 +328,37 @@ export default function PartnersPage() {
               Strategic Alliances
             </span>
           </span>
-          <h2 className="text-2xl md:text-3xl lg:text-4xl font-black text-foreground tracking-tight">
-            Built on Trust. Delivered with Excellence.
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-black text-foreground tracking-tight leading-[1.05]">
+            Built on Trust.{" "}
+            <span className="text-primary">Delivered with Excellence.</span>
           </h2>
-          <p className="mt-4 text-muted-foreground text-sm md:text-base max-w-3xl mx-auto leading-relaxed">
+          <p className="mt-5 text-muted-foreground text-base md:text-lg max-w-3xl mx-auto leading-relaxed">
             C R Industries proudly partners with global leaders in materials
             science, sealants, adhesives, abrasives and labelling — a network
             that brings the world's best chemistry, technology and craftsmanship
             to every Indian project we touch.
           </p>
+          {/* Decorative divider */}
+          <div className="mt-8 flex items-center justify-center gap-3">
+            <span
+              aria-hidden
+              className="block h-px w-16 bg-gradient-to-r from-transparent to-primary/50"
+            />
+            <span
+              aria-hidden
+              className="block w-2 h-2 rounded-full bg-primary"
+            />
+            <span
+              aria-hidden
+              className="block h-px w-16 bg-gradient-to-l from-transparent to-primary/50"
+            />
+          </div>
         </div>
       </section>
 
       {/* Partner cards */}
-      <section className="relative pb-16 sm:pb-20 px-4 sm:px-6">
-        <div className="max-w-7xl mx-auto space-y-10 lg:space-y-14">
+      <section className="relative pb-20 sm:pb-24 px-4 sm:px-6">
+        <div className="max-w-7xl mx-auto space-y-14 lg:space-y-20">
           {PARTNERS.map((p, i) => (
             <PartnerCard key={p.id} partner={p} index={i} />
           ))}
