@@ -13,7 +13,7 @@ export default function StrategicPartnersHero() {
   return (
     <section
       id="home"
-      className="relative bg-background overflow-hidden pt-24 lg:pt-28 pb-16 lg:pb-20"
+      className="relative bg-background overflow-hidden pt-24 lg:pt-28 pb-6 lg:pb-8"
     >
       {/* Decorative orbs + dot grid */}
       <div
