@@ -25,6 +25,12 @@ import soudalFirecrylFr from "@assets/Soudal_image_-3_1777895500308.webp";
 import soudalFireSiliconeB1 from "@assets/Soudal_image_-4_1777895535292.webp";
 import soudalSoudagumHydro from "@assets/Soudal_image_-5_1777895584925.webp";
 import soudalApplicator from "@assets/Soudal_image_-6_1777895650520.webp";
+import cumiAjaxCloth from "@assets/cumi_image_-1_1777896116859.jpg";
+import cumiHandPads from "@assets/cumi_image_-2_1777896152568.jpg";
+import cumiCenterless from "@assets/cumi_image_-3_1777896202485.webp";
+import cumiSandmaster from "@assets/cumi_image_-4_1777896272078.jpg";
+import cumiToolRoom from "@assets/cumi_image_-5_1777896308315.webp";
+import cumiZon from "@assets/cumi_image_-6_1777896346471.webp";
 
 export type Fact = { icon: LucideIcon; label: string; value: string };
 export type Section = { heading: string; body: string };
@@ -174,27 +180,15 @@ export const PARTNERS: Partner[] = [
     detail: {
       heading: "CUMI is Engineering Materials Science Excellence",
       intro:
-        "Carborundum Universal Limited (CUMI) was established in 1954 as a tripartite joint venture between Carborundum Co. (USA), Universal Grinding Wheel (UK) and the Murugappa Group of India. Today CUMI is a leading materials sciences engineering solutions provider with consolidated revenue of ₹4,834 crores and PAT of ₹293 crores in FY 2024-25. As part of the 125-year-old Murugappa Group and listed on the NSE and BSE, CUMI operates a uniquely integrated 'Mines to Market' model — spanning mining, power generation, fusion, manufacturing, marketing and distribution. Over 10,000 employees worldwide collaborate to deliver world-class solutions across Abrasives, Electrominerals, Ceramics and Refractories — serving customers in engineering, auto, infrastructure, steel, glass, power, mining and aerospace across six continents and 60+ countries.",
+        "Established in 1954 and part of the 125-year-old Murugappa Group, Carborundum Universal Limited (CUMI) is a leading materials sciences engineering solutions provider listed on the NSE and BSE. With over 10,000 employees, a uniquely integrated 'Mines to Market' model and a footprint spanning six continents and 60+ countries, CUMI delivers world-class Abrasives, Electrominerals, Ceramics and Refractories to engineering, auto, infrastructure, steel, glass, power, mining and aerospace.",
       sections: [
-        {
-          heading: "Heritage & Legacy",
-          body: "Incorporated in 1954 with a Coated Abrasives facility acquired from Ajax Products, a Bonded Abrasives plant set up at Chennai and Bauxite mining at Bhatia, Gujarat. Seven decades of disciplined growth — through landmark plants in Edappally, Koratty, Hosur and Sriperumbudur and a string of strategic acquisitions across Russia, South Africa, India and beyond — have made CUMI a publicly listed materials sciences leader on India's NSE and BSE.",
-        },
         {
           heading: "Mines to Market",
           body: "CUMI operates a uniquely vertically integrated model — from owned mining and captive power generation, to fusion processing, advanced manufacturing, and direct global marketing and distribution. This end-to-end control delivers consistent quality, supply security and cost competitiveness that few peers in the materials sciences space can match.",
         },
         {
-          heading: "Facts & Figures",
-          body: "Consolidated revenue of ₹4,834 crores and PAT of ₹293 crores in FY 2024-25. Over 10,000 employees worldwide. A geographical footprint spanning six continents with exports to more than 60 countries. Plants and subsidiaries across India, Russia, South Africa, China, the USA, Australia, Europe and the Middle East — a truly global Indian materials science powerhouse.",
-        },
-        {
           heading: "Product Portfolio",
-          body: "World-class solutions across four pillars — Abrasives (bonded, coated, super-abrasives, thin wheels and power tools), Electrominerals (silicon carbide, fused alumina, zirconia), Ceramics (industrial, technical and advanced) and Refractories (super, monolithic and anti-corrosive). Serving engineering, fabrication, auto and auto components, infrastructure, steel, glass, power generation and distribution, mining and aerospace.",
-        },
-        {
-          heading: "The Murugappa Group",
-          body: "CUMI is part of the 124-year-old Murugappa Group — an INR 778 billion (₹77,881 crore) conglomerate with 9 listed companies including Tube Investments of India, Cholamandalam Investment & Finance, Coromandel International, CG Power, E.I.D Parry, Shanthi Gears and Wendt (India). Guided by the five lights — integrity, passion, quality, respect and responsibility — and powered by over 83,500 employees across agriculture, engineering, financial services and more.",
+          body: "World-class solutions across four pillars — Abrasives (bonded, coated, super-abrasives, thin wheels and power tools), Electrominerals (silicon carbide, fused alumina, zirconia), Ceramics (industrial, technical and advanced) and Refractories (super, monolithic and anti-corrosive).",
         },
         {
           heading: "Why This Partnership",
@@ -203,6 +197,44 @@ export const PARTNERS: Partner[] = [
       ],
       cta: "Discover CUMI",
     },
+    products: [
+      {
+        name: "Ajax Cloth Roll",
+        description:
+          "Made with a unique bond and a flexible cloth backing carrying aluminum oxide grains — ideal for light material removal and finishing of metal and non-metal parts. The flexible cloth backing enables contour sanding on wood, making it best-in-class for plywood and furniture sanding.",
+        image: cumiAjaxCloth,
+      },
+      {
+        name: "Ajax DX13 Hand Pads",
+        description:
+          "Durable abrasive hand pads engineered for controlled sanding and surface preparation. Manufactured with premium aluminum oxide grain on a fibre backing, they provide consistent cutting action and uniform surface refinement — suitable for hand and light machine sanding on metal and wood finishing tasks.",
+        image: cumiHandPads,
+      },
+      {
+        name: "Centerless Grinding Wheels",
+        description:
+          "Precision wheels for the most demanding bright bar steel applications. Built with advanced manufacturing, premium abrasive grains and specially designed vitrified, resin and rubber bond systems — engineered to hold extremely tight tolerances in geometry and density for uniform wear across the spindle. Customised for through-feed, end-feed and in-feed configurations.",
+        image: cumiCenterless,
+      },
+      {
+        name: "Sandmaster 12T Wood Cutter",
+        description:
+          "A precision-engineered cutting blade for clean, controlled cutting of wood and wood-based materials. High-quality carbide teeth and a balanced blade design deliver reliable performance on hardwood, softwood, plywood, MDF and laminated boards — compatible with angle grinders and tile cutters for efficient woodworking and fitting applications.",
+        image: cumiSandmaster,
+      },
+      {
+        name: "Tool Room Grinding Wheels",
+        description:
+          "Used extensively in the manufacture and regrinding of cutting tools like drills, reamers and milling cutters. Available as plain wheels (type 1), cup wheels (types 6 & 11), dish wheels (type 12) and saucer wheels (type 13) — for both dry and wet grinding applications.",
+        image: cumiToolRoom,
+      },
+      {
+        name: "CUMI Zon Ultra-Thin Wheel",
+        description:
+          "Built for industrial metal cutting and fabrication — delivers fast, smooth cutting action with premium grains and a high-strength double-fabric mesh for maximum safety and stability. The advanced abrasive formulation ensures longer wheel life and more cuts per wheel, making it ideal for automotive repair, shipbuilding and structural steel applications.",
+        image: cumiZon,
+      },
+    ],
     website: "https://www.cumi-murugappa.com/",
   },
   {
