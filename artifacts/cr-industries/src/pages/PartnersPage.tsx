@@ -288,14 +288,28 @@ export default function PartnersPage() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-80px" }}
             transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-            className="relative rounded-3xl overflow-hidden border border-primary/25 bg-[#03045E] text-white p-8 sm:p-12 text-center"
+            className="relative rounded-3xl overflow-hidden border border-white/10 text-white p-8 sm:p-12 text-center shadow-2xl shadow-black/30"
+            style={{
+              background:
+                "linear-gradient(160deg, #0B1220 0%, #0F172A 55%, #020617 100%)",
+            }}
           >
             <div
               aria-hidden
-              className="absolute inset-0 opacity-30"
+              className="absolute inset-0 opacity-55"
               style={{
                 background:
-                  "radial-gradient(circle at 20% 20%, rgba(0,150,199,0.5) 0%, transparent 55%), radial-gradient(circle at 80% 80%, rgba(72,202,228,0.4) 0%, transparent 55%)",
+                  "radial-gradient(circle at 18% 18%, rgba(0,150,199,0.35) 0%, transparent 55%), radial-gradient(circle at 82% 82%, rgba(72,202,228,0.28) 0%, transparent 55%)",
+              }}
+            />
+            {/* Subtle grid texture */}
+            <div
+              aria-hidden
+              className="absolute inset-0 opacity-[0.05]"
+              style={{
+                backgroundImage:
+                  "linear-gradient(rgba(255,255,255,0.6) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.6) 1px, transparent 1px)",
+                backgroundSize: "56px 56px",
               }}
             />
             <div className="relative">
