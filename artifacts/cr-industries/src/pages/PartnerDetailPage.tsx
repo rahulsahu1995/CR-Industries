@@ -500,36 +500,16 @@ export default function PartnerDetailPage() {
                   delay: i * 0.04,
                   ease: [0.16, 1, 0.3, 1],
                 }}
-                className="group relative py-10 sm:py-12 border-b border-border/60 last:border-0 list-none"
+                className="group relative py-5 sm:py-6 border-b border-border/60 last:border-0 list-none"
                 style={
                   {
                     ["--partner-accent" as string]: partner.accent,
                   } as React.CSSProperties
                 }
               >
-                {/* Index + small accent rule */}
-                <div className="flex items-center gap-3 mb-4 sm:mb-5">
-                  <span
-                    className="text-[11px] font-bold tracking-[0.35em] uppercase tabular-nums"
-                    style={{ color: partner.accent }}
-                  >
-                    {String(i + 1).padStart(2, "0")} ·{" "}
-                    {String(partner.detail.sections.length).padStart(2, "0")}
-                  </span>
-                  <span
-                    aria-hidden
-                    className="h-px w-10 origin-left transition-transform duration-500 ease-out group-hover:scale-x-[2.4]"
-                    style={{
-                      background: `linear-gradient(90deg, ${partner.accent}, transparent)`,
-                    }}
-                  />
-                </div>
-
                 {/* Heading with sliding underline + color shift on hover */}
-                <h3 className="mb-4 sm:mb-5">
-                  <span
-                    className="relative inline-block text-2xl sm:text-3xl md:text-[2.25rem] font-black tracking-tight leading-[1.15] text-foreground transition-colors duration-300 cursor-default group-hover:text-[color:var(--partner-accent)]"
-                  >
+                <h3 className="mb-3 sm:mb-3.5">
+                  <span className="relative inline-block text-2xl sm:text-3xl md:text-[2.25rem] font-black tracking-tight leading-[1.15] text-foreground transition-colors duration-300 cursor-default group-hover:text-[color:var(--partner-accent)]">
                     {s.heading}
                     {/* Sliding underline */}
                     <span
@@ -546,13 +526,6 @@ export default function PartnerDetailPage() {
                 <p className="text-base sm:text-lg text-muted-foreground leading-[1.75] max-w-2xl">
                   {s.body}
                 </p>
-
-                {/* Hover indicator — subtle arrow on the right (desktop only) */}
-                <ArrowRight
-                  aria-hidden
-                  className="hidden lg:block absolute top-12 right-0 w-6 h-6 -translate-x-3 opacity-0 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-500 ease-out"
-                  style={{ color: partner.accent }}
-                />
               </motion.li>
             ))}
           </ol>
@@ -637,12 +610,6 @@ export default function PartnerDetailPage() {
                         background: `linear-gradient(180deg, transparent 40%, ${partner.accent}55 100%)`,
                       }}
                     />
-                    {/* Floating index badge */}
-                    <div className="absolute top-3 right-3 inline-flex items-center justify-center w-8 h-8 rounded-full bg-white/95 backdrop-blur-sm border border-white/60 text-xs font-black tracking-tighter shadow-md transition-all duration-300 group-hover:scale-110 group-hover:rotate-6">
-                      <span style={{ color: partner.accent }}>
-                        {String(i + 1).padStart(2, "0")}
-                      </span>
-                    </div>
                     {/* Bottom title bar that slides in on hover */}
                     <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-out">
                       <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/95 backdrop-blur-sm shadow-lg">
