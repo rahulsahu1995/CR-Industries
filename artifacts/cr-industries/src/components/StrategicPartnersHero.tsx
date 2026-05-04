@@ -344,10 +344,6 @@ export default function StrategicPartnersHero() {
           {/* ── LEFT — text column ── */}
           <div className="lg:col-span-6 flex flex-col">
             <div className="flex items-center gap-3 mb-6 flex-wrap">
-              <span className="px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-[11px] font-bold tracking-widest uppercase">
-                Partner {String(active + 1).padStart(2, "0")} /{" "}
-                {String(PARTNERS.length).padStart(2, "0")}
-              </span>
               <span className="text-muted-foreground/80 text-[11px] tracking-widest uppercase font-bold">
                 {partner.shortName}
               </span>
@@ -594,26 +590,6 @@ export default function StrategicPartnersHero() {
             <ChevronLeft className="w-5 h-5" />
           </button>
 
-          <div className="flex items-center gap-2">
-            {PARTNERS.map((p, i) => (
-              <button
-                key={p.id}
-                onClick={() => goTo(i)}
-                aria-label={`Go to ${p.name}`}
-                aria-current={i === active}
-                className="group flex items-center"
-              >
-                <span
-                  className={`block h-1.5 rounded-full transition-all duration-500 ${
-                    i === active
-                      ? "w-12 bg-primary"
-                      : "w-6 bg-muted-foreground/30 group-hover:bg-muted-foreground/50"
-                  }`}
-                />
-              </button>
-            ))}
-          </div>
-
           <button
             onClick={next}
             aria-label="Next partner"
@@ -623,19 +599,6 @@ export default function StrategicPartnersHero() {
           </button>
         </div>
 
-        {/* Auto-advance progress bar */}
-        <div className="mt-4 mx-auto h-[2px] w-32 rounded-full overflow-hidden bg-border">
-          <motion.div
-            key={`prog-${active}-${paused || !!openId ? "p" : "r"}`}
-            className="h-full bg-primary"
-            initial={{ width: "0%" }}
-            animate={{ width: paused || openId ? "0%" : "100%" }}
-            transition={{
-              duration: paused || openId ? 0 : INTERVAL / 1000,
-              ease: "linear",
-            }}
-          />
-        </div>
       </div>
 
       {/* Detail modal */}
