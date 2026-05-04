@@ -15,6 +15,7 @@ import MediaPage from "@/pages/MediaPage";
 import EventsPage from "@/pages/EventsPage";
 import ReviewsPage from "@/pages/ReviewsPage";
 import PartnersPage from "@/pages/PartnersPage";
+import PartnerDetailPage from "@/pages/PartnerDetailPage";
 import NotFound from "@/pages/not-found";
 
 const queryClient = new QueryClient();
@@ -32,6 +33,7 @@ function Router() {
       <Route path="/events" component={EventsPage} />
       <Route path="/reviews" component={ReviewsPage} />
       <Route path="/partners" component={PartnersPage} />
+      <Route path="/partners/:id" component={PartnerDetailPage} />
       <Route component={NotFound} />
     </Switch>
   );
