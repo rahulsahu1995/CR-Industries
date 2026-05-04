@@ -15,6 +15,7 @@ import {
 import type { LucideIcon } from "lucide-react";
 import soudalLogo from "@assets/SOUDAL_1777887969287.webp";
 import cumiLogo from "@assets/CUMI_1777888092659.png";
+import averyDennisonLogo from "@assets/AVERY_DENNISON_1777888167310.png";
 
 /* ────────────────────────────────────────────────────────────────────
    Strategic Partners — primary landing hero
@@ -140,6 +141,7 @@ const PARTNERS: Partner[] = [
     summary:
       "A global materials science and digital identification solutions company with ~35,000 employees in 50+ countries — inventor of the world's first self-adhesive label nearly 90 years ago.",
     monogram: "AD",
+    logo: averyDennisonLogo,
     accent: "#CC0000",
     accent2: "#1A1A1A",
     facts: [
