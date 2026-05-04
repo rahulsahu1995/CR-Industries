@@ -274,7 +274,7 @@ export default function StrategicPartnersHero() {
   return (
     <section
       id="home"
-      className="relative bg-background overflow-hidden pt-24 lg:pt-28 pb-16 lg:pb-20"
+      className="relative bg-background overflow-hidden pt-24 lg:pt-28 pb-6 lg:pb-8"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
     >
@@ -561,7 +561,7 @@ export default function StrategicPartnersHero() {
         </div>
 
         {/* Carousel controls */}
-        <div className="mt-14 lg:mt-20 flex items-center justify-center gap-5">
+        <div className="mt-8 lg:mt-10 flex items-center justify-center gap-5">
           <button
             onClick={prev}
             aria-label="Previous partner"

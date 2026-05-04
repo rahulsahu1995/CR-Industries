@@ -703,7 +703,7 @@ function Product3DMobileTablet() {
   return (
     <section
       id="product"
-      className="relative overflow-hidden py-12 sm:py-16 px-4 sm:px-6"
+      className="relative overflow-hidden pt-4 pb-12 sm:pt-6 sm:pb-16 px-4 sm:px-6"
     >
       {/* Background — matches desktop ambience */}
       <div className="absolute inset-0 bg-gradient-to-b from-background via-muted/40 to-muted -z-10" />
