@@ -535,13 +535,13 @@ function FallbackSection() {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true });
   return (
-    <section id="product" className="pt-10 pb-24 bg-gradient-to-b from-background to-muted">
+    <section id="product" className="pt-6 pb-12 sm:pt-8 sm:pb-14 bg-gradient-to-b from-background to-muted">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div ref={ref} initial={{ opacity: 0, y: 30 }}
           animate={inView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.6 }}
-          className="text-center mb-16">
-          <span className="inline-block px-4 py-1.5 bg-primary/10 text-primary text-sm font-bold tracking-widest uppercase rounded-full mb-4">Product Range</span>
-          <h2 className="text-4xl md:text-5xl font-black text-foreground mb-4">Industrial Sealant Solutions</h2>
+          className="text-center mb-8 sm:mb-10">
+          <span className="inline-block px-4 py-1.5 bg-primary/10 text-primary text-sm font-bold tracking-widest uppercase rounded-full mb-3">Product Range</span>
+          <h2 className="text-4xl md:text-5xl font-black text-foreground mb-3">Industrial Sealant Solutions</h2>
           <div className="w-16 h-1 bg-primary mx-auto rounded-full" />
         </motion.div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -703,7 +703,7 @@ function Product3DMobileTablet() {
   return (
     <section
       id="product"
-      className="relative overflow-hidden pt-4 pb-12 sm:pt-6 sm:pb-16 px-4 sm:px-6"
+      className="relative overflow-hidden pt-3 pb-8 sm:pt-4 sm:pb-10 px-4 sm:px-6"
     >
       {/* Background — matches desktop ambience */}
       <div className="absolute inset-0 bg-gradient-to-b from-background via-muted/40 to-muted -z-10" />
@@ -716,7 +716,7 @@ function Product3DMobileTablet() {
       />
 
       {/* Header */}
-      <div className="text-center mb-8 sm:mb-10 max-w-3xl mx-auto">
+      <div className="text-center mb-5 sm:mb-6 max-w-3xl mx-auto">
         <span className="inline-block px-4 py-1.5 bg-primary/10 text-primary text-xs sm:text-sm font-bold tracking-widest uppercase rounded-full mb-4">
           Product Range
         </span>
@@ -727,7 +727,7 @@ function Product3DMobileTablet() {
       </div>
 
       {/* Canvas + plaque */}
-      <div className="max-w-md sm:max-w-lg mx-auto mb-10 sm:mb-12">
+      <div className="max-w-md sm:max-w-lg mx-auto mb-6 sm:mb-8">
         <div className="h-[40vh] sm:h-[46vh] min-h-[260px] max-h-[420px] mb-3">
           <Canvas
             camera={{ position: [0, 0, 7], fov: 42 }}

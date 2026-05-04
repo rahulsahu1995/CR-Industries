@@ -55,14 +55,14 @@ export default function ContactForm() {
   };
 
   return (
-    <section id="contact" className="py-24 bg-muted/40">
+    <section id="contact" className="py-12 sm:py-14 bg-muted/40">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           ref={headingRef}
           initial={{ opacity: 0, y: 30 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
-          className="text-center mb-16"
+          className="text-center mb-8 sm:mb-10"
         >
           <span className="inline-block px-4 py-1.5 bg-primary/10 text-primary text-sm font-bold tracking-widest uppercase rounded-full mb-4">
             Get In Touch

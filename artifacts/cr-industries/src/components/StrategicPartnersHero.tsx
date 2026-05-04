@@ -13,7 +13,7 @@ export default function StrategicPartnersHero() {
   return (
     <section
       id="home"
-      className="relative bg-background overflow-hidden pt-24 lg:pt-28 pb-6 lg:pb-8"
+      className="relative bg-background overflow-hidden pt-20 lg:pt-24 pb-4 lg:pb-6"
     >
       {/* Decorative orbs + dot grid */}
       <div
@@ -50,7 +50,7 @@ export default function StrategicPartnersHero() {
           initial={{ opacity: 0, y: -12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="flex flex-col items-center text-center mb-10 lg:mb-14"
+          className="flex flex-col items-center text-center mb-6 lg:mb-8"
         >
           <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20">
             <Sparkles className="w-3.5 h-3.5 text-primary" />
