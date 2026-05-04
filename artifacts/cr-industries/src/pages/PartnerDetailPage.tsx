@@ -8,6 +8,8 @@ import {
   Handshake,
   Sparkles,
   ChevronRight,
+  ExternalLink,
+  Globe,
 } from "lucide-react";
 import { PARTNERS, type Partner } from "@/data/partners";
 
@@ -133,25 +135,71 @@ export default function PartnerDetailPage() {
                 transition={{ duration: 0.6, delay: 0.4 }}
                 className="grid grid-cols-3 gap-3 max-w-lg"
               >
-                {partner.facts.map((f) => {
+                {partner.facts.map((f, i) => {
                   const Icon = f.icon;
                   return (
-                    <div
+                    <motion.div
                       key={f.label}
-                      className="rounded-xl bg-white/10 border border-white/20 backdrop-blur-sm px-3 py-2.5"
+                      initial={reduce ? undefined : { opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.5, delay: 0.45 + i * 0.07 }}
+                      whileHover={
+                        reduce
+                          ? undefined
+                          : { scale: 1.04, y: -3 }
+                      }
+                      className="group rounded-xl bg-white/10 border border-white/20 backdrop-blur-sm px-3 py-2.5 hover:bg-white/20 hover:border-white/40 transition-colors duration-300 cursor-default"
                     >
                       <div className="flex items-center gap-1.5 mb-1">
-                        <Icon className="w-3 h-3 text-white" />
-                        <span className="text-[9px] font-bold tracking-widest uppercase text-white/80">
+                        <Icon className="w-3 h-3 text-white transition-transform duration-300 group-hover:scale-125 group-hover:rotate-6" />
+                        <span className="text-[9px] font-bold tracking-widest uppercase text-white/80 group-hover:text-white transition-colors">
                           {f.label}
                         </span>
                       </div>
                       <p className="text-white text-sm font-black leading-tight">
                         {f.value}
                       </p>
-                    </div>
+                    </motion.div>
                   );
                 })}
+              </motion.div>
+
+              {/* Hero CTAs — Visit Website + Talk To Us */}
+              <motion.div
+                initial={reduce ? undefined : { opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.55 }}
+                className="mt-7 flex flex-wrap items-center gap-3"
+              >
+                {partner.website && (
+                  <motion.a
+                    href={partner.website}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    whileHover={
+                      reduce ? undefined : { scale: 1.04, y: -2 }
+                    }
+                    whileTap={reduce ? undefined : { scale: 0.97 }}
+                    className="group inline-flex items-center gap-2 px-5 py-2.5 bg-white text-foreground font-bold text-sm rounded-xl shadow-lg shadow-black/20 hover:shadow-xl transition-shadow duration-200"
+                    style={{ color: partner.accent }}
+                    aria-label={`Visit ${partner.name} official website (opens in new tab)`}
+                  >
+                    <Globe className="w-4 h-4 transition-transform duration-500 group-hover:rotate-180" />
+                    Visit {partner.shortName}
+                    <ExternalLink className="w-3.5 h-3.5 opacity-70 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                  </motion.a>
+                )}
+                <motion.button
+                  onClick={() => navigate("/contact")}
+                  whileHover={
+                    reduce ? undefined : { scale: 1.04, y: -2 }
+                  }
+                  whileTap={reduce ? undefined : { scale: 0.97 }}
+                  className="group inline-flex items-center gap-2 px-5 py-2.5 text-white font-bold text-sm rounded-xl border-2 border-white/40 hover:border-white hover:bg-white/10 backdrop-blur-sm transition-colors duration-200"
+                >
+                  Talk to Our Team
+                  <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
+                </motion.button>
               </motion.div>
             </div>
 
@@ -166,8 +214,45 @@ export default function PartnerDetailPage() {
                   ease: [0.16, 1, 0.3, 1],
                 }}
                 className="relative mx-auto max-w-md"
+                style={{ perspective: 1000 }}
               >
-                <div className="relative aspect-square rounded-3xl bg-white border border-white/40 shadow-2xl shadow-black/30 overflow-hidden">
+                {/* Soft animated halo behind the card */}
+                <motion.div
+                  aria-hidden
+                  className="absolute -inset-6 rounded-[2.5rem] blur-2xl pointer-events-none"
+                  style={{
+                    background: `radial-gradient(circle at 30% 30%, ${partner.accent}66, transparent 60%), radial-gradient(circle at 70% 70%, ${partner.accent2}55, transparent 60%)`,
+                  }}
+                  animate={
+                    reduce
+                      ? undefined
+                      : { opacity: [0.55, 0.85, 0.55], scale: [1, 1.04, 1] }
+                  }
+                  transition={{
+                    duration: 6,
+                    ease: "easeInOut",
+                    repeat: Infinity,
+                  }}
+                />
+                <motion.div
+                  animate={reduce ? undefined : { y: [0, -10, 0] }}
+                  transition={{
+                    duration: 6,
+                    ease: "easeInOut",
+                    repeat: Infinity,
+                  }}
+                  whileHover={
+                    reduce
+                      ? undefined
+                      : {
+                          scale: 1.03,
+                          rotateY: -4,
+                          rotateX: 3,
+                          transition: { duration: 0.4, ease: "easeOut" },
+                        }
+                  }
+                  className="relative aspect-square rounded-3xl bg-white border border-white/40 shadow-2xl shadow-black/30 overflow-hidden will-change-transform"
+                >
                   {/* Brand tint glow */}
                   <div
                     aria-hidden
@@ -201,12 +286,20 @@ export default function PartnerDetailPage() {
                   {/* Logo */}
                   <div className="absolute inset-0 flex items-center justify-center px-10 py-16">
                     {partner.logo ? (
-                      <img
+                      <motion.img
                         src={partner.logo}
                         alt={`${partner.name} logo`}
                         className="block max-w-full max-h-full w-auto h-auto object-contain"
                         loading="eager"
                         decoding="async"
+                        animate={
+                          reduce ? undefined : { scale: [1, 1.03, 1] }
+                        }
+                        transition={{
+                          duration: 7,
+                          ease: "easeInOut",
+                          repeat: Infinity,
+                        }}
                       />
                     ) : (
                       <div
@@ -250,7 +343,7 @@ export default function PartnerDetailPage() {
                       {partner.monogram}
                     </div>
                   </div>
-                </div>
+                </motion.div>
               </motion.div>
             </div>
           </div>
@@ -305,30 +398,71 @@ export default function PartnerDetailPage() {
                   delay: i * 0.06,
                   ease: [0.16, 1, 0.3, 1],
                 }}
-                className="relative bg-card border border-border rounded-2xl p-5 sm:p-6 hover:border-primary/40 hover:shadow-lg hover:shadow-foreground/5 transition-all duration-300"
+                whileHover={
+                  reduce ? undefined : { y: -4, transition: { duration: 0.3 } }
+                }
+                className="group relative bg-card border border-border rounded-2xl p-5 sm:p-6 overflow-hidden hover:shadow-xl hover:shadow-foreground/10 transition-shadow duration-300"
+                style={
+                  {
+                    ["--accent" as string]: partner.accent,
+                  } as React.CSSProperties
+                }
               >
-                {/* Top brand strip */}
+                {/* Animated brand-tinted glow that sweeps in on hover */}
                 <div
                   aria-hidden
-                  className="absolute top-0 left-5 sm:left-6 right-5 sm:right-6 h-0.5 rounded-full"
+                  className="pointer-events-none absolute -inset-px rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"
                   style={{
-                    background: `linear-gradient(90deg, ${partner.accent} 0%, ${partner.accent2} 100%)`,
+                    background: `radial-gradient(circle at 50% 0%, ${partner.accent}1F 0%, transparent 60%)`,
                   }}
                 />
-                <div className="flex items-start gap-3">
+                {/* Top brand strip — grows from center on hover */}
+                <div
+                  aria-hidden
+                  className="absolute top-0 left-1/2 -translate-x-1/2 h-0.5 rounded-full transition-all duration-500 ease-out"
+                  style={{
+                    background: `linear-gradient(90deg, ${partner.accent} 0%, ${partner.accent2} 100%)`,
+                    width: "calc(100% - 2.5rem)",
+                  }}
+                />
+                {/* Hover ring overlay */}
+                <div
+                  aria-hidden
+                  className="absolute inset-0 rounded-2xl pointer-events-none ring-1 ring-inset ring-border group-hover:ring-2 transition-all duration-300"
+                  style={
+                    {
+                      ["--tw-ring-color" as string]: `${partner.accent}55`,
+                    } as React.CSSProperties
+                  }
+                />
+                <div className="relative flex items-start gap-3">
                   <span
-                    className="shrink-0 mt-0.5 w-9 h-9 rounded-xl flex items-center justify-center"
+                    className="shrink-0 mt-0.5 w-9 h-9 rounded-xl flex items-center justify-center transition-all duration-300 group-hover:scale-110 group-hover:rotate-6"
                     style={{ backgroundColor: `${partner.accent}15` }}
                   >
                     <CheckCircle2
-                      className="w-5 h-5"
+                      className="w-5 h-5 transition-transform duration-300"
                       style={{ color: partner.accent }}
                     />
                   </span>
-                  <div className="min-w-0">
-                    <h3 className="text-base sm:text-lg font-black text-foreground tracking-tight mb-1.5">
-                      {s.heading}
-                    </h3>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-start justify-between gap-2">
+                      <h3
+                        className="text-base sm:text-lg font-black text-foreground tracking-tight mb-1.5 transition-colors duration-300"
+                        style={
+                          {
+                            ["--accent-color" as string]: partner.accent,
+                          } as React.CSSProperties
+                        }
+                      >
+                        {s.heading}
+                      </h3>
+                      <ArrowRight
+                        aria-hidden
+                        className="shrink-0 w-4 h-4 mt-1 -translate-x-1 opacity-0 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300"
+                        style={{ color: partner.accent }}
+                      />
+                    </div>
                     <p className="text-muted-foreground text-sm leading-relaxed">
                       {s.body}
                     </p>
@@ -389,7 +523,10 @@ export default function PartnerDetailPage() {
                     delay: i * 0.08,
                     ease: [0.16, 1, 0.3, 1],
                   }}
-                  className="group relative rounded-2xl overflow-hidden bg-card border border-border shadow-md shadow-foreground/5 hover:shadow-xl transition-all duration-300"
+                  whileHover={
+                    reduce ? undefined : { y: -6, transition: { duration: 0.3 } }
+                  }
+                  className="group relative rounded-2xl overflow-hidden bg-card border border-border shadow-md shadow-foreground/5 hover:shadow-2xl hover:shadow-foreground/10 transition-shadow duration-300"
                 >
                   <div className="relative aspect-[4/3] overflow-hidden bg-muted">
                     <img
@@ -397,19 +534,45 @@ export default function PartnerDetailPage() {
                       alt={img.alt}
                       loading="lazy"
                       decoding="async"
-                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
+                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-110"
                     />
-                    {/* Accent corner ribbon */}
+                    {/* Accent corner ribbon — grows on hover */}
                     <div
                       aria-hidden
-                      className="absolute top-0 left-0 right-0 h-1"
+                      className="absolute top-0 left-0 right-0 h-1 transition-all duration-500 group-hover:h-1.5"
                       style={{
                         background: `linear-gradient(90deg, ${partner.accent} 0%, ${partner.accent2} 100%)`,
                       }}
                     />
+                    {/* Hover overlay — subtle brand-tinted veil */}
+                    <div
+                      aria-hidden
+                      className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+                      style={{
+                        background: `linear-gradient(180deg, transparent 40%, ${partner.accent}55 100%)`,
+                      }}
+                    />
+                    {/* Floating index badge */}
+                    <div className="absolute top-3 right-3 inline-flex items-center justify-center w-8 h-8 rounded-full bg-white/95 backdrop-blur-sm border border-white/60 text-xs font-black tracking-tighter shadow-md transition-all duration-300 group-hover:scale-110 group-hover:rotate-6">
+                      <span style={{ color: partner.accent }}>
+                        {String(i + 1).padStart(2, "0")}
+                      </span>
+                    </div>
+                    {/* Bottom title bar that slides in on hover */}
+                    <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-out">
+                      <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/95 backdrop-blur-sm shadow-lg">
+                        <span className="text-[10px] font-bold tracking-widest uppercase text-foreground">
+                          View Detail
+                        </span>
+                        <ArrowRight
+                          className="w-3 h-3"
+                          style={{ color: partner.accent }}
+                        />
+                      </div>
+                    </div>
                   </div>
                   {img.caption && (
-                    <figcaption className="px-4 sm:px-5 py-3.5 text-xs sm:text-sm text-muted-foreground leading-relaxed border-t border-border bg-background">
+                    <figcaption className="px-4 sm:px-5 py-3.5 text-xs sm:text-sm text-muted-foreground leading-relaxed border-t border-border bg-background transition-colors duration-300 group-hover:bg-muted/30">
                       {img.caption}
                     </figcaption>
                   )}
@@ -450,18 +613,39 @@ export default function PartnerDetailPage() {
                 partnership can power your project.
               </p>
               <div className="flex flex-wrap items-center justify-center gap-3">
-                <button
+                <motion.button
                   onClick={() => navigate("/contact")}
+                  whileHover={
+                    reduce ? undefined : { scale: 1.04, y: -2 }
+                  }
+                  whileTap={reduce ? undefined : { scale: 0.97 }}
                   className="group inline-flex items-center gap-2 px-6 py-3 bg-white text-[#03045E] font-bold rounded-xl shadow-lg hover:shadow-xl hover:bg-[#48CAE4] hover:text-white transition-colors duration-200"
                 >
                   Contact Us
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                </button>
+                </motion.button>
+                {partner.website && (
+                  <motion.a
+                    href={partner.website}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    whileHover={
+                      reduce ? undefined : { scale: 1.04, y: -2 }
+                    }
+                    whileTap={reduce ? undefined : { scale: 0.97 }}
+                    className="group inline-flex items-center gap-2 px-6 py-3 text-white font-bold rounded-xl border-2 border-white/30 hover:border-white hover:bg-white/10 transition-colors duration-200"
+                    aria-label={`Visit ${partner.name} official website (opens in new tab)`}
+                  >
+                    <Globe className="w-4 h-4 transition-transform duration-500 group-hover:rotate-180" />
+                    Visit {partner.shortName}
+                    <ExternalLink className="w-3.5 h-3.5 opacity-70" />
+                  </motion.a>
+                )}
                 <Link
                   href="/partners"
-                  className="inline-flex items-center gap-2 px-6 py-3 text-white font-bold rounded-xl border-2 border-white/30 hover:border-white hover:bg-white/10 transition-colors duration-200"
+                  className="group inline-flex items-center gap-2 px-6 py-3 text-white font-bold rounded-xl border-2 border-white/30 hover:border-white hover:bg-white/10 transition-colors duration-200"
                 >
-                  <ArrowLeft className="w-4 h-4" />
+                  <ArrowLeft className="w-4 h-4 transition-transform duration-200 group-hover:-translate-x-1" />
                   All Partners
                 </Link>
               </div>

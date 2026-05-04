@@ -39,6 +39,8 @@ export type Partner = {
   };
   /** Optional editorial gallery rendered on the detail page. */
   gallery?: GalleryImage[];
+  /** Optional official partner website (external). Renders a "Visit Website" CTA. */
+  website?: string;
 };
 
 export const PARTNERS: Partner[] = [
@@ -110,6 +112,7 @@ export const PARTNERS: Partner[] = [
           "19 production branches across 5 continents, 44 sales offices, 3,100 people — a truly global Belgian family business.",
       },
     ],
+    website: "https://soudal.in/",
   },
   {
     id: "cumi",
