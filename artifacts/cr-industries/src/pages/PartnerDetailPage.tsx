@@ -160,48 +160,12 @@ export default function PartnerDetailPage() {
                 {partner.summary}
               </motion.p>
 
-              {/* Quick facts */}
-              <motion.div
-                initial={reduce ? undefined : { opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.4 }}
-                className="grid grid-cols-3 gap-3 max-w-lg"
-              >
-                {partner.facts.map((f, i) => {
-                  const Icon = f.icon;
-                  return (
-                    <motion.div
-                      key={f.label}
-                      initial={reduce ? undefined : { opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.5, delay: 0.45 + i * 0.07 }}
-                      whileHover={
-                        reduce
-                          ? undefined
-                          : { scale: 1.04, y: -3 }
-                      }
-                      className="group rounded-xl bg-white/10 border border-white/20 backdrop-blur-sm px-3 py-2.5 hover:bg-white/20 hover:border-white/40 transition-colors duration-300 cursor-default"
-                    >
-                      <div className="flex items-center gap-1.5 mb-1">
-                        <Icon className="w-3 h-3 text-white transition-transform duration-300 group-hover:scale-125 group-hover:rotate-6" />
-                        <span className="text-[9px] font-bold tracking-widest uppercase text-white/80 group-hover:text-white transition-colors">
-                          {f.label}
-                        </span>
-                      </div>
-                      <p className="text-white text-sm font-black leading-tight">
-                        {f.value}
-                      </p>
-                    </motion.div>
-                  );
-                })}
-              </motion.div>
-
               {/* Hero CTAs — Visit Website + Talk To Us */}
               <motion.div
                 initial={reduce ? undefined : { opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.55 }}
-                className="mt-7 flex flex-wrap items-center gap-3"
+                transition={{ duration: 0.6, delay: 0.4 }}
+                className="flex flex-wrap items-center gap-3"
               >
                 {partner.website && (
                   <motion.a
