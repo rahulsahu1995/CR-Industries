@@ -16,6 +16,7 @@ import type { LucideIcon } from "lucide-react";
 import soudalLogo from "@assets/SOUDAL_1777887969287.webp";
 import cumiLogo from "@assets/CUMI_1777888092659.png";
 import averyDennisonLogo from "@assets/AVERY_DENNISON_1777888167310.png";
+import kiplLogo from "@assets/Screenshot_2026-05-04_152249_1777888385161.png";
 
 /* ────────────────────────────────────────────────────────────────────
    Strategic Partners — primary landing hero
@@ -185,6 +186,7 @@ const PARTNERS: Partner[] = [
     summary:
       "Keshav Innovations Pvt Ltd — one of India's leading manufacturers of industrial adhesive tapes, abrasives and surface protection products. ISO 9001:2015 certified with 14+ years of production and export experience.",
     monogram: "K",
+    logo: kiplLogo,
     accent: "#0A66B7",
     accent2: "#F08C00",
     facts: [
