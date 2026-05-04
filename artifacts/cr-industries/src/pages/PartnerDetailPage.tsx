@@ -379,8 +379,10 @@ export default function PartnerDetailPage() {
         </div>
       </section>
 
-      {/* Gallery — only when partner has images (positioned above pillars for prominence) */}
-      {partner.gallery && partner.gallery.length > 0 && (
+      {/* Gallery — only when partner has images (positioned above pillars for prominence).
+          For Avery Dennison the single gallery image is rendered inline within the pillars
+          section instead, so we skip the standalone gallery here. */}
+      {partner.gallery && partner.gallery.length > 0 && partner.id !== "avery-dennison" && (
         <section className="relative pb-2 sm:pb-3 px-4 sm:px-6">
           <div
             className={`mx-auto ${
@@ -513,7 +515,7 @@ export default function PartnerDetailPage() {
           }}
         />
 
-        <div className="relative max-w-3xl mx-auto">
+        <div className="relative max-w-6xl mx-auto">
           {/* Section eyebrow */}
           <motion.div
             initial={reduce ? undefined : { opacity: 0, y: 16 }}
@@ -551,9 +553,10 @@ export default function PartnerDetailPage() {
             </h2>
           </motion.div>
 
-          {/* Editorial list of pillars */}
-          <ol className="relative">
-            {partner.detail.sections.map((s, i) => (
+          {/* Editorial pillars — Avery Dennison gets image-on-right + pillars-on-left;
+              all other partners get a balanced two-column flow of pillars. */}
+          {(() => {
+            const pillarItems = partner.detail.sections.map((s, i) => (
               <motion.li
                 key={s.heading}
                 initial={reduce ? undefined : { opacity: 0, y: 40 }}
@@ -564,7 +567,7 @@ export default function PartnerDetailPage() {
                   delay: i * 0.04,
                   ease: [0.16, 1, 0.3, 1],
                 }}
-                className="group relative py-3 sm:py-3.5 border-b border-border/60 last:border-0 list-none"
+                className="group relative py-2.5 sm:py-3 border-b border-border/60 last:border-0 list-none break-inside-avoid"
                 style={
                   {
                     ["--partner-accent" as string]: partner.accent,
@@ -572,8 +575,8 @@ export default function PartnerDetailPage() {
                 }
               >
                 {/* Heading with sliding underline + color shift on hover */}
-                <h3 className="mb-3 sm:mb-3.5">
-                  <span className="relative inline-block text-2xl sm:text-3xl md:text-[2.25rem] font-black tracking-tight leading-[1.15] text-foreground transition-colors duration-300 cursor-default group-hover:text-[color:var(--partner-accent)]">
+                <h3 className="mb-2.5 sm:mb-3">
+                  <span className="relative inline-block text-xl sm:text-2xl lg:text-[1.65rem] font-black tracking-tight leading-[1.2] text-foreground transition-colors duration-300 cursor-default group-hover:text-[color:var(--partner-accent)]">
                     {s.heading}
                     {/* Sliding underline */}
                     <span
@@ -587,12 +590,68 @@ export default function PartnerDetailPage() {
                 </h3>
 
                 {/* Body */}
-                <p className="text-base sm:text-lg text-muted-foreground leading-[1.75] max-w-2xl">
+                <p className="text-sm sm:text-base text-muted-foreground leading-[1.7]">
                   {s.body}
                 </p>
               </motion.li>
-            ))}
-          </ol>
+            ));
+
+            const heroImage =
+              partner.id === "avery-dennison" ? partner.gallery?.[0] : undefined;
+
+            if (heroImage) {
+              return (
+                <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-start">
+                  {/* Left: pillars list (single column) */}
+                  <ol className="relative order-2 lg:order-1">{pillarItems}</ol>
+
+                  {/* Right: image with description directly below */}
+                  <motion.figure
+                    initial={
+                      reduce ? undefined : { opacity: 0, y: 24 }
+                    }
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, margin: "-80px" }}
+                    transition={{
+                      duration: 0.6,
+                      ease: [0.16, 1, 0.3, 1],
+                    }}
+                    className="group relative order-1 lg:order-2 lg:sticky lg:top-24 rounded-2xl overflow-hidden bg-card border border-border shadow-md shadow-foreground/5 hover:shadow-2xl hover:shadow-foreground/10 transition-shadow duration-300"
+                  >
+                    <div className="relative aspect-[4/3] overflow-hidden bg-muted">
+                      <img
+                        src={heroImage.src}
+                        alt={heroImage.alt}
+                        loading="lazy"
+                        decoding="async"
+                        className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-105"
+                      />
+                      {/* Accent corner ribbon */}
+                      <div
+                        aria-hidden
+                        className="absolute top-0 left-0 right-0 h-1 transition-all duration-500 group-hover:h-1.5"
+                        style={{
+                          background: `linear-gradient(90deg, ${partner.accent} 0%, ${partner.accent2} 100%)`,
+                        }}
+                      />
+                    </div>
+                    {heroImage.caption && (
+                      <figcaption className="px-4 sm:px-5 py-3.5 text-xs sm:text-sm text-muted-foreground leading-relaxed border-t border-border bg-background transition-colors duration-300 group-hover:bg-muted/30">
+                        {heroImage.caption}
+                      </figcaption>
+                    )}
+                  </motion.figure>
+                </div>
+              );
+            }
+
+            // Soudal / CUMI / KIPL — pillars flow into 2 balanced columns
+            return (
+              <ol className="relative columns-1 sm:columns-2 gap-x-8 lg:gap-x-12">
+                {pillarItems}
+              </ol>
+            );
+          })()}
         </div>
       </section>
 
