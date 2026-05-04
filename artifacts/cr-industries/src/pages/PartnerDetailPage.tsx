@@ -610,18 +610,6 @@ export default function PartnerDetailPage() {
                         background: `linear-gradient(180deg, transparent 40%, ${partner.accent}55 100%)`,
                       }}
                     />
-                    {/* Bottom title bar that slides in on hover */}
-                    <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-out">
-                      <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/95 backdrop-blur-sm shadow-lg">
-                        <span className="text-[10px] font-bold tracking-widest uppercase text-foreground">
-                          View Detail
-                        </span>
-                        <ArrowRight
-                          className="w-3 h-3"
-                          style={{ color: partner.accent }}
-                        />
-                      </div>
-                    </div>
                   </div>
                   {img.caption && (
                     <figcaption className="px-4 sm:px-5 py-3.5 text-xs sm:text-sm text-muted-foreground leading-relaxed border-t border-border bg-background transition-colors duration-300 group-hover:bg-muted/30">
