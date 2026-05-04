@@ -1,6 +1,11 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { Link, useParams, useLocation } from "wouter";
-import { motion, useReducedMotion } from "framer-motion";
+import {
+  motion,
+  useReducedMotion,
+  useScroll,
+  useTransform,
+} from "framer-motion";
 import {
   ArrowLeft,
   ArrowRight,
@@ -31,6 +36,33 @@ export default function PartnerDetailPage() {
   const others = PARTNERS.filter((p) => p.id !== partner.id);
   const currentIndex = PARTNERS.findIndex((p) => p.id === partner.id);
   const nextPartner = PARTNERS[(currentIndex + 1) % PARTNERS.length];
+
+  /* Parallax for the editorial pillars section background */
+  const pillarsRef = useRef<HTMLElement | null>(null);
+  const { scrollYProgress: pillarsProgress } = useScroll({
+    target: pillarsRef,
+    offset: ["start end", "end start"],
+  });
+  const blob1Y = useTransform(
+    pillarsProgress,
+    [0, 1],
+    reduce ? [0, 0] : [80, -120],
+  );
+  const blob2Y = useTransform(
+    pillarsProgress,
+    [0, 1],
+    reduce ? [0, 0] : [-60, 100],
+  );
+  const blob1Opacity = useTransform(
+    pillarsProgress,
+    [0, 0.2, 0.8, 1],
+    [0, 0.55, 0.45, 0],
+  );
+  const blob2Opacity = useTransform(
+    pillarsProgress,
+    [0, 0.25, 0.75, 1],
+    [0, 0.5, 0.4, 0],
+  );
 
   return (
     <div className="bg-background">
@@ -383,94 +415,147 @@ export default function PartnerDetailPage() {
         </div>
       </section>
 
-      {/* Detail sections */}
-      <section className="relative pb-12 sm:pb-16 px-4 sm:px-6">
-        <div className="max-w-5xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
+      {/* Partnership Pillars — editorial typography layout */}
+      <section
+        ref={pillarsRef}
+        className="relative py-16 sm:py-24 lg:py-28 px-4 sm:px-6 overflow-hidden"
+      >
+        {/* Parallax brand-tinted background blobs */}
+        <motion.div
+          aria-hidden
+          style={{
+            y: blob1Y,
+            opacity: blob1Opacity,
+            background: `radial-gradient(circle at 50% 50%, ${partner.accent} 0%, transparent 65%)`,
+          }}
+          className="pointer-events-none absolute -top-32 -left-40 w-[36rem] h-[36rem] rounded-full blur-3xl"
+        />
+        <motion.div
+          aria-hidden
+          style={{
+            y: blob2Y,
+            opacity: blob2Opacity,
+            background: `radial-gradient(circle at 50% 50%, ${partner.accent2} 0%, transparent 65%)`,
+          }}
+          className="pointer-events-none absolute -bottom-32 -right-40 w-[40rem] h-[40rem] rounded-full blur-3xl"
+        />
+        {/* Subtle dot grid */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 opacity-[0.04] dark:opacity-[0.06]"
+          style={{
+            backgroundImage:
+              "radial-gradient(currentColor 1px, transparent 1px)",
+            backgroundSize: "28px 28px",
+          }}
+        />
+
+        <div className="relative max-w-3xl mx-auto">
+          {/* Section eyebrow */}
+          <motion.div
+            initial={reduce ? undefined : { opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-80px" }}
+            transition={{ duration: 0.6 }}
+            className="mb-12 sm:mb-16 text-center"
+          >
+            <span
+              className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-4 border"
+              style={{
+                backgroundColor: `${partner.accent}10`,
+                borderColor: `${partner.accent}30`,
+                color: partner.accent,
+              }}
+            >
+              <Sparkles className="w-3.5 h-3.5" />
+              <span className="text-[11px] font-bold tracking-widest uppercase">
+                Partnership Pillars
+              </span>
+            </span>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-foreground tracking-tight leading-[1.05]">
+              What drives our work with{" "}
+              <span
+                style={{
+                  background: `linear-gradient(135deg, ${partner.accent} 0%, ${partner.accent2} 100%)`,
+                  WebkitBackgroundClip: "text",
+                  backgroundClip: "text",
+                  color: "transparent",
+                }}
+              >
+                {partner.shortName}
+              </span>
+            </h2>
+          </motion.div>
+
+          {/* Editorial list of pillars */}
+          <ol className="relative">
             {partner.detail.sections.map((s, i) => (
-              <motion.div
+              <motion.li
                 key={s.heading}
-                initial={reduce ? undefined : { opacity: 0, y: 20 }}
+                initial={reduce ? undefined : { opacity: 0, y: 40 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-60px" }}
+                viewport={{ once: true, margin: "-100px" }}
                 transition={{
-                  duration: 0.55,
-                  delay: i * 0.06,
+                  duration: 0.7,
+                  delay: i * 0.04,
                   ease: [0.16, 1, 0.3, 1],
                 }}
-                whileHover={
-                  reduce ? undefined : { y: -4, transition: { duration: 0.3 } }
-                }
-                className="group relative bg-card border border-border rounded-2xl p-5 sm:p-6 overflow-hidden hover:shadow-xl hover:shadow-foreground/10 transition-shadow duration-300"
+                className="group relative py-10 sm:py-12 border-b border-border/60 last:border-0 list-none"
                 style={
                   {
-                    ["--accent" as string]: partner.accent,
+                    ["--partner-accent" as string]: partner.accent,
                   } as React.CSSProperties
                 }
               >
-                {/* Animated brand-tinted glow that sweeps in on hover */}
-                <div
-                  aria-hidden
-                  className="pointer-events-none absolute -inset-px rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-                  style={{
-                    background: `radial-gradient(circle at 50% 0%, ${partner.accent}1F 0%, transparent 60%)`,
-                  }}
-                />
-                {/* Top brand strip — grows from center on hover */}
-                <div
-                  aria-hidden
-                  className="absolute top-0 left-1/2 -translate-x-1/2 h-0.5 rounded-full transition-all duration-500 ease-out"
-                  style={{
-                    background: `linear-gradient(90deg, ${partner.accent} 0%, ${partner.accent2} 100%)`,
-                    width: "calc(100% - 2.5rem)",
-                  }}
-                />
-                {/* Hover ring overlay */}
-                <div
-                  aria-hidden
-                  className="absolute inset-0 rounded-2xl pointer-events-none ring-1 ring-inset ring-border group-hover:ring-2 transition-all duration-300"
-                  style={
-                    {
-                      ["--tw-ring-color" as string]: `${partner.accent}55`,
-                    } as React.CSSProperties
-                  }
-                />
-                <div className="relative flex items-start gap-3">
+                {/* Index + small accent rule */}
+                <div className="flex items-center gap-3 mb-4 sm:mb-5">
                   <span
-                    className="shrink-0 mt-0.5 w-9 h-9 rounded-xl flex items-center justify-center transition-all duration-300 group-hover:scale-110 group-hover:rotate-6"
-                    style={{ backgroundColor: `${partner.accent}15` }}
+                    className="text-[11px] font-bold tracking-[0.35em] uppercase tabular-nums"
+                    style={{ color: partner.accent }}
                   >
-                    <CheckCircle2
-                      className="w-5 h-5 transition-transform duration-300"
-                      style={{ color: partner.accent }}
+                    {String(i + 1).padStart(2, "0")} ·{" "}
+                    {String(partner.detail.sections.length).padStart(2, "0")}
+                  </span>
+                  <span
+                    aria-hidden
+                    className="h-px w-10 origin-left transition-transform duration-500 ease-out group-hover:scale-x-[2.4]"
+                    style={{
+                      background: `linear-gradient(90deg, ${partner.accent}, transparent)`,
+                    }}
+                  />
+                </div>
+
+                {/* Heading with sliding underline + color shift on hover */}
+                <h3 className="mb-4 sm:mb-5">
+                  <span
+                    className="relative inline-block text-2xl sm:text-3xl md:text-[2.25rem] font-black tracking-tight leading-[1.15] text-foreground transition-colors duration-300 cursor-default group-hover:text-[color:var(--partner-accent)]"
+                  >
+                    {s.heading}
+                    {/* Sliding underline */}
+                    <span
+                      aria-hidden
+                      className="absolute left-0 -bottom-1.5 h-[3px] w-full origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] rounded-full"
+                      style={{
+                        background: `linear-gradient(90deg, ${partner.accent} 0%, ${partner.accent2} 100%)`,
+                      }}
                     />
                   </span>
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-start justify-between gap-2">
-                      <h3
-                        className="text-base sm:text-lg font-black text-foreground tracking-tight mb-1.5 transition-colors duration-300"
-                        style={
-                          {
-                            ["--accent-color" as string]: partner.accent,
-                          } as React.CSSProperties
-                        }
-                      >
-                        {s.heading}
-                      </h3>
-                      <ArrowRight
-                        aria-hidden
-                        className="shrink-0 w-4 h-4 mt-1 -translate-x-1 opacity-0 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300"
-                        style={{ color: partner.accent }}
-                      />
-                    </div>
-                    <p className="text-muted-foreground text-sm leading-relaxed">
-                      {s.body}
-                    </p>
-                  </div>
-                </div>
-              </motion.div>
+                </h3>
+
+                {/* Body */}
+                <p className="text-base sm:text-lg text-muted-foreground leading-[1.75] max-w-2xl">
+                  {s.body}
+                </p>
+
+                {/* Hover indicator — subtle arrow on the right (desktop only) */}
+                <ArrowRight
+                  aria-hidden
+                  className="hidden lg:block absolute top-12 right-0 w-6 h-6 -translate-x-3 opacity-0 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-500 ease-out"
+                  style={{ color: partner.accent }}
+                />
+              </motion.li>
             ))}
-          </div>
+          </ol>
         </div>
       </section>
 
