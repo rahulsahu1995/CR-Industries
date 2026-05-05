@@ -41,23 +41,19 @@ function CaulkCartridge({ scrollProgressRef }: { scrollProgressRef: { current: n
   const tiltRef  = useRef(0);
 
   useFrame((state) => {
-    if (!rootRef.current || !scrollProgressRef) return;
-    const p = scrollProgressRef.current ?? 0;
+    if (!rootRef.current) return;
     const t = state.clock.getElapsedTime();
 
-    const delta = p - prevRef.current;
-    prevRef.current = p;
-    tiltRef.current = tiltRef.current * 0.86 + delta * 10;
-    tiltRef.current = Math.max(-0.18, Math.min(0.18, tiltRef.current));
+    /* Infinite, seamless idle motion — no rotation/spin.
+       1) Float: smooth vertical sine bob (slow, ~5s period, ±0.10 units).
+       2) Breathing pulse: very subtle uniform scale sway around base 0.9
+          on a slightly different period so the two motions never visibly
+          repeat together — keeps the loop feeling organic. */
+    const floatY    = Math.sin(t * 1.25) * 0.10;
+    const breathing = 0.9 + Math.sin(t * 0.9) * 0.012;
 
-    /* Continuous subtle motion: slow full Y-axis spin + gentle bob/sway so
-       the cartridge always feels alive, even when the user isn't scrolling. */
-    rootRef.current.rotation.y = t * 0.35;
-    rootRef.current.position.y = -0.9 + Math.sin(t * 1.1) * 0.06;
-
-    const targetX = p * Math.PI * 0.08 + Math.sin(t * 0.6) * 0.04;
-    rootRef.current.rotation.x += (targetX - rootRef.current.rotation.x) * 0.06;
-    rootRef.current.rotation.z += (tiltRef.current - rootRef.current.rotation.z) * 0.09;
+    rootRef.current.position.y = -0.9 + floatY;
+    rootRef.current.scale.setScalar(breathing);
   });
 
   return (
