@@ -52,14 +52,14 @@ function CaulkCartridge({ scrollProgressRef }: { scrollProgressRef: { current: n
           on a slightly different period so the two motions never visibly
           repeat together — keeps the loop feeling organic. */
     const floatY    = (Math.sin(t * 1.25) * 0.5 + 0.5) * 0.09;
-    const breathing = 0.9 + Math.sin(t * 0.9) * 0.012;
+    const breathing = 1.05 + Math.sin(t * 0.9) * 0.014;
 
     rootRef.current.position.y = -0.9 + floatY;
     rootRef.current.scale.setScalar(breathing);
   });
 
   return (
-    <group ref={rootRef} scale={0.9} position={[0, -0.9, 0]}>
+    <group ref={rootRef} scale={1.05} position={[0, -0.9, 0]}>
       <group>
         <mesh castShadow receiveShadow>
           <cylinderGeometry args={[0.42, 0.42, 3.2, 64]} />
@@ -745,8 +745,8 @@ function Product3DCircularFlow() {
                 className="
                   relative
                   grid
-                  grid-cols-[minmax(0,1fr)_170px_minmax(0,1fr)]
-                  xl:grid-cols-[minmax(0,1fr)_190px_minmax(0,1fr)]
+                  grid-cols-[minmax(0,1fr)_200px_minmax(0,1fr)]
+                  xl:grid-cols-[minmax(0,1fr)_230px_minmax(0,1fr)]
                   grid-rows-[auto_auto_auto]
                   gap-x-2 xl:gap-x-3
                   gap-y-3 xl:gap-y-4
@@ -789,7 +789,7 @@ function Product3DCircularFlow() {
                 {/* Centre 3D — spans the middle row, focal point */}
                 <div className="col-start-2 row-start-1 row-span-3 self-center flex flex-col items-center justify-center relative">
                   <CentreHalo />
-                  <div className="w-full h-[220px] xl:h-[250px]">
+                  <div className="w-full h-[260px] xl:h-[300px]">
                     <CentreCartridge scrollProgressRef={cartridgeRef} />
                   </div>
                   <div className="mt-1.5">
