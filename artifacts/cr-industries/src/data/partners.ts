@@ -173,8 +173,8 @@ export const PARTNERS: Partner[] = [
       "A leading materials sciences engineering solutions provider — part of the 125-year-old Murugappa Group, listed on NSE and BSE, with operations spanning six continents and exports to 60+ countries.",
     monogram: "C",
     logo: cumiLogo,
-    accent: "#C8102E",
-    accent2: "#1B1B1B",
+    accent: "#0077B6",
+    accent2: "#48CAE4",
     facts: [
       { icon: Calendar, label: "Established", value: "1954" },
       { icon: MapPin, label: "HQ", value: "Chennai, IN" },
