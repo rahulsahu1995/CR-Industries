@@ -76,8 +76,8 @@ export const PARTNERS: Partner[] = [
       "The largest independent European manufacturer of sealants, adhesives and polyurethane foams. A Belgian family powerhouse delivering chemical construction specialities across 5 continents.",
     monogram: "S",
     logo: soudalLogo,
-    accent: "#003594",
-    accent2: "#FFD100",
+    accent: "#E30613",
+    accent2: "#0B0B0B",
     facts: [
       { icon: Calendar, label: "Founded", value: "1966" },
       { icon: MapPin, label: "HQ", value: "Turnhout, BE" },
