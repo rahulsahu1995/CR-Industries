@@ -702,35 +702,34 @@ function Product3DCircularFlow() {
           stays pinned at h-screen while the user scrolls through, driving the
           arrow draw-on-scroll animation. */}
       {isDesktop && (
-        <div className="relative h-[160vh]">
-          <div className="sticky top-0 h-screen flex flex-col justify-center py-2">
-            {/* Section header (ultra compact) */}
-            <div className="text-center mb-2 xl:mb-3 max-w-3xl mx-auto">
-              <span className="inline-block px-2 py-0.5 bg-primary/10 text-primary text-[9px] xl:text-[10px] font-bold tracking-widest uppercase rounded-full mb-1">
-                Product Range
-              </span>
-              <h2 className="text-xl xl:text-2xl font-black text-foreground mb-1 leading-tight">
-                Industrial Sealant Solutions
-              </h2>
-              <div className="w-10 h-0.5 bg-primary mx-auto rounded-full" />
-            </div>
+        <div className="py-4 xl:py-5">
+          {/* Section header (ultra compact) */}
+          <div className="text-center mb-3 xl:mb-4 max-w-3xl mx-auto">
+            <span className="inline-block px-2 py-0.5 bg-primary/10 text-primary text-[9px] xl:text-[10px] font-bold tracking-widest uppercase rounded-full mb-1">
+              Product Range
+            </span>
+            <h2 className="text-xl xl:text-2xl font-black text-foreground mb-1 leading-tight">
+              Industrial Sealant Solutions
+            </h2>
+            <div className="w-10 h-0.5 bg-primary mx-auto rounded-full" />
+          </div>
 
-            <div className="max-w-3xl xl:max-w-4xl w-full mx-auto relative">
-              {/* Animated red flow arrows — overlaid across the whole grid */}
-              <FlowArrows scrollProgress={scrollYProgress} />
+          <div className="max-w-3xl xl:max-w-4xl w-full mx-auto relative">
+            {/* Animated red flow arrows — overlaid across the whole grid */}
+            <FlowArrows scrollProgress={scrollYProgress} />
 
-              <div
-                className="
-                  relative
-                  grid
-                  grid-cols-[minmax(0,1fr)_150px_minmax(0,1fr)]
-                  xl:grid-cols-[minmax(0,1fr)_170px_minmax(0,1fr)]
-                  grid-rows-[auto_auto_auto]
-                  gap-x-5 xl:gap-x-8
-                  gap-y-2 xl:gap-y-3
-                  items-start
-                "
-              >
+            <div
+              className="
+                relative
+                grid
+                grid-cols-[minmax(0,1fr)_150px_minmax(0,1fr)]
+                xl:grid-cols-[minmax(0,1fr)_170px_minmax(0,1fr)]
+                grid-rows-[auto_auto_auto]
+                gap-x-5 xl:gap-x-8
+                gap-y-2 xl:gap-y-3
+                items-start
+              "
+            >
                 {/* Sequential reveal ranges (matched to the FlowArrows ranges):
                      TL  reveal 0.00–0.12
                      →   arrow 0.12–0.24
@@ -800,7 +799,6 @@ function Product3DCircularFlow() {
                 </div>
               </div>
             </div>
-          </div>
         </div>
       )}
     </section>
