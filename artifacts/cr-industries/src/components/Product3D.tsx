@@ -457,12 +457,12 @@ function StackCard({ step, isNewest, fromSide: _fromSide }: {
       )}
 
       {/* Image */}
-      <div className="relative w-full aspect-[5/3] overflow-hidden">
+      <div className="relative w-full aspect-[10/7] overflow-hidden bg-muted">
         <motion.img
           src={step.img}
           alt={step.imgAlt}
           variants={imageVariants}
-          className="absolute inset-0 w-full h-full object-cover"
+          className="absolute inset-0 w-full h-full object-cover object-center"
           style={{ transformOrigin: "center", willChange: "transform, filter, opacity" }}
         />
         {!isNewest && <div className="absolute inset-0 bg-background/30" />}
@@ -643,12 +643,12 @@ function MobileProductCard({ step, index }: { step: typeof STEPS[0]; index: numb
       />
 
       {/* Image */}
-      <div className="relative w-full aspect-[16/10] sm:aspect-[5/3] overflow-hidden">
+      <div className="relative w-full aspect-[10/7] overflow-hidden bg-muted">
         <motion.img
           src={step.img}
           alt={step.imgAlt}
           variants={imageVariants}
-          className="absolute inset-0 w-full h-full object-cover"
+          className="absolute inset-0 w-full h-full object-cover object-center"
           style={{ transformOrigin: "center", willChange: "transform, filter, opacity" }}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-card/60 via-card/5 to-transparent" />
