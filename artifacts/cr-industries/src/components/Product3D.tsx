@@ -45,11 +45,13 @@ function CaulkCartridge({ scrollProgressRef }: { scrollProgressRef: { current: n
     const t = state.clock.getElapsedTime();
 
     /* Infinite, seamless idle motion — no rotation/spin.
-       1) Float: smooth vertical sine bob (slow, ~5s period, ±0.10 units).
+       1) Float: smooth vertical bob that only ever rises ABOVE the rest
+          position (range 0 → +0.09), so the bottom of the cartridge never
+          drops below its baseline and gets clipped by the canvas frame.
        2) Breathing pulse: very subtle uniform scale sway around base 0.9
           on a slightly different period so the two motions never visibly
           repeat together — keeps the loop feeling organic. */
-    const floatY    = Math.sin(t * 1.25) * 0.10;
+    const floatY    = (Math.sin(t * 1.25) * 0.5 + 0.5) * 0.09;
     const breathing = 0.9 + Math.sin(t * 0.9) * 0.012;
 
     rootRef.current.position.y = -0.9 + floatY;
