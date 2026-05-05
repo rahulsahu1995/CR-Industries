@@ -267,10 +267,12 @@ function ProductCard({
   step,
   index,
   position,
+  compact = false,
 }: {
   step: typeof STEPS[0];
   index: number;
   position: Corner;
+  compact?: boolean;
 }) {
   const Icon = step.icon;
   const ref = useRef(null);
@@ -290,7 +292,11 @@ function ProductCard({
       className="group relative w-full"
     >
       {/* Image (on top, separate container) */}
-      <div className="relative w-full aspect-[10/7] overflow-hidden rounded-2xl shadow-md ring-1 ring-border/50 bg-muted">
+      <div
+        className={`relative w-full overflow-hidden rounded-2xl shadow-md ring-1 ring-border/50 bg-muted ${
+          compact ? "aspect-[16/9]" : "aspect-[10/7]"
+        }`}
+      >
         <img
           src={step.img}
           alt={step.imgAlt}
@@ -300,16 +306,30 @@ function ProductCard({
       </div>
 
       {/* Title + description (outside the image container) */}
-      <div className="pt-3.5">
-        <div className="flex items-center gap-2.5 mb-1.5">
-          <div className="w-9 h-9 rounded-lg brand-gradient shadow-md shadow-primary/30 flex items-center justify-center shrink-0">
-            <Icon className="w-4 h-4 text-white" />
+      <div className={compact ? "pt-2" : "pt-3.5"}>
+        <div className={`flex items-center gap-2 ${compact ? "mb-1" : "mb-1.5"}`}>
+          <div
+            className={`rounded-lg brand-gradient shadow-md shadow-primary/30 flex items-center justify-center shrink-0 ${
+              compact ? "w-7 h-7" : "w-9 h-9"
+            }`}
+          >
+            <Icon className={`text-white ${compact ? "w-3.5 h-3.5" : "w-4 h-4"}`} />
           </div>
-          <h3 className="text-[15px] sm:text-base lg:text-[15.5px] xl:text-base font-bold text-foreground leading-snug">
+          <h3
+            className={`font-bold text-foreground leading-snug ${
+              compact
+                ? "text-[13px] xl:text-sm"
+                : "text-[15px] sm:text-base lg:text-[15.5px] xl:text-base"
+            }`}
+          >
             {step.title}
           </h3>
         </div>
-        <p className="text-[13px] text-muted-foreground leading-relaxed">
+        <p
+          className={`text-muted-foreground leading-snug ${
+            compact ? "text-[11.5px] line-clamp-2" : "text-[13px] leading-relaxed"
+          }`}
+        >
           {step.desc}
         </p>
       </div>
@@ -317,19 +337,28 @@ function ProductCard({
   );
 }
 
-/* ── Animated red flow arrows — Top-Left → Top-Right → Bottom-Right → Bottom-Left ──
-   The dash offset is driven by the section's scroll progress, so the dashes
-   visibly "flow" along the path while the user scrolls past the section. */
+/* ── Animated red flow arrows — draw-on-scroll TL → TR → BR → BL ──
+   Each arrow's `pathLength` is bound to a slice of the section's scroll
+   progress, so the lines visibly draw themselves toward the next image
+   as the user scrolls through the (sticky) section. */
 function FlowArrows({ scrollProgress }: { scrollProgress: MotionValue<number> }) {
   const arrows = [
-    { d: "M 26 12 Q 50 -2 74 12",   delay: 0.15 }, // TL → TR
-    { d: "M 88 26 Q 102 50 88 74",  delay: 0.45 }, // TR → BR
-    { d: "M 74 88 Q 50 102 26 88",  delay: 0.75 }, // BR → BL
+    { d: "M 26 12 Q 50 -2 74 12",  range: [0.05, 0.35] as [number, number] }, // TL → TR
+    { d: "M 88 26 Q 102 50 88 74", range: [0.30, 0.65] as [number, number] }, // TR → BR
+    { d: "M 74 88 Q 50 102 26 88", range: [0.60, 0.92] as [number, number] }, // BR → BL
   ];
 
-  /* Map 0..1 scroll progress to a long dashoffset travel so the dashes
-     visibly march along the path as the user scrolls. */
-  const dashOffset = useTransform(scrollProgress, [0, 1], [0, -240]);
+  const len0 = useTransform(scrollProgress, arrows[0].range, [0, 1], { clamp: true });
+  const len1 = useTransform(scrollProgress, arrows[1].range, [0, 1], { clamp: true });
+  const len2 = useTransform(scrollProgress, arrows[2].range, [0, 1], { clamp: true });
+  const lengths = [len0, len1, len2];
+
+  /* Hide the arrowhead until the line is at least slightly drawn,
+     otherwise the marker would float at the start position. */
+  const op0 = useTransform(len0, [0, 0.05, 1], [0, 1, 1]);
+  const op1 = useTransform(len1, [0, 0.05, 1], [0, 1, 1]);
+  const op2 = useTransform(len2, [0, 0.05, 1], [0, 1, 1]);
+  const opacities = [op0, op1, op2];
 
   return (
     <svg
@@ -357,19 +386,16 @@ function FlowArrows({ scrollProgress }: { scrollProgress: MotionValue<number> })
           key={i}
           d={a.d}
           stroke="#ef4444"
-          strokeWidth={1.6}
+          strokeWidth={1.8}
           fill="none"
           strokeLinecap="round"
-          strokeDasharray="3 2.2"
           markerEnd="url(#cr-arrowhead-red)"
+          /* keep stroke visually unscaled despite preserveAspectRatio="none" */
           style={{
             vectorEffect: "non-scaling-stroke",
-            strokeDashoffset: dashOffset,
-          } as React.CSSProperties}
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 0.9 }}
-          viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.6, delay: a.delay }}
+            pathLength: lengths[i],
+            opacity: opacities[i],
+          } as unknown as React.CSSProperties}
         />
       ))}
     </svg>
@@ -607,7 +633,7 @@ function Product3DCircularFlow() {
     <section
       ref={sectionRef}
       id="product"
-      className="relative overflow-hidden py-10 sm:py-14 lg:py-20 px-4 sm:px-6"
+      className="relative overflow-hidden px-4 sm:px-6"
     >
       {/* Background ambience */}
       <div className="absolute inset-0 bg-gradient-to-b from-background via-muted/40 to-muted -z-10" />
@@ -619,90 +645,106 @@ function Product3DCircularFlow() {
         }}
       />
 
-      {/* Section header */}
-      <div className="text-center mb-8 sm:mb-10 lg:mb-12 max-w-3xl mx-auto">
-        <span className="inline-block px-4 py-1.5 bg-primary/10 text-primary text-xs sm:text-sm font-bold tracking-widest uppercase rounded-full mb-4">
-          Product Range
-        </span>
-        <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-foreground mb-3 leading-tight">
-          Industrial Sealant Solutions
-        </h2>
-        <div className="w-16 h-1 bg-primary mx-auto rounded-full" />
-      </div>
-
-      <div className="max-w-6xl mx-auto">
-
-        {/* ─────────────── Mobile / tablet (< lg) — vertical stack ─────────────── */}
-        {!isDesktop && (
-        <div className="flex flex-col gap-10">
-          <div className="mx-auto w-full max-w-sm">
-            <div className="h-[34vh] min-h-[220px] max-h-[320px]">
-              <CentreCartridge scrollProgressRef={cartridgeRef} />
-            </div>
-            <div className="mt-3 flex justify-center">
-              <ProductPlaque />
-            </div>
+      {/* ─────────────── Mobile / tablet (< lg) — vertical stack ─────────────── */}
+      {!isDesktop && (
+        <div className="py-10 sm:py-14">
+          <div className="text-center mb-8 sm:mb-10 max-w-3xl mx-auto">
+            <span className="inline-block px-4 py-1.5 bg-primary/10 text-primary text-xs sm:text-sm font-bold tracking-widest uppercase rounded-full mb-4">
+              Product Range
+            </span>
+            <h2 className="text-3xl sm:text-4xl font-black text-foreground mb-3 leading-tight">
+              Industrial Sealant Solutions
+            </h2>
+            <div className="w-16 h-1 bg-primary mx-auto rounded-full" />
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-7">
-            {STEPS.map((s, i) => (
-              <ProductCard key={s.tag} step={s} index={i} position={CORNERS[i]} />
-            ))}
-          </div>
-        </div>
-        )}
 
-        {/* ─────────────── Desktop (lg+) — circular flow grid ─────────────── */}
-        {isDesktop && (
-        <div className="relative">
-          {/* Animated red flow arrows — overlaid across the whole grid */}
-          <FlowArrows scrollProgress={scrollYProgress} />
-
-          <div
-            className="
-              relative
-              grid
-              grid-cols-[minmax(0,1fr)_240px_minmax(0,1fr)]
-              xl:grid-cols-[minmax(0,1fr)_280px_minmax(0,1fr)]
-              grid-rows-[auto_auto_auto]
-              gap-x-10 xl:gap-x-14
-              gap-y-10 xl:gap-y-12
-              items-start
-            "
-          >
-            {/* TL */}
-            <div className="col-start-1 row-start-1">
-              <ProductCard step={STEPS[0]} index={0} position="TL" />
-            </div>
-
-            {/* TR */}
-            <div className="col-start-3 row-start-1">
-              <ProductCard step={STEPS[1]} index={1} position="TR" />
-            </div>
-
-            {/* Centre 3D — spans the middle row, focal point */}
-            <div className="col-start-2 row-start-1 row-span-3 self-center flex flex-col items-center justify-center relative">
-              <CentreHalo />
-              <div className="w-full h-[320px] xl:h-[380px]">
+          <div className="max-w-6xl mx-auto flex flex-col gap-10">
+            <div className="mx-auto w-full max-w-sm">
+              <div className="h-[34vh] min-h-[220px] max-h-[320px]">
                 <CentreCartridge scrollProgressRef={cartridgeRef} />
               </div>
-              <div className="mt-3">
+              <div className="mt-3 flex justify-center">
                 <ProductPlaque />
               </div>
             </div>
-
-            {/* BL */}
-            <div className="col-start-1 row-start-3">
-              <ProductCard step={STEPS[3]} index={3} position="BL" />
-            </div>
-
-            {/* BR */}
-            <div className="col-start-3 row-start-3">
-              <ProductCard step={STEPS[2]} index={2} position="BR" />
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-7">
+              {STEPS.map((s, i) => (
+                <ProductCard key={s.tag} step={s} index={i} position={CORNERS[i]} />
+              ))}
             </div>
           </div>
         </div>
-        )}
-      </div>
+      )}
+
+      {/* ─────────────── Desktop (lg+) — sticky viewport-fit circular flow ───────────────
+          Outer wrapper provides the scroll distance; the inner sticky panel
+          stays pinned at h-screen while the user scrolls through, driving the
+          arrow draw-on-scroll animation. */}
+      {isDesktop && (
+        <div className="relative h-[220vh]">
+          <div className="sticky top-0 h-screen flex flex-col justify-center py-6">
+            {/* Section header (compact) */}
+            <div className="text-center mb-5 xl:mb-7 max-w-3xl mx-auto">
+              <span className="inline-block px-3 py-1 bg-primary/10 text-primary text-xs font-bold tracking-widest uppercase rounded-full mb-2">
+                Product Range
+              </span>
+              <h2 className="text-3xl xl:text-4xl font-black text-foreground mb-2 leading-tight">
+                Industrial Sealant Solutions
+              </h2>
+              <div className="w-14 h-1 bg-primary mx-auto rounded-full" />
+            </div>
+
+            <div className="max-w-5xl xl:max-w-6xl w-full mx-auto relative">
+              {/* Animated red flow arrows — overlaid across the whole grid */}
+              <FlowArrows scrollProgress={scrollYProgress} />
+
+              <div
+                className="
+                  relative
+                  grid
+                  grid-cols-[minmax(0,1fr)_220px_minmax(0,1fr)]
+                  xl:grid-cols-[minmax(0,1fr)_260px_minmax(0,1fr)]
+                  grid-rows-[auto_auto_auto]
+                  gap-x-8 xl:gap-x-12
+                  gap-y-6 xl:gap-y-8
+                  items-start
+                "
+              >
+                {/* TL */}
+                <div className="col-start-1 row-start-1">
+                  <ProductCard step={STEPS[0]} index={0} position="TL" compact />
+                </div>
+
+                {/* TR */}
+                <div className="col-start-3 row-start-1">
+                  <ProductCard step={STEPS[1]} index={1} position="TR" compact />
+                </div>
+
+                {/* Centre 3D — spans the middle row, focal point */}
+                <div className="col-start-2 row-start-1 row-span-3 self-center flex flex-col items-center justify-center relative">
+                  <CentreHalo />
+                  <div className="w-full h-[280px] xl:h-[320px]">
+                    <CentreCartridge scrollProgressRef={cartridgeRef} />
+                  </div>
+                  <div className="mt-2">
+                    <ProductPlaque />
+                  </div>
+                </div>
+
+                {/* BL */}
+                <div className="col-start-1 row-start-3">
+                  <ProductCard step={STEPS[3]} index={3} position="BL" compact />
+                </div>
+
+                {/* BR */}
+                <div className="col-start-3 row-start-3">
+                  <ProductCard step={STEPS[2]} index={2} position="BR" compact />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 }
