@@ -40,16 +40,22 @@ function CaulkCartridge({ scrollProgressRef }: { scrollProgressRef: { current: n
   const prevRef  = useRef(0);
   const tiltRef  = useRef(0);
 
-  useFrame(() => {
+  useFrame((state) => {
     if (!rootRef.current || !scrollProgressRef) return;
     const p = scrollProgressRef.current ?? 0;
+    const t = state.clock.getElapsedTime();
 
     const delta = p - prevRef.current;
     prevRef.current = p;
     tiltRef.current = tiltRef.current * 0.86 + delta * 10;
     tiltRef.current = Math.max(-0.18, Math.min(0.18, tiltRef.current));
 
-    const targetX = p * Math.PI * 0.08;
+    /* Continuous subtle motion: slow full Y-axis spin + gentle bob/sway so
+       the cartridge always feels alive, even when the user isn't scrolling. */
+    rootRef.current.rotation.y = t * 0.35;
+    rootRef.current.position.y = -0.9 + Math.sin(t * 1.1) * 0.06;
+
+    const targetX = p * Math.PI * 0.08 + Math.sin(t * 0.6) * 0.04;
     rootRef.current.rotation.x += (targetX - rootRef.current.rotation.x) * 0.06;
     rootRef.current.rotation.z += (tiltRef.current - rootRef.current.rotation.z) * 0.09;
   });
