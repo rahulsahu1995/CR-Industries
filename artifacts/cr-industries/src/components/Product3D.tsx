@@ -1,5 +1,5 @@
 import { useRef, useEffect, useState, Suspense, Component, ErrorInfo, ReactNode } from "react";
-import { motion, useInView, useScroll, useTransform, useMotionValue, MotionValue } from "framer-motion";
+import { motion, useInView, useScroll, useTransform, useMotionValue, MotionValue, animate } from "framer-motion";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Environment, Text } from "@react-three/drei";
 import * as THREE from "three";
@@ -612,18 +612,22 @@ function Product3DCircularFlow() {
   /* Scroll progress through the section — drives the red flow-arrow dashes
      so they visibly march along the path while scrolling. */
   const sectionRef = useRef<HTMLElement | null>(null);
-  /* Pin spacer ref — the outer wrapper that provides extra scroll travel
-     for the sticky-pinned animation phase. We bind useScroll here with
-     ["start start", "end end"], so progress 0 = the spacer's top hits the
-     viewport top (= the moment the section locks in place), and progress
-     1 = the spacer's bottom hits the viewport bottom (= the moment the
-     pin releases and the next section begins to scroll into view). This
-     maps the full reveal sequence exactly to the pinned phase. */
-  const pinRef = useRef<HTMLDivElement | null>(null);
-  const { scrollYProgress } = useScroll({
-    target: pinRef,
-    offset: ["start start", "end end"],
-  });
+  /* Time-driven progress (0 → 1) that powers the step-by-step reveal of
+     cards and arrows. Triggered automatically once the section enters the
+     viewport — keeps the section's DOM height equal to its content while
+     still playing the staggered choreography that the existing reveal
+     ranges (0.0 TL → 0.84 BL) consume. */
+  const scrollYProgress = useMotionValue(0);
+  const triggerRef = useRef<HTMLDivElement | null>(null);
+  const inView = useInView(triggerRef, { once: true, amount: 0.35 });
+  useEffect(() => {
+    if (!inView) return;
+    const controls = animate(scrollYProgress, 1, {
+      duration: 3.6,
+      ease: "easeInOut",
+    });
+    return () => controls.stop();
+  }, [inView, scrollYProgress]);
 
   /* gentle idle motion for the cartridge so it never feels static */
   const cartridgeRef = useRef(0.25);
@@ -710,15 +714,14 @@ function Product3DCircularFlow() {
           stays pinned at h-screen while the user scrolls through, driving the
           arrow draw-on-scroll animation. */}
       {isDesktop && (
-        /* Pin spacer: total scroll height = content (~580px) + 700px of
-           pinned scroll travel for the animation. The inner sticky child
-           keeps its natural content height, so visually the section is
-           never taller than its content — the extra height only provides
-           scroll runway for the lock-in-place animation. */
-        <div ref={pinRef} className="relative" style={{ height: "calc(580px + 700px)" }}>
-          <div className="sticky top-0 py-6 xl:py-8">
-            {/* Section header (compact) */}
-            <div className="text-center mb-4 xl:mb-5 max-w-3xl mx-auto">
+        /* Section is exactly content-tall — no pin spacer, no extra scroll
+           runway. The step-by-step reveal sequence fires automatically when
+           the section enters the viewport (see the time-driven progress
+           MotionValue above), so the staggered animation plays "in place"
+           inside the natural section height. */
+        <div ref={triggerRef} className="py-6 xl:py-8">
+          {/* Section header (compact) */}
+          <div className="text-center mb-4 xl:mb-5 max-w-3xl mx-auto">
               <span className="inline-block px-2.5 py-0.5 bg-primary/10 text-primary text-[10px] xl:text-[11px] font-bold tracking-widest uppercase rounded-full mb-1.5">
                 Product Range
               </span>
@@ -814,7 +817,6 @@ function Product3DCircularFlow() {
               </div>
             </div>
           </div>
-        </div>
       )}
     </section>
   );
