@@ -5,6 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "@/context/ThemeContext";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import WhatsAppButton from "@/components/WhatsAppButton";
 import HomePage from "@/pages/HomePage";
 import ProductPage from "@/pages/ProductPage";
 import ProductDetailPage from "@/pages/ProductDetailPage";
@@ -48,6 +49,7 @@ function App() {
             <Navbar />
             <Router />
             <Footer />
+            <WhatsAppButton />
           </WouterRouter>
           <Toaster />
         </ThemeProvider>
