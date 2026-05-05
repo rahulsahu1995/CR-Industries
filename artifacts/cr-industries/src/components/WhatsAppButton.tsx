@@ -17,8 +17,7 @@ export default function WhatsAppButton() {
       transition={{ duration: 0.5, delay: 0.6, ease: [0.22, 1, 0.36, 1] }}
       whileHover={{ scale: 1.05, y: -2 }}
       whileTap={{ scale: 0.96 }}
-      className="fixed bottom-5 right-5 sm:bottom-6 sm:right-6 z-50 inline-flex items-center px-5 py-3 rounded-full font-bold text-sm sm:text-base text-white shadow-xl shadow-black/25 ring-1 ring-white/20"
-      style={{ backgroundColor: "#25D366" }}
+      className="fixed bottom-5 right-5 sm:bottom-6 sm:right-6 z-50 inline-flex items-center px-5 py-3 rounded-full font-bold text-sm sm:text-base shadow-xl transition-colors duration-300 bg-[#25D366] text-white ring-1 ring-black/10 shadow-black/25 dark:bg-[#1FAE54] dark:ring-white/15 dark:shadow-black/60"
     >
       Chat with Us
     </motion.a>
