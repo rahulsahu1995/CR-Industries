@@ -407,57 +407,12 @@ function StackCard({ step, isNewest, fromSide: _fromSide }: {
         transformStyle: "preserve-3d",
         willChange: "transform, opacity, filter, clip-path",
       }}
-      className={`relative rounded-2xl overflow-hidden border transition-[opacity,box-shadow,border-color,transform] duration-500 ${
-        isNewest
-          ? "border-primary/60 shadow-2xl shadow-primary/25 bg-card"
-          : "border-border/35 shadow-md bg-card/70 opacity-60 scale-[0.97]"
+      className={`relative transition-[opacity,transform] duration-500 ${
+        isNewest ? "" : "opacity-55 scale-[0.97]"
       }`}
     >
-      {/* Brand-tinted radial sheen — newest card only */}
-      {isNewest && (
-        <span
-          aria-hidden
-          className="pointer-events-none absolute inset-0 rounded-2xl z-[1]"
-          style={{
-            background:
-              "radial-gradient(130% 90% at 0% 0%, rgba(0,150,199,0.14), transparent 55%), radial-gradient(120% 80% at 100% 100%, rgba(3,4,94,0.10), transparent 60%)",
-          }}
-        />
-      )}
-
-      {/* Centre-line beam — the moment the slit closes */}
-      {isNewest && (
-        <motion.span
-          aria-hidden
-          variants={beamVariants}
-          className="pointer-events-none absolute top-1/2 left-0 right-0 h-[2px] -translate-y-1/2 origin-center z-[3]"
-          style={{
-            background:
-              "linear-gradient(90deg, transparent 0%, rgba(72,202,228,0.0) 8%, rgba(72,202,228,0.95) 50%, rgba(72,202,228,0.0) 92%, transparent 100%)",
-            filter: "blur(0.5px)",
-            boxShadow:
-              "0 0 14px rgba(0,180,216,0.55), 0 0 28px rgba(0,150,199,0.35)",
-          }}
-        />
-      )}
-
-      {/* Corner-light flash — top-left */}
-      {isNewest && (
-        <motion.span
-          aria-hidden
-          variants={cornerVariants}
-          className="pointer-events-none absolute -top-3 -left-3 w-20 h-20 rounded-full z-[2]"
-          style={{
-            background:
-              "radial-gradient(circle, rgba(72,202,228,0.55) 0%, rgba(72,202,228,0.18) 35%, transparent 70%)",
-            filter: "blur(8px)",
-            mixBlendMode: "screen",
-          }}
-        />
-      )}
-
       {/* Image */}
-      <div className="relative w-full aspect-[10/7] overflow-hidden bg-muted">
+      <div className="relative w-full aspect-[10/7] overflow-hidden rounded-xl">
         <motion.img
           src={step.img}
           alt={step.imgAlt}
@@ -466,13 +421,10 @@ function StackCard({ step, isNewest, fromSide: _fromSide }: {
           style={{ transformOrigin: "center", willChange: "transform, filter, opacity" }}
         />
         {!isNewest && <div className="absolute inset-0 bg-background/30" />}
-        {isNewest && (
-          <div className="absolute inset-0 bg-gradient-to-t from-card/60 via-card/5 to-transparent" />
-        )}
       </div>
 
       {/* Content */}
-      <div className="relative px-3.5 pt-3 pb-3.5 md:px-4 md:pt-3.5 md:pb-4 lg:px-5 lg:pt-4 lg:pb-5">
+      <div className="pt-2.5 md:pt-3">
         <div className="flex items-center gap-2 md:gap-2.5 mb-1.5 md:mb-2">
           <motion.div
             variants={iconVariants}
@@ -630,20 +582,10 @@ function MobileProductCard({ step, index }: { step: typeof STEPS[0]; index: numb
         transformStyle: "preserve-3d",
         willChange: "transform, opacity, filter, clip-path",
       }}
-      className="relative rounded-2xl overflow-hidden border border-primary/40 shadow-xl shadow-primary/15 bg-card"
+      className="relative"
     >
-      {/* Brand radial sheen */}
-      <span
-        aria-hidden
-        className="pointer-events-none absolute inset-0 rounded-2xl z-[1]"
-        style={{
-          background:
-            "radial-gradient(130% 90% at 0% 0%, rgba(0,150,199,0.12), transparent 55%), radial-gradient(120% 80% at 100% 100%, rgba(3,4,94,0.08), transparent 60%)",
-        }}
-      />
-
       {/* Image */}
-      <div className="relative w-full aspect-[10/7] overflow-hidden bg-muted">
+      <div className="relative w-full aspect-[10/7] overflow-hidden rounded-xl">
         <motion.img
           src={step.img}
           alt={step.imgAlt}
@@ -651,12 +593,11 @@ function MobileProductCard({ step, index }: { step: typeof STEPS[0]; index: numb
           className="absolute inset-0 w-full h-full object-cover object-center"
           style={{ transformOrigin: "center", willChange: "transform, filter, opacity" }}
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-card/60 via-card/5 to-transparent" />
       </div>
 
       {/* Content */}
-      <div className="relative p-5">
-        <div className="flex items-center gap-3 mb-2.5">
+      <div className="pt-4">
+        <div className="flex items-center gap-3 mb-2">
           <motion.div
             variants={iconVariants}
             className="w-10 h-10 rounded-lg brand-gradient shadow-md shadow-primary/30 flex items-center justify-center shrink-0"
