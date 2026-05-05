@@ -612,14 +612,14 @@ function Product3DCircularFlow() {
   /* Scroll progress through the section — drives the red flow-arrow dashes
      so they visibly march along the path while scrolling. */
   const sectionRef = useRef<HTMLElement | null>(null);
-  /* Desktop pin spacer — drives the scroll-pinned animation. Bound with
-     ["start start", "end end"] so progress 0 = spacer top hits viewport top
-     (pin begins), progress 1 = spacer bottom hits viewport bottom (pin
-     releases). This maps animation progress exactly to the pinned phase. */
-  const pinRef = useRef<HTMLDivElement | null>(null);
+  /* Animation progress is driven by the section scrolling through the
+     viewport. Offset ["start end", "end start"] means progress 0 when the
+     section's top first touches the viewport bottom, and progress 1 when
+     the section's bottom leaves the viewport top. The full reveal sequence
+     is mapped into the central portion of this range. */
   const { scrollYProgress } = useScroll({
-    target: pinRef,
-    offset: ["start start", "end end"],
+    target: sectionRef,
+    offset: ["start end", "end start"],
   });
 
   /* gentle idle motion for the cartridge so it never feels static */
@@ -707,10 +707,9 @@ function Product3DCircularFlow() {
           stays pinned at h-screen while the user scrolls through, driving the
           arrow draw-on-scroll animation. */}
       {isDesktop && (
-        <div ref={pinRef} className="relative h-[180vh]">
-          <div className="sticky top-0 py-4 xl:py-5">
-            {/* Section header (compact) */}
-            <div className="text-center mb-4 xl:mb-5 max-w-3xl mx-auto">
+        <div className="py-6 xl:py-8">
+          {/* Section header (compact) */}
+          <div className="text-center mb-4 xl:mb-5 max-w-3xl mx-auto">
               <span className="inline-block px-2.5 py-0.5 bg-primary/10 text-primary text-[10px] xl:text-[11px] font-bold tracking-widest uppercase rounded-full mb-1.5">
                 Product Range
               </span>
@@ -806,7 +805,6 @@ function Product3DCircularFlow() {
               </div>
             </div>
           </div>
-        </div>
       )}
     </section>
   );
