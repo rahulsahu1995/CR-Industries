@@ -612,14 +612,17 @@ function Product3DCircularFlow() {
   /* Scroll progress through the section — drives the red flow-arrow dashes
      so they visibly march along the path while scrolling. */
   const sectionRef = useRef<HTMLElement | null>(null);
-  /* Animation progress is driven by the section scrolling through the
-     viewport. Offset ["start end", "end start"] means progress 0 when the
-     section's top first touches the viewport bottom, and progress 1 when
-     the section's bottom leaves the viewport top. The full reveal sequence
-     is mapped into the central portion of this range. */
+  /* Pin spacer ref — the outer wrapper that provides extra scroll travel
+     for the sticky-pinned animation phase. We bind useScroll here with
+     ["start start", "end end"], so progress 0 = the spacer's top hits the
+     viewport top (= the moment the section locks in place), and progress
+     1 = the spacer's bottom hits the viewport bottom (= the moment the
+     pin releases and the next section begins to scroll into view). This
+     maps the full reveal sequence exactly to the pinned phase. */
+  const pinRef = useRef<HTMLDivElement | null>(null);
   const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start end", "end start"],
+    target: pinRef,
+    offset: ["start start", "end end"],
   });
 
   /* gentle idle motion for the cartridge so it never feels static */
@@ -707,9 +710,15 @@ function Product3DCircularFlow() {
           stays pinned at h-screen while the user scrolls through, driving the
           arrow draw-on-scroll animation. */}
       {isDesktop && (
-        <div className="py-6 xl:py-8">
-          {/* Section header (compact) */}
-          <div className="text-center mb-4 xl:mb-5 max-w-3xl mx-auto">
+        /* Pin spacer: total scroll height = content (~580px) + 700px of
+           pinned scroll travel for the animation. The inner sticky child
+           keeps its natural content height, so visually the section is
+           never taller than its content — the extra height only provides
+           scroll runway for the lock-in-place animation. */
+        <div ref={pinRef} className="relative" style={{ height: "calc(580px + 700px)" }}>
+          <div className="sticky top-0 py-6 xl:py-8">
+            {/* Section header (compact) */}
+            <div className="text-center mb-4 xl:mb-5 max-w-3xl mx-auto">
               <span className="inline-block px-2.5 py-0.5 bg-primary/10 text-primary text-[10px] xl:text-[11px] font-bold tracking-widest uppercase rounded-full mb-1.5">
                 Product Range
               </span>
@@ -805,6 +814,7 @@ function Product3DCircularFlow() {
               </div>
             </div>
           </div>
+        </div>
       )}
     </section>
   );
