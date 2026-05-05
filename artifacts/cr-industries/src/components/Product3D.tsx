@@ -315,7 +315,7 @@ function ProductCard({
       {/* Image (on top, separate container) */}
       <div
         className={`relative w-full overflow-hidden rounded-xl shadow-md ring-1 ring-border/50 bg-muted ${
-          compact ? "aspect-[20/9]" : "aspect-[10/7]"
+          compact ? "aspect-[24/9]" : "aspect-[10/7]"
         }`}
       >
         <img
@@ -702,20 +702,20 @@ function Product3DCircularFlow() {
           stays pinned at h-screen while the user scrolls through, driving the
           arrow draw-on-scroll animation. */}
       {isDesktop && (
-        <div className="relative h-[200vh]">
-          <div className="sticky top-0 h-screen flex flex-col justify-center py-3">
-            {/* Section header (very compact) */}
-            <div className="text-center mb-3 xl:mb-4 max-w-3xl mx-auto">
-              <span className="inline-block px-2.5 py-0.5 bg-primary/10 text-primary text-[10px] xl:text-[11px] font-bold tracking-widest uppercase rounded-full mb-1.5">
+        <div className="relative h-[160vh]">
+          <div className="sticky top-0 h-screen flex flex-col justify-center py-2">
+            {/* Section header (ultra compact) */}
+            <div className="text-center mb-2 xl:mb-3 max-w-3xl mx-auto">
+              <span className="inline-block px-2 py-0.5 bg-primary/10 text-primary text-[9px] xl:text-[10px] font-bold tracking-widest uppercase rounded-full mb-1">
                 Product Range
               </span>
-              <h2 className="text-2xl xl:text-3xl font-black text-foreground mb-1.5 leading-tight">
+              <h2 className="text-xl xl:text-2xl font-black text-foreground mb-1 leading-tight">
                 Industrial Sealant Solutions
               </h2>
-              <div className="w-12 h-0.5 bg-primary mx-auto rounded-full" />
+              <div className="w-10 h-0.5 bg-primary mx-auto rounded-full" />
             </div>
 
-            <div className="max-w-4xl xl:max-w-5xl w-full mx-auto relative">
+            <div className="max-w-3xl xl:max-w-4xl w-full mx-auto relative">
               {/* Animated red flow arrows — overlaid across the whole grid */}
               <FlowArrows scrollProgress={scrollYProgress} />
 
@@ -723,11 +723,11 @@ function Product3DCircularFlow() {
                 className="
                   relative
                   grid
-                  grid-cols-[minmax(0,1fr)_180px_minmax(0,1fr)]
-                  xl:grid-cols-[minmax(0,1fr)_210px_minmax(0,1fr)]
+                  grid-cols-[minmax(0,1fr)_150px_minmax(0,1fr)]
+                  xl:grid-cols-[minmax(0,1fr)_170px_minmax(0,1fr)]
                   grid-rows-[auto_auto_auto]
-                  gap-x-6 xl:gap-x-10
-                  gap-y-3 xl:gap-y-4
+                  gap-x-5 xl:gap-x-8
+                  gap-y-2 xl:gap-y-3
                   items-start
                 "
               >
@@ -767,10 +767,10 @@ function Product3DCircularFlow() {
                 {/* Centre 3D — spans the middle row, focal point */}
                 <div className="col-start-2 row-start-1 row-span-3 self-center flex flex-col items-center justify-center relative">
                   <CentreHalo />
-                  <div className="w-full h-[210px] xl:h-[240px]">
+                  <div className="w-full h-[170px] xl:h-[195px]">
                     <CentreCartridge scrollProgressRef={cartridgeRef} />
                   </div>
-                  <div className="mt-1.5">
+                  <div className="mt-1">
                     <ProductPlaque />
                   </div>
                 </div>
