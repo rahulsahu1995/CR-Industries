@@ -310,18 +310,20 @@ function ProductCard({
           : { duration: 0.7, delay: 0.1 + index * 0.08, ease: [0.22, 1, 0.36, 1] }
       }
       style={drivenStyle}
-      className="group relative w-full"
+      className={`group relative ${compact ? "w-[88%] mx-auto" : "w-full"}`}
     >
       {/* Image (on top, separate container) */}
       <div
-        className={`relative w-full overflow-hidden rounded-xl shadow-md ring-1 ring-border/50 bg-muted ${
-          compact ? "aspect-[20/9]" : "aspect-[10/7]"
+        className={`relative w-full overflow-hidden rounded-xl shadow-md ring-1 ring-border/50 bg-card ${
+          compact ? "aspect-[20/9] p-1.5 xl:p-2" : "aspect-[10/7]"
         }`}
       >
         <img
           src={step.img}
           alt={step.imgAlt}
-          className="w-full h-full object-cover object-center transition-transform duration-700 ease-out group-hover:scale-[1.06]"
+          className={`w-full h-full object-cover object-center transition-transform duration-700 ease-out group-hover:scale-[1.06] ${
+            compact ? "rounded-lg" : ""
+          }`}
           loading="lazy"
         />
       </div>
