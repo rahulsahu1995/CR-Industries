@@ -742,7 +742,7 @@ function Product3DCircularFlow() {
                   grid-cols-[minmax(0,1fr)_170px_minmax(0,1fr)]
                   xl:grid-cols-[minmax(0,1fr)_190px_minmax(0,1fr)]
                   grid-rows-[auto_auto_auto]
-                  gap-x-6 xl:gap-x-10
+                  gap-x-2 xl:gap-x-3
                   gap-y-3 xl:gap-y-4
                   items-start
                 "
