@@ -314,8 +314,8 @@ function ProductCard({
     >
       {/* Image (on top, separate container) */}
       <div
-        className={`relative w-full overflow-hidden rounded-2xl shadow-md ring-1 ring-border/50 bg-muted ${
-          compact ? "aspect-[16/9]" : "aspect-[10/7]"
+        className={`relative w-full overflow-hidden rounded-xl shadow-md ring-1 ring-border/50 bg-muted ${
+          compact ? "aspect-[20/9]" : "aspect-[10/7]"
         }`}
       >
         <img
@@ -327,19 +327,19 @@ function ProductCard({
       </div>
 
       {/* Title + description (outside the image container) */}
-      <div className={compact ? "pt-2" : "pt-3.5"}>
-        <div className={`flex items-center gap-2 ${compact ? "mb-1" : "mb-1.5"}`}>
+      <div className={compact ? "pt-1.5" : "pt-3.5"}>
+        <div className={`flex items-center gap-2 ${compact ? "mb-0.5" : "mb-1.5"}`}>
           <div
-            className={`rounded-lg brand-gradient shadow-md shadow-primary/30 flex items-center justify-center shrink-0 ${
-              compact ? "w-7 h-7" : "w-9 h-9"
+            className={`rounded-md brand-gradient shadow shadow-primary/30 flex items-center justify-center shrink-0 ${
+              compact ? "w-6 h-6" : "w-9 h-9"
             }`}
           >
-            <Icon className={`text-white ${compact ? "w-3.5 h-3.5" : "w-4 h-4"}`} />
+            <Icon className={`text-white ${compact ? "w-3 h-3" : "w-4 h-4"}`} />
           </div>
           <h3
-            className={`font-bold text-foreground leading-snug ${
+            className={`font-bold text-foreground leading-tight ${
               compact
-                ? "text-[13px] xl:text-sm"
+                ? "text-[12px] xl:text-[13px]"
                 : "text-[15px] sm:text-base lg:text-[15.5px] xl:text-base"
             }`}
           >
@@ -348,7 +348,7 @@ function ProductCard({
         </div>
         <p
           className={`text-muted-foreground leading-snug ${
-            compact ? "text-[11.5px] line-clamp-2" : "text-[13px] leading-relaxed"
+            compact ? "text-[10.5px] xl:text-[11px] line-clamp-2" : "text-[13px] leading-relaxed"
           }`}
         >
           {step.desc}
@@ -702,20 +702,20 @@ function Product3DCircularFlow() {
           stays pinned at h-screen while the user scrolls through, driving the
           arrow draw-on-scroll animation. */}
       {isDesktop && (
-        <div className="relative h-[220vh]">
-          <div className="sticky top-0 h-screen flex flex-col justify-center py-6">
-            {/* Section header (compact) */}
-            <div className="text-center mb-5 xl:mb-7 max-w-3xl mx-auto">
-              <span className="inline-block px-3 py-1 bg-primary/10 text-primary text-xs font-bold tracking-widest uppercase rounded-full mb-2">
+        <div className="relative h-[200vh]">
+          <div className="sticky top-0 h-screen flex flex-col justify-center py-3">
+            {/* Section header (very compact) */}
+            <div className="text-center mb-3 xl:mb-4 max-w-3xl mx-auto">
+              <span className="inline-block px-2.5 py-0.5 bg-primary/10 text-primary text-[10px] xl:text-[11px] font-bold tracking-widest uppercase rounded-full mb-1.5">
                 Product Range
               </span>
-              <h2 className="text-3xl xl:text-4xl font-black text-foreground mb-2 leading-tight">
+              <h2 className="text-2xl xl:text-3xl font-black text-foreground mb-1.5 leading-tight">
                 Industrial Sealant Solutions
               </h2>
-              <div className="w-14 h-1 bg-primary mx-auto rounded-full" />
+              <div className="w-12 h-0.5 bg-primary mx-auto rounded-full" />
             </div>
 
-            <div className="max-w-5xl xl:max-w-6xl w-full mx-auto relative">
+            <div className="max-w-4xl xl:max-w-5xl w-full mx-auto relative">
               {/* Animated red flow arrows — overlaid across the whole grid */}
               <FlowArrows scrollProgress={scrollYProgress} />
 
@@ -723,11 +723,11 @@ function Product3DCircularFlow() {
                 className="
                   relative
                   grid
-                  grid-cols-[minmax(0,1fr)_220px_minmax(0,1fr)]
-                  xl:grid-cols-[minmax(0,1fr)_260px_minmax(0,1fr)]
+                  grid-cols-[minmax(0,1fr)_180px_minmax(0,1fr)]
+                  xl:grid-cols-[minmax(0,1fr)_210px_minmax(0,1fr)]
                   grid-rows-[auto_auto_auto]
-                  gap-x-8 xl:gap-x-12
-                  gap-y-6 xl:gap-y-8
+                  gap-x-6 xl:gap-x-10
+                  gap-y-3 xl:gap-y-4
                   items-start
                 "
               >
@@ -767,10 +767,10 @@ function Product3DCircularFlow() {
                 {/* Centre 3D — spans the middle row, focal point */}
                 <div className="col-start-2 row-start-1 row-span-3 self-center flex flex-col items-center justify-center relative">
                   <CentreHalo />
-                  <div className="w-full h-[280px] xl:h-[320px]">
+                  <div className="w-full h-[210px] xl:h-[240px]">
                     <CentreCartridge scrollProgressRef={cartridgeRef} />
                   </div>
-                  <div className="mt-2">
+                  <div className="mt-1.5">
                     <ProductPlaque />
                   </div>
                 </div>
