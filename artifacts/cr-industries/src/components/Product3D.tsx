@@ -1,5 +1,5 @@
 import { useRef, useEffect, useState, Suspense, Component, ErrorInfo, ReactNode } from "react";
-import { motion, useInView } from "framer-motion";
+import { motion, useInView, useScroll, useTransform, MotionValue } from "framer-motion";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Environment, Text } from "@react-three/drei";
 import * as THREE from "three";
@@ -317,16 +317,19 @@ function ProductCard({
   );
 }
 
-/* ── Animated red flow arrows — Top-Left → Top-Right → Bottom-Right → Bottom-Left ── */
-function FlowArrows() {
-  /* viewBox 0..100 in both axes; preserveAspectRatio="none" lets the arc
-     stretch to the desktop grid box, while vector-effect keeps stroke
-     width visually consistent. */
+/* ── Animated red flow arrows — Top-Left → Top-Right → Bottom-Right → Bottom-Left ──
+   The dash offset is driven by the section's scroll progress, so the dashes
+   visibly "flow" along the path while the user scrolls past the section. */
+function FlowArrows({ scrollProgress }: { scrollProgress: MotionValue<number> }) {
   const arrows = [
     { d: "M 26 12 Q 50 -2 74 12",   delay: 0.15 }, // TL → TR
     { d: "M 88 26 Q 102 50 88 74",  delay: 0.45 }, // TR → BR
     { d: "M 74 88 Q 50 102 26 88",  delay: 0.75 }, // BR → BL
   ];
+
+  /* Map 0..1 scroll progress to a long dashoffset travel so the dashes
+     visibly march along the path as the user scrolls. */
+  const dashOffset = useTransform(scrollProgress, [0, 1], [0, -240]);
 
   return (
     <svg
@@ -359,15 +362,14 @@ function FlowArrows() {
           strokeLinecap="round"
           strokeDasharray="3 2.2"
           markerEnd="url(#cr-arrowhead-red)"
-          /* keep stroke + dash visually unscaled despite preserveAspectRatio="none" */
-          style={{ vectorEffect: "non-scaling-stroke" } as React.CSSProperties}
-          initial={{ opacity: 0, strokeDashoffset: 0 }}
-          whileInView={{ opacity: 0.9, strokeDashoffset: -40 }}
-          viewport={{ once: false, margin: "-100px" }}
-          transition={{
-            opacity:          { duration: 0.6,  delay: a.delay },
-            strokeDashoffset: { duration: 1.6,  ease: "linear", repeat: Infinity },
-          }}
+          style={{
+            vectorEffect: "non-scaling-stroke",
+            strokeDashoffset: dashOffset,
+          } as React.CSSProperties}
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 0.9 }}
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{ duration: 0.6, delay: a.delay }}
         />
       ))}
     </svg>
@@ -560,6 +562,14 @@ function CentreHalo() {
    - Mobile: 3D cartridge stacks above a 1-col / 2-col grid of cards.
    ───────────────────────────────────────────────────────────────────── */
 function Product3DCircularFlow() {
+  /* Scroll progress through the section — drives the red flow-arrow dashes
+     so they visibly march along the path while scrolling. */
+  const sectionRef = useRef<HTMLElement | null>(null);
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"],
+  });
+
   /* gentle idle motion for the cartridge so it never feels static */
   const cartridgeRef = useRef(0.25);
   useEffect(() => {
@@ -595,6 +605,7 @@ function Product3DCircularFlow() {
 
   return (
     <section
+      ref={sectionRef}
       id="product"
       className="relative overflow-hidden py-10 sm:py-14 lg:py-20 px-4 sm:px-6"
     >
@@ -624,8 +635,8 @@ function Product3DCircularFlow() {
         {/* ─────────────── Mobile / tablet (< lg) — vertical stack ─────────────── */}
         {!isDesktop && (
         <div className="flex flex-col gap-10">
-          <div className="mx-auto w-full max-w-md">
-            <div className="h-[44vh] min-h-[280px] max-h-[420px]">
+          <div className="mx-auto w-full max-w-sm">
+            <div className="h-[34vh] min-h-[220px] max-h-[320px]">
               <CentreCartridge scrollProgressRef={cartridgeRef} />
             </div>
             <div className="mt-3 flex justify-center">
@@ -644,17 +655,17 @@ function Product3DCircularFlow() {
         {isDesktop && (
         <div className="relative">
           {/* Animated red flow arrows — overlaid across the whole grid */}
-          <FlowArrows />
+          <FlowArrows scrollProgress={scrollYProgress} />
 
           <div
             className="
               relative
               grid
-              grid-cols-[minmax(0,1fr)_320px_minmax(0,1fr)]
-              xl:grid-cols-[minmax(0,1fr)_360px_minmax(0,1fr)]
+              grid-cols-[minmax(0,1fr)_240px_minmax(0,1fr)]
+              xl:grid-cols-[minmax(0,1fr)_280px_minmax(0,1fr)]
               grid-rows-[auto_auto_auto]
-              gap-x-12 xl:gap-x-16
-              gap-y-12 xl:gap-y-14
+              gap-x-10 xl:gap-x-14
+              gap-y-10 xl:gap-y-12
               items-start
             "
           >
@@ -671,7 +682,7 @@ function Product3DCircularFlow() {
             {/* Centre 3D — spans the middle row, focal point */}
             <div className="col-start-2 row-start-1 row-span-3 self-center flex flex-col items-center justify-center relative">
               <CentreHalo />
-              <div className="w-full h-[440px] xl:h-[500px]">
+              <div className="w-full h-[320px] xl:h-[380px]">
                 <CentreCartridge scrollProgressRef={cartridgeRef} />
               </div>
               <div className="mt-3">
