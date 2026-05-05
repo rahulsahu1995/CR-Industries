@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState, Component, ErrorInfo, ReactNode } from "react";
+import { useRef, useEffect, useState, Suspense, Component, ErrorInfo, ReactNode } from "react";
 import { motion, useInView } from "framer-motion";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Environment, Text } from "@react-three/drei";
@@ -28,15 +28,13 @@ class WebGLErrorBoundary extends Component<
     this.state = { hasError: false };
   }
   static getDerivedStateFromError() { return { hasError: true }; }
-  componentDidCatch(e: Error) { console.warn("WebGL fallback:", e.message); }
+  componentDidCatch(e: Error, info: ErrorInfo) { console.warn("WebGL fallback:", e?.message, e?.stack, info?.componentStack); }
   render() {
     return this.state.hasError ? this.props.fallback : this.props.children;
   }
 }
 
 /* ── Polished Caulk Cartridge ─────────────────────────────────────── */
-/* Local-space bounds: bottom ≈ -1.65, nozzle tip ≈ 3.66, center ≈ 1.0
-   scale=0.9, position=[0,-0.9,0] → world top≈2.39, bottom≈-2.39        */
 function CaulkCartridge({ scrollProgressRef }: { scrollProgressRef: { current: number } }) {
   const rootRef  = useRef<THREE.Group>(null);
   const prevRef  = useRef(0);
@@ -46,13 +44,11 @@ function CaulkCartridge({ scrollProgressRef }: { scrollProgressRef: { current: n
     if (!rootRef.current || !scrollProgressRef) return;
     const p = scrollProgressRef.current ?? 0;
 
-    /* scroll velocity → gentle left/right tilt */
     const delta = p - prevRef.current;
     prevRef.current = p;
     tiltRef.current = tiltRef.current * 0.86 + delta * 10;
     tiltRef.current = Math.max(-0.18, Math.min(0.18, tiltRef.current));
 
-    /* smooth x pitch from overall progress; z tilt from scroll velocity */
     const targetX = p * Math.PI * 0.08;
     rootRef.current.rotation.x += (targetX - rootRef.current.rotation.x) * 0.06;
     rootRef.current.rotation.z += (tiltRef.current - rootRef.current.rotation.z) * 0.09;
@@ -61,8 +57,6 @@ function CaulkCartridge({ scrollProgressRef }: { scrollProgressRef: { current: n
   return (
     <group ref={rootRef} scale={0.9} position={[0, -0.9, 0]}>
       <group>
-
-        {/* ── Main body — clearcoat gloss plastic ── */}
         <mesh castShadow receiveShadow>
           <cylinderGeometry args={[0.42, 0.42, 3.2, 64]} />
           <meshPhysicalMaterial
@@ -75,25 +69,21 @@ function CaulkCartridge({ scrollProgressRef }: { scrollProgressRef: { current: n
           />
         </mesh>
 
-        {/* ── Bottom cap — dark metallic ── */}
         <mesh castShadow position={[0, -1.62, 0]}>
           <cylinderGeometry args={[0.42, 0.42, 0.07, 64]} />
           <meshPhysicalMaterial color="#0d0e1a" metalness={0.85} roughness={0.18} clearcoat={0.5} />
         </mesh>
 
-        {/* ── Bottom piston lip ring ── */}
         <mesh position={[0, -1.535, 0]}>
           <torusGeometry args={[0.42, 0.032, 20, 80]} />
           <meshPhysicalMaterial color="#0096C7" metalness={0.85} roughness={0.12} clearcoat={1.0} clearcoatRoughness={0.05} />
         </mesh>
 
-        {/* ── Bottom body accent band ── */}
         <mesh position={[0, -1.28, 0]}>
           <cylinderGeometry args={[0.424, 0.424, 0.08, 64]} />
           <meshStandardMaterial color="#0096C7" metalness={0.8} roughness={0.15} />
         </mesh>
 
-        {/* ── Shoulder reducer ── */}
         <mesh castShadow position={[0, 1.74, 0]}>
           <cylinderGeometry args={[0.18, 0.42, 0.62, 64]} />
           <meshPhysicalMaterial
@@ -105,25 +95,21 @@ function CaulkCartridge({ scrollProgressRef }: { scrollProgressRef: { current: n
           />
         </mesh>
 
-        {/* ── Shoulder-top ring ── */}
         <mesh position={[0, 1.46, 0]}>
           <torusGeometry args={[0.42, 0.018, 16, 80]} />
           <meshPhysicalMaterial color="#0096C7" metalness={0.85} roughness={0.12} clearcoat={1.0} clearcoatRoughness={0.05} />
         </mesh>
 
-        {/* ── Nozzle collar ── */}
         <mesh castShadow position={[0, 2.14, 0]}>
           <cylinderGeometry args={[0.145, 0.185, 0.18, 40]} />
           <meshPhysicalMaterial color="#0096C7" metalness={0.85} roughness={0.12} clearcoat={1.0} clearcoatRoughness={0.05} />
         </mesh>
 
-        {/* ── Nozzle thread ring ── */}
         <mesh position={[0, 2.24, 0]}>
           <torusGeometry args={[0.155, 0.014, 12, 40]} />
           <meshStandardMaterial color="#03045E" metalness={0.7} roughness={0.2} />
         </mesh>
 
-        {/* ── Long tapered nozzle ── */}
         <mesh castShadow position={[0, 2.9, 0]}>
           <cylinderGeometry args={[0.024, 0.122, 1.35, 32]} />
           <meshPhysicalMaterial
@@ -135,37 +121,31 @@ function CaulkCartridge({ scrollProgressRef }: { scrollProgressRef: { current: n
           />
         </mesh>
 
-        {/* ── Nozzle tip cone ── */}
         <mesh castShadow position={[0, 3.61, 0]}>
           <coneGeometry args={[0.024, 0.12, 20]} />
           <meshPhysicalMaterial color="#dcdad6" metalness={0.0} roughness={0.3} clearcoat={0.7} />
         </mesh>
 
-        {/* ── White label background cylinder ── */}
         <mesh position={[0, 0.05, 0]}>
           <cylinderGeometry args={[0.427, 0.427, 1.65, 64]} />
           <meshStandardMaterial color="#ffffff" roughness={0.6} metalness={0.0} transparent opacity={0.97} />
         </mesh>
 
-        {/* ── Top label blue band ── */}
         <mesh position={[0, 0.89, 0]}>
           <cylinderGeometry args={[0.429, 0.429, 0.14, 64]} />
           <meshStandardMaterial color="#0096C7" metalness={0.5} roughness={0.3} />
         </mesh>
 
-        {/* ── Bottom label blue band ── */}
         <mesh position={[0, -0.77, 0]}>
           <cylinderGeometry args={[0.429, 0.429, 0.12, 64]} />
           <meshStandardMaterial color="#0096C7" metalness={0.5} roughness={0.3} />
         </mesh>
 
-        {/* ── Label accent stripe (thin, mid) ── */}
         <mesh position={[0, 0.16, 0]}>
           <torusGeometry args={[0.432, 0.008, 10, 80]} />
           <meshStandardMaterial color="#03045E" metalness={0.4} roughness={0.4} transparent opacity={0.5} />
         </mesh>
 
-        {/* ── "C·R INDUSTRIES" brand line ── */}
         <Text
           position={[0, 0.6, 0.435]}
           fontSize={0.056}
@@ -178,7 +158,6 @@ function CaulkCartridge({ scrollProgressRef }: { scrollProgressRef: { current: n
           C·R INDUSTRIES
         </Text>
 
-        {/* ── "SEALANT" main label ── */}
         {/* @ts-ignore */}
         <Text
           position={[0, 0.25, 0.435]}
@@ -193,7 +172,6 @@ function CaulkCartridge({ scrollProgressRef }: { scrollProgressRef: { current: n
           SEALANT
         </Text>
 
-        {/* ── "INDUSTRIAL GRADE" sub-line ── */}
         <Text
           position={[0, -0.12, 0.435]}
           fontSize={0.044}
@@ -206,7 +184,6 @@ function CaulkCartridge({ scrollProgressRef }: { scrollProgressRef: { current: n
           INDUSTRIAL GRADE
         </Text>
 
-        {/* ── Volume text ── */}
         <Text
           position={[0, -0.34, 0.435]}
           fontSize={0.038}
@@ -219,7 +196,6 @@ function CaulkCartridge({ scrollProgressRef }: { scrollProgressRef: { current: n
           300 ML / 10.1 FL OZ
         </Text>
 
-        {/* ── Top accent stripes ── */}
         {[1.04, 1.1].map((y, i) => (
           <mesh key={`top-${i}`} position={[0, y, 0]}>
             <torusGeometry args={[0.432, 0.007, 10, 80]} />
@@ -227,14 +203,12 @@ function CaulkCartridge({ scrollProgressRef }: { scrollProgressRef: { current: n
           </mesh>
         ))}
 
-        {/* ── Bottom accent stripes ── */}
         {[-0.64, -0.7].map((y, i) => (
           <mesh key={`bot-${i}`} position={[0, y, 0]}>
             <torusGeometry args={[0.432, 0.007, 10, 80]} />
             <meshStandardMaterial color="#0096C7" metalness={0.6} roughness={0.2} />
           </mesh>
         ))}
-
       </group>
     </group>
   );
@@ -243,7 +217,6 @@ function CaulkCartridge({ scrollProgressRef }: { scrollProgressRef: { current: n
 /* ── Step data (4 steps — CR Industries product range) ───────────── */
 const STEPS = [
   {
-    side: "right" as const,
     tag: "01",
     icon: Droplets,
     title: "Gum Hydra Waterproof Compound",
@@ -252,7 +225,6 @@ const STEPS = [
     imgAlt: "Gum Hydra compound applied into concrete expansion joint",
   },
   {
-    side: "left" as const,
     tag: "02",
     icon: ShieldCheck,
     title: "Industrial Sealants",
@@ -261,7 +233,6 @@ const STEPS = [
     imgAlt: "Industrial sealant compound on pipe threads",
   },
   {
-    side: "right" as const,
     tag: "03",
     icon: Wrench,
     title: "Precision Taps & Fittings",
@@ -270,7 +241,6 @@ const STEPS = [
     imgAlt: "Precision chrome industrial tap fitting",
   },
   {
-    side: "left" as const,
     tag: "04",
     icon: Zap,
     title: "Industrial Grinders",
@@ -280,182 +250,131 @@ const STEPS = [
   },
 ];
 
-/* ── Full card (used by fallback section) ─────────────────────────── */
-function StepCard({ step }: { step: typeof STEPS[0] }) {
-  const Icon = step.icon;
-  return (
-    <div className="bg-card/90 backdrop-blur-md border border-border/70 rounded-2xl overflow-hidden shadow-xl w-full">
-      <div className="relative w-full aspect-[4/3] overflow-hidden bg-muted">
-        <img src={step.img} alt={step.imgAlt} className="w-full h-full object-cover" />
-        <div className="absolute inset-0 bg-gradient-to-t from-card/60 to-transparent" />
-      </div>
-      <div className="p-4">
-        <div className="flex items-center gap-2 mb-2">
-          <div className="w-6 h-6 rounded-lg brand-gradient flex items-center justify-center shrink-0">
-            <Icon className="w-3 h-3 text-white" />
-          </div>
-          <h3 className="text-sm font-bold text-foreground leading-snug">{step.title}</h3>
-        </div>
-        <p className="text-muted-foreground text-[11px] leading-relaxed">{step.desc}</p>
-      </div>
-    </div>
-  );
-}
+/* Position mapping — STEPS order [TL, TR, BR, BL] follows the
+   clockwise arrow flow: Top-Left → Top-Right → Bottom-Right → Bottom-Left. */
+type Corner = "TL" | "TR" | "BL" | "BR";
+const CORNERS: Corner[] = ["TL", "TR", "BR", "BL"];
 
-/* ── Stacking card — "dimensional emergence" reveal ──────────────── */
-/* Sophisticated entrance: horizontal slit opens from centre while card
-   pushes forward on the Z axis, cyan border-light pulses around the
-   perimeter, image emerges from a soft-focus desaturated state, content
-   rises with a subtle letter-spacing settle. */
-
-const cardVariants = {
-  hidden: {
-    opacity: 0,
-    z: -120,
-    scale: 0.92,
-    clipPath: "inset(48% 0% 48% 0% round 16px)",
-    filter: "brightness(1.35) blur(2px)",
-  },
-  show: {
-    opacity: 1,
-    z: 0,
-    scale: 1,
-    clipPath: "inset(0% 0% 0% 0% round 16px)",
-    filter: "brightness(1) blur(0px)",
-    transition: {
-      duration: 0.78,
-      ease: [0.22, 1, 0.36, 1],
-      when: "beforeChildren",
-      staggerChildren: 0.06,
-      delayChildren: 0.18,
-      clipPath: { duration: 0.78, ease: [0.65, 0, 0.25, 1] },
-    },
-  },
+const cornerEnterOffset: Record<Corner, { x: number; y: number }> = {
+  TL: { x: -28, y: -22 },
+  TR: { x:  28, y: -22 },
+  BL: { x: -28, y:  22 },
+  BR: { x:  28, y:  22 },
 };
 
-const imageVariants = {
-  hidden: { opacity: 0, scale: 1.10, filter: "blur(10px) saturate(0.45) brightness(0.85)" },
-  show: {
-    opacity: 1,
-    scale: 1.04,
-    filter: "blur(0px) saturate(1) brightness(1)",
-    transition: { duration: 0.85, ease: [0.22, 1, 0.36, 1] },
-  },
-};
-
-const titleVariants = {
-  hidden: { opacity: 0, y: 10, letterSpacing: "0.06em" },
-  show: {
-    opacity: 1,
-    y: 0,
-    letterSpacing: "0em",
-    transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1] },
-  },
-};
-
-const descVariants = {
-  hidden: { opacity: 0, y: 14 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1] } },
-};
-
-const iconVariants = {
-  hidden: { opacity: 0, scale: 0.5, rotate: -20 },
-  show: {
-    opacity: 1, scale: 1, rotate: 0,
-    transition: { type: "spring" as const, stiffness: 380, damping: 20, mass: 0.6 },
-  },
-};
-
-/* Border light — a horizontal beam that flashes across the centre,
-   then fades — represents the slit "closing" into a fully formed card. */
-const beamVariants = {
-  hidden: { opacity: 0, scaleX: 0.2 },
-  show: {
-    opacity: [0, 0.9, 0.9, 0],
-    scaleX: [0.2, 1.05, 1.05, 1.05],
-    transition: {
-      duration: 0.78,
-      ease: [0.22, 1, 0.36, 1],
-      times: [0, 0.4, 0.7, 1],
-    },
-  },
-};
-
-/* Cyan corner-light flash — pulses from top-left corner once after card lands. */
-const cornerVariants = {
-  hidden: { opacity: 0, scale: 0.6 },
-  show: {
-    opacity: [0, 0.55, 0],
-    scale: [0.6, 1.4, 1.6],
-    transition: { duration: 0.95, delay: 0.45, ease: "easeOut", times: [0, 0.35, 1] },
-  },
-};
-
-function StackCard({ step, isNewest, fromSide: _fromSide }: {
+/* ── Product Card — image on top, title + description outside the image ── */
+function ProductCard({
+  step,
+  index,
+  position,
+}: {
   step: typeof STEPS[0];
-  isNewest: boolean;
-  fromSide: "left" | "right";
+  index: number;
+  position: Corner;
 }) {
   const Icon = step.icon;
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, margin: "-80px" });
+  const off = cornerEnterOffset[position];
+
   return (
     <motion.div
-      variants={cardVariants}
-      initial="hidden"
-      animate="show"
-      style={{
-        transformPerspective: 1400,
-        transformStyle: "preserve-3d",
-        willChange: "transform, opacity, filter, clip-path",
+      ref={ref}
+      initial={{ opacity: 0, x: off.x, y: off.y }}
+      animate={inView ? { opacity: 1, x: 0, y: 0 } : {}}
+      transition={{
+        duration: 0.7,
+        delay: 0.1 + index * 0.08,
+        ease: [0.22, 1, 0.36, 1],
       }}
-      className={`relative transition-[opacity,transform] duration-500 ${
-        isNewest ? "" : "opacity-55 scale-[0.97]"
-      }`}
+      className="group relative w-full"
     >
-      {/* Image */}
-      <div className="relative w-full aspect-[10/7] overflow-hidden rounded-xl">
-        <motion.img
+      {/* Image (on top, separate container) */}
+      <div className="relative w-full aspect-[10/7] overflow-hidden rounded-2xl shadow-md ring-1 ring-border/50 bg-muted">
+        <img
           src={step.img}
           alt={step.imgAlt}
-          variants={imageVariants}
-          className="absolute inset-0 w-full h-full object-cover object-center"
-          style={{ transformOrigin: "center", willChange: "transform, filter, opacity" }}
+          className="w-full h-full object-cover object-center transition-transform duration-700 ease-out group-hover:scale-[1.06]"
+          loading="lazy"
         />
-        {!isNewest && <div className="absolute inset-0 bg-background/30" />}
       </div>
 
-      {/* Content */}
-      <div className="pt-2.5 md:pt-3">
-        <div className="flex items-center gap-2 md:gap-2.5 mb-1.5 md:mb-2">
-          <motion.div
-            variants={iconVariants}
-            className={`w-7 h-7 md:w-8 md:h-8 rounded-lg flex items-center justify-center shrink-0 ${
-              isNewest ? "brand-gradient shadow-md shadow-primary/30" : "bg-muted"
-            }`}
-          >
-            <Icon className={`w-3.5 h-3.5 md:w-4 md:h-4 ${isNewest ? "text-white" : "text-muted-foreground"}`} />
-          </motion.div>
-          <motion.p
-            variants={titleVariants}
-            className="text-[12.5px] md:text-sm lg:text-[15px] font-bold text-foreground leading-snug line-clamp-2 min-w-0"
-          >
+      {/* Title + description (outside the image container) */}
+      <div className="pt-3.5">
+        <div className="flex items-center gap-2.5 mb-1.5">
+          <div className="w-9 h-9 rounded-lg brand-gradient shadow-md shadow-primary/30 flex items-center justify-center shrink-0">
+            <Icon className="w-4 h-4 text-white" />
+          </div>
+          <h3 className="text-[15px] sm:text-base lg:text-[15.5px] xl:text-base font-bold text-foreground leading-snug">
             {step.title}
-          </motion.p>
+          </h3>
         </div>
-
-        <motion.p
-          variants={descVariants}
-          className={`text-[11px] md:text-[12px] lg:text-[13px] leading-relaxed line-clamp-3 ${
-            isNewest ? "text-muted-foreground" : "text-muted-foreground/45"
-          }`}
-        >
+        <p className="text-[13px] text-muted-foreground leading-relaxed">
           {step.desc}
-        </motion.p>
+        </p>
       </div>
     </motion.div>
   );
 }
 
-/* ── Fallback card (hooks at component level) ────────────────────── */
+/* ── Animated red flow arrows — Top-Left → Top-Right → Bottom-Right → Bottom-Left ── */
+function FlowArrows() {
+  /* viewBox 0..100 in both axes; preserveAspectRatio="none" lets the arc
+     stretch to the desktop grid box, while vector-effect keeps stroke
+     width visually consistent. */
+  const arrows = [
+    { d: "M 26 12 Q 50 -2 74 12",   delay: 0.15 }, // TL → TR
+    { d: "M 88 26 Q 102 50 88 74",  delay: 0.45 }, // TR → BR
+    { d: "M 74 88 Q 50 102 26 88",  delay: 0.75 }, // BR → BL
+  ];
+
+  return (
+    <svg
+      className="pointer-events-none absolute inset-0 w-full h-full"
+      viewBox="0 0 100 100"
+      preserveAspectRatio="none"
+      aria-hidden="true"
+    >
+      <defs>
+        <marker
+          id="cr-arrowhead-red"
+          markerWidth="6"
+          markerHeight="6"
+          refX="4.5"
+          refY="3"
+          orient="auto"
+          markerUnits="strokeWidth"
+        >
+          <path d="M0,0 L6,3 L0,6 z" fill="#ef4444" />
+        </marker>
+      </defs>
+
+      {arrows.map((a, i) => (
+        <motion.path
+          key={i}
+          d={a.d}
+          stroke="#ef4444"
+          strokeWidth={1.6}
+          fill="none"
+          strokeLinecap="round"
+          strokeDasharray="3 2.2"
+          markerEnd="url(#cr-arrowhead-red)"
+          /* keep stroke + dash visually unscaled despite preserveAspectRatio="none" */
+          style={{ vectorEffect: "non-scaling-stroke" } as React.CSSProperties}
+          initial={{ opacity: 0, strokeDashoffset: 0 }}
+          whileInView={{ opacity: 0.9, strokeDashoffset: -40 }}
+          viewport={{ once: false, margin: "-100px" }}
+          transition={{
+            opacity:          { duration: 0.6,  delay: a.delay },
+            strokeDashoffset: { duration: 1.6,  ease: "linear", repeat: Infinity },
+          }}
+        />
+      ))}
+    </svg>
+  );
+}
+
+/* ── Fallback card (used by the no-WebGL section) ────────────────── */
 function FallbackCard({ step, index }: { step: typeof STEPS[0]; index: number }) {
   const Icon = step.icon;
   const cardRef = useRef(null);
@@ -466,7 +385,7 @@ function FallbackCard({ step, index }: { step: typeof STEPS[0]; index: number })
       animate={cardInView ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.5, delay: index * 0.1 }}
       className="bg-card border border-border rounded-2xl overflow-hidden hover:shadow-lg transition-all duration-300">
-      <div className="aspect-[16/7] overflow-hidden">
+      <div className="aspect-[10/7] overflow-hidden">
         <img src={step.img} alt={step.imgAlt} className="w-full h-full object-cover" />
       </div>
       <div className="p-5 flex items-start gap-4">
@@ -487,7 +406,7 @@ function FallbackSection() {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true });
   return (
-    <section id="product" className="py-4 sm:py-6 bg-gradient-to-b from-background to-muted">
+    <section id="product" className="py-10 sm:py-14 bg-gradient-to-b from-background to-muted">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div ref={ref} initial={{ opacity: 0, y: 30 }}
           animate={inView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.6 }}
@@ -516,12 +435,10 @@ function ProductPlaque() {
           "0 -3px 10px rgba(0,0,0,0.12), 0 4px 14px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.06)",
       }}
     >
-      {/* Horizontal rule paper texture */}
       <div
         className="absolute inset-0 opacity-[0.022]"
         style={{ backgroundImage: "repeating-linear-gradient(0deg,#000 0,transparent 1px,transparent 4px)" }}
       />
-      {/* Left barcode */}
       <div className="relative flex items-end gap-px shrink-0">
         {[2, 1, 3, 1, 2, 1, 1, 3, 2, 1].map((w, i) => (
           <div
@@ -531,7 +448,6 @@ function ProductPlaque() {
           />
         ))}
       </div>
-      {/* Centre text */}
       <div className="relative text-center flex-1">
         <p className="text-[8px] font-black tracking-[0.32em] uppercase text-primary leading-none">
           C · R  Industries
@@ -543,7 +459,6 @@ function ProductPlaque() {
           CR-PROD · 2026
         </p>
       </div>
-      {/* Right barcode */}
       <div className="relative flex items-end gap-px shrink-0">
         {[1, 3, 1, 2, 1, 3, 1, 2, 1, 3].map((w, i) => (
           <div
@@ -557,74 +472,95 @@ function ProductPlaque() {
   );
 }
 
-/* ─────────────────────────────────────────────────────────────────────
-   MOBILE & TABLET LAYOUT
-   Below the `lg` breakpoint the sticky scroll-stack collapses into a
-   natural-flow section: header → canvas → plaque → all 4 cards in a
-   1-col (mobile) / 2-col (tablet) grid, every card always visible and
-   scroll-revealed. Section height is intrinsic, so cards can never be
-   clipped no matter how tall their content grows.
-   ───────────────────────────────────────────────────────────────────── */
-
-function MobileProductCard({ step, index }: { step: typeof STEPS[0]; index: number }) {
-  const Icon = step.icon;
-  const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-80px" });
+/* ── Static fallback for the centre cartridge (no WebGL) ─────────── */
+function CentreCartridgeFallback() {
   return (
-    <motion.div
-      ref={ref}
-      variants={cardVariants}
-      initial="hidden"
-      animate={inView ? "show" : "hidden"}
-      transition={{ delay: index * 0.05 }}
-      style={{
-        transformPerspective: 1400,
-        transformStyle: "preserve-3d",
-        willChange: "transform, opacity, filter, clip-path",
-      }}
-      className="relative"
-    >
-      {/* Image */}
-      <div className="relative w-full aspect-[10/7] overflow-hidden rounded-xl">
-        <motion.img
-          src={step.img}
-          alt={step.imgAlt}
-          variants={imageVariants}
-          className="absolute inset-0 w-full h-full object-cover object-center"
-          style={{ transformOrigin: "center", willChange: "transform, filter, opacity" }}
-        />
+    <div className="relative w-full h-full flex items-center justify-center">
+      <div
+        className="absolute inset-0 -z-[1]"
+        style={{
+          background:
+            "radial-gradient(60% 60% at 50% 50%, rgba(0,150,199,0.20) 0%, rgba(0,150,199,0.07) 45%, transparent 75%)",
+        }}
+      />
+      <div
+        className="relative flex items-center justify-center w-[55%] aspect-[3/5] rounded-[18px] overflow-hidden"
+        style={{
+          background:
+            "linear-gradient(180deg,#03045E 0%,#0077B6 45%,#0096C7 100%)",
+          boxShadow:
+            "0 30px 60px -20px rgba(3,4,94,0.55), inset 0 1px 0 rgba(255,255,255,0.15)",
+        }}
+      >
+        <span className="text-white font-black tracking-[0.28em] text-sm sm:text-base lg:text-lg [writing-mode:vertical-rl] rotate-180 select-none">
+          SEALANT
+        </span>
       </div>
-
-      {/* Content */}
-      <div className="pt-4">
-        <div className="flex items-center gap-3 mb-2">
-          <motion.div
-            variants={iconVariants}
-            className="w-10 h-10 rounded-lg brand-gradient shadow-md shadow-primary/30 flex items-center justify-center shrink-0"
-          >
-            <Icon className="w-5 h-5 text-white" />
-          </motion.div>
-          <motion.h3
-            variants={titleVariants}
-            className="text-base sm:text-lg font-bold text-foreground leading-snug min-w-0"
-          >
-            {step.title}
-          </motion.h3>
-        </div>
-        <motion.p
-          variants={descVariants}
-          className="text-sm text-muted-foreground leading-relaxed"
-        >
-          {step.desc}
-        </motion.p>
-      </div>
-    </motion.div>
+    </div>
   );
 }
 
-function Product3DMobileTablet() {
-  /* Mobile cartridge gets a slow auto-tick so it has a gentle idle
-     motion — no sticky scroll progress to drive it on this layout. */
+/* ── Reusable centre-stage 3D canvas (wrapped in its own boundary) ─ */
+function CentreCartridge3D({ scrollProgressRef }: { scrollProgressRef: { current: number } }) {
+  return (
+    <Canvas
+      camera={{ position: [0, 0, 7], fov: 42 }}
+      shadows={{ type: THREE.PCFShadowMap }}
+      gl={{ antialias: true, powerPreference: "high-performance" }}
+      style={{ width: "100%", height: "100%", display: "block" }}
+    >
+      <ambientLight intensity={0.5} />
+      <directionalLight position={[4, 6, 5]} intensity={2.2} castShadow shadow-mapSize={[2048, 2048]} />
+      <directionalLight position={[-4, 2, -3]} intensity={0.55} color="#48CAE4" />
+      <directionalLight position={[0, -4, 2]} intensity={0.25} color="#ffffff" />
+      <pointLight position={[2, 3, 2]} intensity={0.6} color="#ffffff" />
+      <pointLight position={[-2, -1, 3]} intensity={0.35} color="#0096C7" />
+      <CaulkCartridge scrollProgressRef={scrollProgressRef} />
+      <Suspense fallback={null}>
+        <Environment preset="studio" />
+      </Suspense>
+    </Canvas>
+  );
+}
+
+/* Smart wrapper: tries the WebGL cartridge, falls back to a static
+   centrepiece if WebGL is unavailable or the renderer crashes. The
+   boundary is scoped to JUST the 3D so the surrounding circular-flow
+   layout (cards + arrows) is never replaced. */
+function CentreCartridge({ scrollProgressRef }: { scrollProgressRef: { current: number } }) {
+  const [webgl] = useState(isWebGLAvailable);
+  if (!webgl) return <CentreCartridgeFallback />;
+  return (
+    <WebGLErrorBoundary fallback={<CentreCartridgeFallback />}>
+      <CentreCartridge3D scrollProgressRef={scrollProgressRef} />
+    </WebGLErrorBoundary>
+  );
+}
+
+/* ── Halo / glow behind the 3D centre piece ──────────────────────── */
+function CentreHalo() {
+  return (
+    <div
+      aria-hidden
+      className="pointer-events-none absolute inset-0 -z-[1]"
+      style={{
+        background:
+          "radial-gradient(60% 60% at 50% 50%, rgba(0,150,199,0.18) 0%, rgba(0,150,199,0.06) 45%, transparent 75%)",
+        filter: "blur(2px)",
+      }}
+    />
+  );
+}
+
+/* ─────────────────────────────────────────────────────────────────────
+   Circular Flow Layout — desktop & mobile
+   - Desktop (lg+): 3-col CSS grid with cards in TL / TR / BL / BR and
+     the 3D cartridge centred. SVG overlay draws animated red arrows
+     showing the clockwise flow TL → TR → BR → BL.
+   - Mobile: 3D cartridge stacks above a 1-col / 2-col grid of cards.
+   ───────────────────────────────────────────────────────────────────── */
+function Product3DCircularFlow() {
+  /* gentle idle motion for the cartridge so it never feels static */
   const cartridgeRef = useRef(0.25);
   useEffect(() => {
     let rafId = 0;
@@ -641,12 +577,28 @@ function Product3DMobileTablet() {
     return () => cancelAnimationFrame(rafId);
   }, []);
 
+  /* JS-driven breakpoint: ensures only ONE <Canvas> (= one WebGL
+     context) is ever mounted at a time. Hiding the other branch
+     purely via CSS would mount two Canvas instances and crash the
+     second WebGL context. */
+  const [isDesktop, setIsDesktop] = useState(() =>
+    typeof window !== "undefined"
+      ? window.matchMedia("(min-width: 1024px)").matches
+      : true,
+  );
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 1024px)");
+    const onChange = (e: MediaQueryListEvent) => setIsDesktop(e.matches);
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
+  }, []);
+
   return (
     <section
       id="product"
-      className="relative overflow-hidden py-4 sm:py-6 px-4 sm:px-6"
+      className="relative overflow-hidden py-10 sm:py-14 lg:py-20 px-4 sm:px-6"
     >
-      {/* Background — matches desktop ambience */}
+      {/* Background ambience */}
       <div className="absolute inset-0 bg-gradient-to-b from-background via-muted/40 to-muted -z-10" />
       <div
         className="absolute inset-0 opacity-[0.03] -z-10"
@@ -656,227 +608,95 @@ function Product3DMobileTablet() {
         }}
       />
 
-      {/* Header */}
-      <div className="text-center mb-5 sm:mb-6 max-w-3xl mx-auto">
+      {/* Section header */}
+      <div className="text-center mb-8 sm:mb-10 lg:mb-12 max-w-3xl mx-auto">
         <span className="inline-block px-4 py-1.5 bg-primary/10 text-primary text-xs sm:text-sm font-bold tracking-widest uppercase rounded-full mb-4">
           Product Range
         </span>
-        <h2 className="text-3xl sm:text-4xl font-black text-foreground mb-3 leading-tight">
+        <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-foreground mb-3 leading-tight">
           Industrial Sealant Solutions
         </h2>
         <div className="w-16 h-1 bg-primary mx-auto rounded-full" />
       </div>
 
-      {/* Canvas + plaque */}
-      <div className="max-w-md sm:max-w-lg mx-auto mb-6 sm:mb-8">
-        <div className="h-[40vh] sm:h-[46vh] min-h-[260px] max-h-[420px] mb-3">
-          <Canvas
-            camera={{ position: [0, 0, 7], fov: 42 }}
-            shadows={{ type: THREE.PCFShadowMap }}
-            gl={{ antialias: true, powerPreference: "high-performance" }}
-            style={{ width: "100%", height: "100%", display: "block" }}
-          >
-            <ambientLight intensity={0.5} />
-            <directionalLight position={[4, 6, 5]} intensity={2.2} castShadow shadow-mapSize={[2048, 2048]} />
-            <directionalLight position={[-4, 2, -3]} intensity={0.55} color="#48CAE4" />
-            <directionalLight position={[0, -4, 2]} intensity={0.25} color="#ffffff" />
-            <pointLight position={[2, 3, 2]} intensity={0.6} color="#ffffff" />
-            <pointLight position={[-2, -1, 3]} intensity={0.35} color="#0096C7" />
-            <CaulkCartridge scrollProgressRef={cartridgeRef} />
-            <Environment preset="studio" />
-          </Canvas>
+      <div className="max-w-6xl mx-auto">
+
+        {/* ─────────────── Mobile / tablet (< lg) — vertical stack ─────────────── */}
+        {!isDesktop && (
+        <div className="flex flex-col gap-10">
+          <div className="mx-auto w-full max-w-md">
+            <div className="h-[44vh] min-h-[280px] max-h-[420px]">
+              <CentreCartridge scrollProgressRef={cartridgeRef} />
+            </div>
+            <div className="mt-3 flex justify-center">
+              <ProductPlaque />
+            </div>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-7">
+            {STEPS.map((s, i) => (
+              <ProductCard key={s.tag} step={s} index={i} position={CORNERS[i]} />
+            ))}
+          </div>
         </div>
-        <div className="flex justify-center">
-          <ProductPlaque />
-        </div>
-      </div>
+        )}
 
-      {/* All 4 cards — always visible, scroll-revealed individually */}
-      <div
-        className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5 max-w-2xl mx-auto"
-        style={{ perspective: "1400px" }}
-      >
-        {STEPS.map((step, i) => (
-          <MobileProductCard key={step.tag} step={step} index={i} />
-        ))}
-      </div>
-    </section>
-  );
-}
+        {/* ─────────────── Desktop (lg+) — circular flow grid ─────────────── */}
+        {isDesktop && (
+        <div className="relative">
+          {/* Animated red flow arrows — overlaid across the whole grid */}
+          <FlowArrows />
 
-/* ── 3D inner section (DESKTOP ONLY — lg and up) ──────────────────── */
-function Product3DInner() {
-  const wrapRef       = useRef<HTMLDivElement>(null);
-  const progressRef   = useRef(0);              // always-fresh ref for useFrame
-  const [step, setStep] = useState(-1);
-
-  useEffect(() => {
-    const onScroll = () => {
-      if (!wrapRef.current) return;
-      const rect  = wrapRef.current.getBoundingClientRect();
-      const total = wrapRef.current.offsetHeight - window.innerHeight;
-      const p     = Math.min(1, Math.max(0, -rect.top) / total);
-      progressRef.current = p;
-      setStep(
-        p < 0.02 ? -1 : p < 0.26 ? 0 : p < 0.50 ? 1 :
-        p < 0.74 ? 2  : 3
-      );
-    };
-    window.addEventListener("scroll", onScroll, { passive: true });
-    onScroll();
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
-  /* All revealed cards per side — accumulate, never discard */
-  const revealedLeft  = STEPS.filter((s, i) => s.side === "left"  && step >= i);
-  const revealedRight = STEPS.filter((s, i) => s.side === "right" && step >= i);
-
-  /* Mobile: all revealed steps in order */
-  const revealedAll = STEPS.filter((_, i) => step >= i);
-
-  return (
-    <section id="product" ref={wrapRef} className="relative h-[200vh]">
-      {/* sticky panel — strictly h-screen, nothing escapes */}
-      <div className="sticky top-0 h-screen overflow-hidden">
-
-        {/* Background */}
-        <div className="absolute inset-0 bg-gradient-to-b from-background via-muted/40 to-muted" />
-        <div className="absolute inset-0 opacity-[0.03]"
-          style={{ backgroundImage: "repeating-linear-gradient(0deg,#0096C7 0,transparent 1px,transparent 56px),repeating-linear-gradient(90deg,#0096C7 0,transparent 1px,transparent 56px)" }} />
-
-        {/*
-          Content wrapper:
-          - pt-16  = clears the sticky 64px navbar
-          - pb-3   = small bottom breathing room
-          - overflow-hidden = hard clip — nothing leaks out
-        */}
-        <div className="relative h-full overflow-hidden flex flex-col pt-16 pb-3 px-3 md:px-5 lg:px-8">
-
-          {/* Scroll hint ── tiny, never grows */}
-          <motion.p
-            animate={{ opacity: [0.3, 0.85, 0.3] }}
-            transition={{ duration: 2.6, repeat: Infinity }}
-            className="flex-none text-center text-[9px] text-muted-foreground tracking-widest mb-1"
+          <div
+            className="
+              relative
+              grid
+              grid-cols-[minmax(0,1fr)_320px_minmax(0,1fr)]
+              xl:grid-cols-[minmax(0,1fr)_360px_minmax(0,1fr)]
+              grid-rows-[auto_auto_auto]
+              gap-x-12 xl:gap-x-16
+              gap-y-12 xl:gap-y-14
+              items-start
+            "
           >
-            ↓ scroll to explore
-          </motion.p>
-
-          {/*
-            Unified column container:
-            - mobile  → flex-col (canvas stacks above cards)
-            - desktop → flex-row (side columns flank the canvas)
-            Narrower columns (160–190px) pull panels visually closer to center.
-          */}
-          <div className="flex-1 min-h-0 flex flex-col md:flex-row gap-2 md:gap-3 lg:gap-4 overflow-hidden md:max-w-7xl md:mx-auto md:w-full">
-
-            {/* ── Left column — desktop only ── */}
-            <div className="hidden md:flex w-[230px] lg:w-[270px] xl:w-[300px] shrink-0
-                            flex-col gap-3 lg:gap-4 overflow-hidden pt-2"
-                 style={{ perspective: "1400px" }}>
-              {revealedLeft.map((s, i) => (
-                <StackCard
-                  key={s.tag}
-                  step={s}
-                  isNewest={i === revealedLeft.length - 1}
-                  fromSide="left"
-                />
-              ))}
+            {/* TL */}
+            <div className="col-start-1 row-start-1">
+              <ProductCard step={STEPS[0]} index={0} position="TL" />
             </div>
 
-            {/* ── Centre: canvas + plaque + mobile cards ── */}
-            <div className="flex-1 min-w-0 min-h-0 flex flex-col overflow-hidden">
+            {/* TR */}
+            <div className="col-start-3 row-start-1">
+              <ProductCard step={STEPS[1]} index={1} position="TR" />
+            </div>
 
-              {/*
-                Canvas height:
-                  mobile  → h-[44vh]  (explicit, leaves room for cards below)
-                  desktop → flex-1 min-h-0  (fills remaining column height)
-              */}
-              <div className="shrink-0 h-[44vh] md:h-auto md:flex-1 md:min-h-0 overflow-hidden">
-                <Canvas
-                  camera={{ position: [0, 0, 7], fov: 42 }}
-                  shadows={{ type: THREE.PCFShadowMap }}
-                  gl={{ antialias: true, powerPreference: "high-performance" }}
-                  style={{ width: "100%", height: "100%", display: "block" }}
-                >
-                  <ambientLight intensity={0.5} />
-                  <directionalLight position={[4, 6, 5]} intensity={2.2} castShadow shadow-mapSize={[2048, 2048]} />
-                  <directionalLight position={[-4, 2, -3]} intensity={0.55} color="#48CAE4" />
-                  <directionalLight position={[0, -4, 2]} intensity={0.25} color="#ffffff" />
-                  <pointLight position={[2, 3, 2]} intensity={0.6} color="#ffffff" />
-                  <pointLight position={[-2, -1, 3]} intensity={0.35} color="#0096C7" />
-                  <CaulkCartridge scrollProgressRef={progressRef} />
-                  <Environment preset="studio" />
-                </Canvas>
+            {/* Centre 3D — spans the middle row, focal point */}
+            <div className="col-start-2 row-start-1 row-span-3 self-center flex flex-col items-center justify-center relative">
+              <CentreHalo />
+              <div className="w-full h-[440px] xl:h-[500px]">
+                <CentreCartridge scrollProgressRef={cartridgeRef} />
               </div>
-
-              {/* Plaque — always below the canvas */}
-              <div className="shrink-0 py-1.5 md:py-2 flex justify-center">
+              <div className="mt-3">
                 <ProductPlaque />
               </div>
-
-              {/* Mobile card grid — 2 columns, scrollable, only visible < md */}
-              <div className="md:hidden flex-1 min-h-0 overflow-y-auto
-                              grid grid-cols-2 gap-3 pb-2 content-start"
-                   style={{ perspective: "1400px" }}>
-                {revealedAll.map((s, i) => (
-                  <StackCard
-                    key={s.tag}
-                    step={s}
-                    isNewest={i === revealedAll.length - 1}
-                    fromSide={s.side}
-                  />
-                ))}
-              </div>
-
             </div>
 
-            {/* ── Right column — desktop only ── */}
-            <div className="hidden md:flex w-[230px] lg:w-[270px] xl:w-[300px] shrink-0
-                            flex-col gap-3 lg:gap-4 overflow-hidden pt-2"
-                 style={{ perspective: "1400px" }}>
-              {revealedRight.map((s, i) => (
-                <StackCard
-                  key={s.tag}
-                  step={s}
-                  isNewest={i === revealedRight.length - 1}
-                  fromSide="right"
-                />
-              ))}
+            {/* BL */}
+            <div className="col-start-1 row-start-3">
+              <ProductCard step={STEPS[3]} index={3} position="BL" />
             </div>
 
+            {/* BR */}
+            <div className="col-start-3 row-start-3">
+              <ProductCard step={STEPS[2]} index={2} position="BR" />
+            </div>
           </div>
-
         </div>
+        )}
       </div>
     </section>
   );
 }
 
 /* ── Export ───────────────────────────────────────────────────────── */
-/* Switches between the desktop sticky-scroll layout (lg+) and the
-   natural-flow mobile/tablet layout via matchMedia. Only one tree is
-   ever mounted, so a single WebGL context is created. Desktop logic
-   above is unchanged. */
 export default function Product3D() {
-  const [webgl] = useState(isWebGLAvailable);
-  const [isDesktop, setIsDesktop] = useState(() =>
-    typeof window !== "undefined"
-      ? window.matchMedia("(min-width: 1024px)").matches
-      : true,
-  );
-
-  useEffect(() => {
-    const mq = window.matchMedia("(min-width: 1024px)");
-    const onChange = (e: MediaQueryListEvent) => setIsDesktop(e.matches);
-    mq.addEventListener("change", onChange);
-    return () => mq.removeEventListener("change", onChange);
-  }, []);
-
-  if (!webgl) return <FallbackSection />;
-
-  return (
-    <WebGLErrorBoundary fallback={<FallbackSection />}>
-      {isDesktop ? <Product3DInner /> : <Product3DMobileTablet />}
-    </WebGLErrorBoundary>
-  );
+  return <Product3DCircularFlow />;
 }
