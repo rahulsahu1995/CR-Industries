@@ -308,8 +308,8 @@ export const PARTNERS: Partner[] = [
       "One of India's leading manufacturers of industrial adhesive tapes, abrasives and surface protection products — ISO 9001:2015 certified with 14+ years of production and export experience, and an authorised distributor for ORAFOL and other renowned global brands.",
     monogram: "K",
     logo: kiplLogo,
-    accent: "#0A66B7",
-    accent2: "#F08C00",
+    accent: "#48CAE4",
+    accent2: "#0B0B0B",
     facts: [
       { icon: Calendar, label: "Founded", value: "2006" },
       { icon: Award, label: "Certified", value: "ISO 9001:2015" },
