@@ -287,7 +287,12 @@ export default function Navbar() {
                     { Icon: FaInstagram, href: "https://instagram.com" },
                     { Icon: FaFacebook, href: "https://facebook.com" },
                     { Icon: FaLinkedin, href: "https://linkedin.com" },
-                    { Icon: FaWhatsapp, href: "https://wa.me/919522222196" },
+                    {
+                      Icon: FaWhatsapp,
+                      href: `https://wa.me/919522222196?text=${encodeURIComponent(
+                        "Hello C R Industries, I'd like to chat about your products.",
+                      )}`,
+                    },
                   ].map(({ Icon, href }) => (
                     <a
                       key={href}

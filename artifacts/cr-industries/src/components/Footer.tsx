@@ -32,7 +32,13 @@ const SOCIAL_LINKS = [
   { Icon: FaInstagram, href: "https://instagram.com", label: "Instagram" },
   { Icon: FaFacebook, href: "https://facebook.com", label: "Facebook" },
   { Icon: FaLinkedin, href: "https://linkedin.com", label: "LinkedIn" },
-  { Icon: FaWhatsapp, href: "https://wa.me/919522222196", label: "WhatsApp" },
+  {
+    Icon: FaWhatsapp,
+    href: `https://wa.me/919522222196?text=${encodeURIComponent(
+      "Hello C R Industries, I'd like to chat about your products.",
+    )}`,
+    label: "WhatsApp",
+  },
 ];
 
 function smoothScrollTo(hash: string) {
