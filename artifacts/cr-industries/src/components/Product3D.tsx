@@ -1,5 +1,5 @@
 import { useRef, useEffect, useState, Suspense, Component, ErrorInfo, ReactNode } from "react";
-import { motion, useInView, useScroll, useTransform, MotionValue } from "framer-motion";
+import { motion, useInView, useScroll, useTransform, useMotionValue, MotionValue } from "framer-motion";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Environment, Text } from "@react-three/drei";
 import * as THREE from "three";
@@ -268,27 +268,48 @@ function ProductCard({
   index,
   position,
   compact = false,
+  scrollProgress,
+  revealRange,
 }: {
   step: typeof STEPS[0];
   index: number;
   position: Corner;
   compact?: boolean;
+  scrollProgress?: MotionValue<number>;
+  revealRange?: [number, number];
 }) {
   const Icon = step.icon;
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
   const off = cornerEnterOffset[position];
 
+  /* Scroll-driven reveal (used on desktop sticky flow). When scrollProgress
+     + revealRange are provided, the card's opacity/translate are bound to
+     scroll position instead of useInView. */
+  const driven = !!scrollProgress && !!revealRange;
+  const fallbackMV = useMotionValue(0);
+  const baseProgress = scrollProgress ?? fallbackMV;
+  const r0 = revealRange?.[0] ?? 0;
+  const r1 = revealRange?.[1] ?? 1;
+  const opacityMV = useTransform(baseProgress, [r0, r0 + (r1 - r0) * 0.6, r1], [0, 1, 1], { clamp: true });
+  const xMV = useTransform(baseProgress, [r0, r1], [off.x, 0], { clamp: true });
+  const yMV = useTransform(baseProgress, [r0, r1], [off.y, 0], { clamp: true });
+
+  const drivenStyle = driven
+    ? ({ opacity: opacityMV, x: xMV, y: yMV } as unknown as React.CSSProperties)
+    : undefined;
+
   return (
     <motion.div
       ref={ref}
-      initial={{ opacity: 0, x: off.x, y: off.y }}
-      animate={inView ? { opacity: 1, x: 0, y: 0 } : {}}
-      transition={{
-        duration: 0.7,
-        delay: 0.1 + index * 0.08,
-        ease: [0.22, 1, 0.36, 1],
-      }}
+      initial={driven ? false : { opacity: 0, x: off.x, y: off.y }}
+      animate={!driven && inView ? { opacity: 1, x: 0, y: 0 } : undefined}
+      transition={
+        driven
+          ? undefined
+          : { duration: 0.7, delay: 0.1 + index * 0.08, ease: [0.22, 1, 0.36, 1] }
+      }
+      style={drivenStyle}
       className="group relative w-full"
     >
       {/* Image (on top, separate container) */}
@@ -343,9 +364,9 @@ function ProductCard({
    as the user scrolls through the (sticky) section. */
 function FlowArrows({ scrollProgress }: { scrollProgress: MotionValue<number> }) {
   const arrows = [
-    { d: "M 26 12 Q 50 -2 74 12",  range: [0.05, 0.35] as [number, number] }, // TL → TR
-    { d: "M 88 26 Q 102 50 88 74", range: [0.30, 0.65] as [number, number] }, // TR → BR
-    { d: "M 74 88 Q 50 102 26 88", range: [0.60, 0.92] as [number, number] }, // BR → BL
+    { d: "M 26 12 Q 50 -2 74 12",  range: [0.12, 0.24] as [number, number] }, // TL → TR
+    { d: "M 88 26 Q 102 50 88 74", range: [0.36, 0.48] as [number, number] }, // TR → BR
+    { d: "M 74 88 Q 50 102 26 88", range: [0.60, 0.72] as [number, number] }, // BR → BL
   ];
 
   const len0 = useTransform(scrollProgress, arrows[0].range, [0, 1], { clamp: true });
@@ -710,14 +731,37 @@ function Product3DCircularFlow() {
                   items-start
                 "
               >
+                {/* Sequential reveal ranges (matched to the FlowArrows ranges):
+                     TL  reveal 0.00–0.12
+                     →   arrow 0.12–0.24
+                     TR  reveal 0.24–0.36
+                     →   arrow 0.36–0.48
+                     BR  reveal 0.48–0.60
+                     →   arrow 0.60–0.72
+                     BL  reveal 0.72–0.84                                       */}
+
                 {/* TL */}
                 <div className="col-start-1 row-start-1">
-                  <ProductCard step={STEPS[0]} index={0} position="TL" compact />
+                  <ProductCard
+                    step={STEPS[0]}
+                    index={0}
+                    position="TL"
+                    compact
+                    scrollProgress={scrollYProgress}
+                    revealRange={[0.0, 0.12]}
+                  />
                 </div>
 
                 {/* TR */}
                 <div className="col-start-3 row-start-1">
-                  <ProductCard step={STEPS[1]} index={1} position="TR" compact />
+                  <ProductCard
+                    step={STEPS[1]}
+                    index={1}
+                    position="TR"
+                    compact
+                    scrollProgress={scrollYProgress}
+                    revealRange={[0.24, 0.36]}
+                  />
                 </div>
 
                 {/* Centre 3D — spans the middle row, focal point */}
@@ -733,12 +777,26 @@ function Product3DCircularFlow() {
 
                 {/* BL */}
                 <div className="col-start-1 row-start-3">
-                  <ProductCard step={STEPS[3]} index={3} position="BL" compact />
+                  <ProductCard
+                    step={STEPS[3]}
+                    index={3}
+                    position="BL"
+                    compact
+                    scrollProgress={scrollYProgress}
+                    revealRange={[0.72, 0.84]}
+                  />
                 </div>
 
                 {/* BR */}
                 <div className="col-start-3 row-start-3">
-                  <ProductCard step={STEPS[2]} index={2} position="BR" compact />
+                  <ProductCard
+                    step={STEPS[2]}
+                    index={2}
+                    position="BR"
+                    compact
+                    scrollProgress={scrollYProgress}
+                    revealRange={[0.48, 0.60]}
+                  />
                 </div>
               </div>
             </div>
