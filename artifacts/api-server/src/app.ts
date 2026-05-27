@@ -7,17 +7,19 @@ import { logger } from "./lib/logger";
 const app: Express = express();
 
 app.use(
-  pinoHttp({
+  // Fix 1: (pinoHttp as any) use karke callable signature error ko bypass kiya
+  (pinoHttp as any)({
     logger,
     serializers: {
-      req(req) {
+      // Fix 2: 'any' type specify kiya taaki implicitly 'any' waala error na aaye
+      req(req: any) {
         return {
           id: req.id,
           method: req.method,
           url: req.url?.split("?")[0],
         };
       },
-      res(res) {
+      res(res: any) {
         return {
           statusCode: res.statusCode,
         };
@@ -25,6 +27,7 @@ app.use(
     },
   }),
 );
+
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
