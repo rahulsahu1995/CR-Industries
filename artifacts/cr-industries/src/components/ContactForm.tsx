@@ -8,11 +8,23 @@ import { Send, CheckCircle, MapPin, Phone, Mail } from "lucide-react";
 /* Limits mirror the server-side zod schema so the form never lets
    through values that the API will reject with a 400. */
 const schema = z.object({
-  name: z.string().min(2, "Name must be at least 2 characters").max(120, "Name is too long"),
-  email: z.string().email("Please enter a valid email").max(254, "Email is too long"),
+  name: z
+    .string()
+    .min(2, "Name must be at least 2 characters")
+    .max(120, "Name is too long"),
+  email: z
+    .string()
+    .email("Please enter a valid email")
+    .max(254, "Email is too long"),
   phone: z.string().max(40, "Phone number is too long").optional(),
-  subject: z.string().min(3, "Subject must be at least 3 characters").max(200, "Subject is too long"),
-  message: z.string().min(10, "Message must be at least 10 characters").max(5000, "Message is too long (max 5000 characters)"),
+  subject: z
+    .string()
+    .min(3, "Subject must be at least 3 characters")
+    .max(200, "Subject is too long"),
+  message: z
+    .string()
+    .min(10, "Message must be at least 10 characters")
+    .max(5000, "Message is too long (max 5000 characters)"),
 });
 
 type FormData = z.infer<typeof schema>;
@@ -23,7 +35,7 @@ export default function ContactForm() {
   const [error, setError] = useState<string | null>(null);
   const headingRef = useRef(null);
   const inView = useInView(headingRef, { once: true });
-
+const API_BASE = import.meta.env.VITE_API_BASE || ""; 
   const {
     register,
     handleSubmit,
@@ -35,7 +47,7 @@ export default function ContactForm() {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch("/api/contact", {
+      const res = await fetch(`${API_BASE}/contact`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
@@ -47,7 +59,10 @@ export default function ContactForm() {
       setSubmitted(true);
       reset();
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : "Something went wrong. Please try again.";
+      const msg =
+        err instanceof Error
+          ? err.message
+          : "Something went wrong. Please try again.";
       setError(msg);
     } finally {
       setLoading(false);
@@ -67,7 +82,9 @@ export default function ContactForm() {
           <span className="inline-block px-4 py-1.5 bg-primary/10 text-primary text-sm font-bold tracking-widest uppercase rounded-full mb-4">
             Get In Touch
           </span>
-          <h2 className="text-4xl md:text-5xl font-black text-foreground mb-4">Contact Us</h2>
+          <h2 className="text-4xl md:text-5xl font-black text-foreground mb-4">
+            Contact Us
+          </h2>
           <div className="w-16 h-1 bg-primary mx-auto rounded-full" />
           <p className="mt-6 text-muted-foreground text-lg max-w-xl mx-auto">
             Ready to find the right sealing solution? Our team is here to help.
@@ -102,7 +119,10 @@ export default function ContactForm() {
                 icon: Mail,
                 label: "Email",
                 lines: [
-                  { text: "crindustries21@gmail.com", href: "mailto:crindustries21@gmail.com" },
+                  {
+                    text: "crindustries21@gmail.com",
+                    href: "mailto:crindustries21@gmail.com",
+                  },
                 ],
               },
             ].map(({ icon: Icon, label, lines, href, external }) => (
@@ -123,19 +143,23 @@ export default function ContactForm() {
                         className="hover:text-primary transition-colors break-words"
                       >
                         {(lines as string[]).map((line, i) => (
-                          <span key={i} className="block">{line}</span>
+                          <span key={i} className="block">
+                            {line}
+                          </span>
                         ))}
                       </a>
                     ) : (
-                      (lines as { text: string; href: string }[]).map((l, i) => (
-                        <a
-                          key={i}
-                          href={l.href}
-                          className="block hover:text-primary transition-colors break-all"
-                        >
-                          {l.text}
-                        </a>
-                      ))
+                      (lines as { text: string; href: string }[]).map(
+                        (l, i) => (
+                          <a
+                            key={i}
+                            href={l.href}
+                            className="block hover:text-primary transition-colors break-all"
+                          >
+                            {l.text}
+                          </a>
+                        ),
+                      )
                     )}
                   </div>
                 </div>
@@ -147,11 +171,15 @@ export default function ContactForm() {
               <div className="space-y-1 text-sm text-muted-foreground">
                 <div className="flex justify-between">
                   <span>Mon – Fri</span>
-                  <span className="text-foreground font-medium">9:00 AM – 6:00 PM</span>
+                  <span className="text-foreground font-medium">
+                    9:00 AM – 6:00 PM
+                  </span>
                 </div>
                 <div className="flex justify-between">
                   <span>Saturday</span>
-                  <span className="text-foreground font-medium">9:00 AM – 2:00 PM</span>
+                  <span className="text-foreground font-medium">
+                    9:00 AM – 2:00 PM
+                  </span>
                 </div>
                 <div className="flex justify-between">
                   <span>Sunday</span>
@@ -177,9 +205,12 @@ export default function ContactForm() {
                 <div className="w-16 h-16 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center mx-auto mb-4">
                   <CheckCircle className="w-8 h-8 text-green-500" />
                 </div>
-                <h3 className="text-2xl font-bold text-foreground mb-2">Message Sent!</h3>
+                <h3 className="text-2xl font-bold text-foreground mb-2">
+                  Message Sent!
+                </h3>
                 <p className="text-muted-foreground mb-6">
-                  Thank you for reaching out. We'll get back to you within 24 hours.
+                  Thank you for reaching out. We'll get back to you within 24
+                  hours.
                 </p>
                 <button
                   onClick={() => setSubmitted(false)}
@@ -204,7 +235,9 @@ export default function ContactForm() {
                       className="w-full px-4 py-3 bg-background border border-input rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary transition-all text-sm"
                     />
                     {errors.name && (
-                      <p className="text-red-500 text-xs mt-1">{errors.name.message}</p>
+                      <p className="text-red-500 text-xs mt-1">
+                        {errors.name.message}
+                      </p>
                     )}
                   </div>
                   <div>
@@ -218,7 +251,9 @@ export default function ContactForm() {
                       className="w-full px-4 py-3 bg-background border border-input rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary transition-all text-sm"
                     />
                     {errors.email && (
-                      <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>
+                      <p className="text-red-500 text-xs mt-1">
+                        {errors.email.message}
+                      </p>
                     )}
                   </div>
                 </div>
@@ -244,7 +279,9 @@ export default function ContactForm() {
                       className="w-full px-4 py-3 bg-background border border-input rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary transition-all text-sm"
                     />
                     {errors.subject && (
-                      <p className="text-red-500 text-xs mt-1">{errors.subject.message}</p>
+                      <p className="text-red-500 text-xs mt-1">
+                        {errors.subject.message}
+                      </p>
                     )}
                   </div>
                 </div>
@@ -260,13 +297,17 @@ export default function ContactForm() {
                     className="w-full px-4 py-3 bg-background border border-input rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary transition-all text-sm resize-none"
                   />
                   {errors.message && (
-                    <p className="text-red-500 text-xs mt-1">{errors.message.message}</p>
+                    <p className="text-red-500 text-xs mt-1">
+                      {errors.message.message}
+                    </p>
                   )}
                 </div>
 
                 {error && (
                   <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-3">
-                    <p className="text-red-600 dark:text-red-400 text-sm">{error}</p>
+                    <p className="text-red-600 dark:text-red-400 text-sm">
+                      {error}
+                    </p>
                   </div>
                 )}
 
