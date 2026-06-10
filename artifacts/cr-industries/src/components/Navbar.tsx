@@ -1,7 +1,12 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Sun, Moon, Menu, X, ChevronDown } from "lucide-react";
-import { FaInstagram, FaFacebook, FaLinkedin, FaWhatsapp } from "react-icons/fa";
+import {
+  FaInstagram,
+  FaFacebook,
+  FaLinkedin,
+  FaWhatsapp,
+} from "react-icons/fa";
 import { useTheme } from "@/context/ThemeContext";
 import { Link, useLocation } from "wouter";
 
@@ -69,10 +74,7 @@ export default function Navbar() {
     if (location !== "/") {
       navigate("/");
       // Wait a tick for the route to mount, then smooth-scroll
-      setTimeout(
-        () => window.scrollTo({ top: 0, behavior: "smooth" }),
-        80,
-      );
+      setTimeout(() => window.scrollTo({ top: 0, behavior: "smooth" }), 80);
     } else {
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
@@ -94,99 +96,103 @@ export default function Navbar() {
               type="button"
               onClick={handleBrandClick}
               aria-label="C R Industries — back to home"
-              className="group flex items-center gap-3 rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+              className="group flex items-center gap-3 rounded-lg "
             >
               <img
-                src="/logo.jpeg"
+                src={theme === "dark" ? "/logo1.jpeg" : "/logo.jpeg"}
                 alt="C R Industries Logo"
-                className="w-10 h-10 rounded-lg object-cover transition-transform duration-300 group-hover:scale-105"
+                className="w-30 h-30 sm:w-30 sm:h-12 lg:w-35 lg:h-35 mt-2 rounded-lg object-contain transition-transform duration-300 group-hover:scale-105"
               />
-              <span
+              {/* <span
                 className="font-black text-xl tracking-widest transition-colors duration-200 group-hover:text-primary"
                 style={{ color: theme === "dark" ? "#e2e8f0" : "#03045E" }}
               >
                 C R INDUSTRIES
-              </span>
+              </span> */}
             </button>
 
             {/* Right cluster: nav + controls */}
             <div className="flex items-center gap-6">
-            {/* Desktop Nav */}
-            <nav className="hidden lg:flex items-center gap-6">
-              {NAV_LINKS.map((link) =>
-                link.children ? (
-                  <div
-                    key={link.label}
-                    className="relative"
-                    onMouseEnter={() => setDesktopNewsOpen(true)}
-                    onMouseLeave={() => setDesktopNewsOpen(false)}
-                  >
+              {/* Desktop Nav */}
+              <nav className="hidden lg:flex items-center gap-6">
+                {NAV_LINKS.map((link) =>
+                  link.children ? (
+                    <div
+                      key={link.label}
+                      className="relative"
+                      onMouseEnter={() => setDesktopNewsOpen(true)}
+                      onMouseLeave={() => setDesktopNewsOpen(false)}
+                    >
+                      <button
+                        className="flex items-center gap-1 text-sm font-semibold tracking-wide text-foreground hover:text-primary transition-colors"
+                        onClick={() => setDesktopNewsOpen((v) => !v)}
+                        onKeyDown={(e) => {
+                          if (e.key === "Escape") setDesktopNewsOpen(false);
+                        }}
+                        aria-haspopup="menu"
+                        aria-expanded={desktopNewsOpen}
+                      >
+                        {link.label}
+                        <ChevronDown
+                          className={`w-4 h-4 transition-transform ${desktopNewsOpen ? "rotate-180" : ""}`}
+                        />
+                      </button>
+                      <AnimatePresence>
+                        {desktopNewsOpen && (
+                          <motion.div
+                            initial={{ opacity: 0, y: -8 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -8 }}
+                            transition={{ duration: 0.2 }}
+                            className="absolute top-full left-0 mt-2 w-48 bg-card border border-border rounded-xl shadow-lg overflow-hidden"
+                          >
+                            {link.children.map((child) => (
+                              <button
+                                key={child.label}
+                                onClick={() => handleNavClick(child.href)}
+                                className="block w-full text-left px-4 py-2.5 text-sm text-foreground hover:bg-primary hover:text-white transition-colors"
+                              >
+                                {child.label}
+                              </button>
+                            ))}
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+                  ) : (
                     <button
-                      className="flex items-center gap-1 text-sm font-semibold tracking-wide text-foreground hover:text-primary transition-colors"
-                      onClick={() => setDesktopNewsOpen((v) => !v)}
-                      onKeyDown={(e) => {
-                        if (e.key === "Escape") setDesktopNewsOpen(false);
-                      }}
-                      aria-haspopup="menu"
-                      aria-expanded={desktopNewsOpen}
+                      key={link.label}
+                      onClick={() => handleNavClick(link.href)}
+                      className="group relative text-sm font-semibold tracking-wide text-foreground hover:text-primary transition-colors duration-200 pb-0.5"
                     >
                       {link.label}
-                      <ChevronDown
-                        className={`w-4 h-4 transition-transform ${desktopNewsOpen ? "rotate-180" : ""}`}
-                      />
+                      <span className="absolute bottom-0 left-0 h-0.5 w-0 bg-primary group-hover:w-full transition-all duration-300 rounded-full" />
                     </button>
-                    <AnimatePresence>
-                      {desktopNewsOpen && (
-                        <motion.div
-                          initial={{ opacity: 0, y: -8 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: -8 }}
-                          transition={{ duration: 0.2 }}
-                          className="absolute top-full left-0 mt-2 w-48 bg-card border border-border rounded-xl shadow-lg overflow-hidden"
-                        >
-                          {link.children.map((child) => (
-                            <button
-                              key={child.label}
-                              onClick={() => handleNavClick(child.href)}
-                              className="block w-full text-left px-4 py-2.5 text-sm text-foreground hover:bg-primary hover:text-white transition-colors"
-                            >
-                              {child.label}
-                            </button>
-                          ))}
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </div>
-                ) : (
-                  <button
-                    key={link.label}
-                    onClick={() => handleNavClick(link.href)}
-                    className="group relative text-sm font-semibold tracking-wide text-foreground hover:text-primary transition-colors duration-200 pb-0.5"
-                  >
-                    {link.label}
-                    <span className="absolute bottom-0 left-0 h-0.5 w-0 bg-primary group-hover:w-full transition-all duration-300 rounded-full" />
-                  </button>
-                )
-              )}
-            </nav>
+                  ),
+                )}
+              </nav>
 
-            {/* Theme toggle + hamburger */}
-            <div className="flex items-center gap-3 lg:border-l lg:border-border/60 lg:pl-5">
-              <button
-                onClick={toggleTheme}
-                className="w-9 h-9 rounded-full flex items-center justify-center bg-secondary hover:bg-primary hover:text-white transition-all duration-200"
-                aria-label="Toggle theme"
-              >
-                {theme === "dark" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-              </button>
-              <button
-                onClick={() => setSidebarOpen(true)}
-                className="lg:hidden w-9 h-9 rounded-full flex items-center justify-center bg-secondary hover:bg-primary hover:text-white transition-all duration-200"
-                aria-label="Open menu"
-              >
-                <Menu className="w-5 h-5" />
-              </button>
-            </div>
+              {/* Theme toggle + hamburger */}
+              <div className="flex items-center gap-3 lg:border-l lg:border-border/60 lg:pl-5">
+                <button
+                  onClick={toggleTheme}
+                  className="w-9 h-9 rounded-full flex items-center justify-center bg-secondary hover:bg-primary hover:text-white transition-all duration-200"
+                  aria-label="Toggle theme"
+                >
+                  {theme === "dark" ? (
+                    <Sun className="w-4 h-4" />
+                  ) : (
+                    <Moon className="w-4 h-4" />
+                  )}
+                </button>
+                <button
+                  onClick={() => setSidebarOpen(true)}
+                  className="lg:hidden w-9 h-9 rounded-full flex items-center justify-center bg-secondary hover:bg-primary hover:text-white transition-all duration-200"
+                  aria-label="Open menu"
+                >
+                  <Menu className="w-5 h-5" />
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -210,9 +216,10 @@ export default function Navbar() {
               transition={{ type: "spring", damping: 25, stiffness: 200 }}
               className="fixed top-0 right-0 h-full w-80 z-[70] flex flex-col lg:hidden"
               style={{
-                background: theme === "dark"
-                  ? "linear-gradient(180deg, #03045E 0%, #0096C7 100%)"
-                  : "linear-gradient(180deg, #03045E 0%, #0096C7 100%)",
+                background:
+                  theme === "dark"
+                    ? "linear-gradient(180deg, #03045E 0%, #0096C7 100%)"
+                    : "linear-gradient(180deg, #03045E 0%, #0096C7 100%)",
               }}
             >
               <div className="flex items-center justify-between p-5 border-b border-white/20">
@@ -275,13 +282,15 @@ export default function Navbar() {
                     >
                       {link.label}
                     </button>
-                  )
+                  ),
                 )}
               </nav>
 
               {/* Social Icons */}
               <div className="p-5 border-t border-white/20">
-                <p className="text-white/60 text-xs uppercase tracking-widest mb-3">Follow Us</p>
+                <p className="text-white/60 text-xs uppercase tracking-widest mb-3">
+                  Follow Us
+                </p>
                 <div className="flex items-center gap-4">
                   {[
                     { Icon: FaInstagram, href: "https://instagram.com" },

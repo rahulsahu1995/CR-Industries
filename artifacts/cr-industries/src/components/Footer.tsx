@@ -2,7 +2,13 @@ import { useRef } from "react";
 import { useLocation } from "wouter";
 import { motion, useInView } from "framer-motion";
 import { ArrowUpRight, MapPin, Phone, Mail, Send } from "lucide-react";
-import { FaInstagram, FaFacebook, FaLinkedin, FaWhatsapp } from "react-icons/fa";
+import {
+  FaInstagram,
+  FaFacebook,
+  FaLinkedin,
+  FaWhatsapp,
+} from "react-icons/fa";
+import { useTheme } from "@/context/ThemeContext";
 
 type LinkItem = { label: string; href: string };
 
@@ -86,6 +92,7 @@ function ColumnHeading({ children }: { children: React.ReactNode }) {
 }
 
 export default function Footer() {
+  const { theme } = useTheme();
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
 
@@ -99,7 +106,10 @@ export default function Footer() {
   };
 
   return (
-    <footer ref={ref} className="relative bg-card border-t border-border overflow-hidden">
+    <footer
+      ref={ref}
+      className="relative bg-card border-t border-border overflow-hidden"
+    >
       {/* Subtle decorative orb */}
       <div
         aria-hidden
@@ -130,11 +140,11 @@ export default function Footer() {
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 pb-10 border-b border-border">
           <div className="flex items-center gap-4">
             <img
-              src="/logo.jpeg"
+              src={theme === "dark" ? "/logo1.jpeg" : "/logo.jpeg"}
               alt="C R Industries Logo"
-              className="w-14 h-14 rounded-2xl object-cover shadow-lg shadow-primary/20"
+              className="w-45 h-24 object-cover "
             />
-            <div>
+            {/* <div>
               <h3 className="text-xl font-black tracking-widest text-foreground leading-tight">
                 C R INDUSTRIES
               </h3>
@@ -144,7 +154,7 @@ export default function Footer() {
                   Engineered for Excellence — Since 2005
                 </span>
               </div>
-            </div>
+            </div> */}
           </div>
 
           {/* Social icons */}
@@ -174,7 +184,6 @@ export default function Footer() {
       {/* ── 4-COLUMN GRID ── */}
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-8">
-
           {/* Col 1: Explore */}
           <motion.div
             custom={0}
@@ -241,7 +250,9 @@ export default function Footer() {
                     <MapPin className="w-4 h-4 text-primary group-hover:text-white transition-colors duration-300" />
                   </span>
                   <span className="text-sm leading-relaxed pt-1.5 group-hover:translate-x-1 transition-transform duration-300">
-                    102, Badi Bhamori,<br />Indore, Madhya Pradesh
+                    102, Badi Bhamori,
+                    <br />
+                    Indore, Madhya Pradesh
                   </span>
                 </a>
               </li>
@@ -304,7 +315,8 @@ export default function Footer() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 flex flex-col md:flex-row items-center justify-between gap-3 text-sm text-muted-foreground">
           <p>
             &copy; {new Date().getFullYear()}{" "}
-            <span className="font-bold text-foreground">C R INDUSTRIES</span>. All rights reserved.
+            <span className="font-bold text-foreground">C R INDUSTRIES</span>.
+            All rights reserved.
           </p>
           <div className="flex items-center gap-5">
             <button
